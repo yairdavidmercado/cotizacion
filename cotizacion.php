@@ -61,6 +61,35 @@ session_start();
         background: url('assets/img/loader.gif') 
                     50% 50% no-repeat rgb(249,249,249);
       }
+
+      .card {
+          margin-bottom: 1.5rem
+      }
+
+      .card {
+          position: relative;
+          display: -ms-flexbox;
+          display: flex;
+          -ms-flex-direction: column;
+          flex-direction: column;
+          min-width: 0;
+          word-wrap: break-word;
+          background-color: #fff;
+          background-clip: border-box;
+          border: 1px solid #c8ced3;
+          border-radius: .25rem
+      }
+
+      .card-header:first-child {
+          border-radius: calc(0.25rem - 1px) calc(0.25rem - 1px) 0 0
+      }
+
+      .card-header {
+          padding: .75rem 1.25rem;
+          margin-bottom: 0;
+          background-color: #f0f3f5;
+          border-bottom: 1px solid #c8ced3
+      }
     </style>
   </head>
   <body class="container bg-light">
@@ -87,11 +116,15 @@ session_start();
               <form role="form" onsubmit="event.preventDefault(); return GuardarCotizacion();" id="form_guardar" class="needs-validation">
               
                 <div class="row">
-                  <div class="col-md-6 mb-3">
+                  <div class="col-md-4 mb-3">
                     <label for="id_hotel">Hotel</label>
                     <select style="width:100%" name="id_hotel" required id="id_hotel" onchange="detalle_hotel(this.value)" class="form-control form-control-sm id_hoteles">
                       <option value="">Seleccionar</option>
                     </select>
+                  </div>
+                  <div class="col-md-2 mb-3">
+                    <label for="lastName">No. Reserva</label>
+                    <input type="text" autocomplete="off"  class="form-control " name="n_reserva" id="n_reserva" placeholder="" required>                    
                   </div>
                   <div class="col-md-6 mb-3">
                     <button class="btn btn-link btn-sm float-right">Crear hotel</button>
@@ -143,53 +176,117 @@ session_start();
                       </div>
                     </div>
                   </div>
-                </div>
-                <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label for="firstName">Tarifa</label>
-                    <select style="width:100%" name="id_tarifa" required id="id_tarifa" onchange="detalle_tarifa(this.value)" class="form-control form-control-sm id_tarifas">
+                  <div class="col-md-6 mb-3">
+                    <label for="firstName">Motivo de viaje</label>
+                    <select style="width:100%" name="id_motivo" required id="id_motivo" class="form-control form-control-sm id_motivos">
                       <option value="">Seleccionar</option>
                     </select>
                   </div>
-                  <div class="col-md-3 mb-3">
-                    <label for="lastName">No. Niños</label>
-                    <input type="text" autocomplete="off"  class="form-control " name="child" id="child" placeholder="" required>                    
+                  <div class="col-md-6 mb-3">
+                    <label><span style="font-size:12px">Tipo de viaje</span></label>
+                    <br>
+                    <div class="form-check-inline">
+                      <label class="form-check-label">
+                        <input type="radio" name="tipo_viaje" onclick="traer_tarifas(0)" required value="0" class="form-check-input" value="">Pasadía
+                      </label>
+                    </div>
+                    <div class="form-check-inline">
+                      <label class="form-check-label">
+                        <input type="radio" name="tipo_viaje" onclick="traer_tarifas(1)" required value="1" class="form-check-input" value="">Por noche
+                      </label>
+                    </div>
                   </div>
-                  <div class="col-md-3 mb-3">
-                    <label for="lastName">No. Aultos Simple</label>
-                    <input type="text" autocomplete="off" class="form-control" name="adult_s" id="adult_s" placeholder="" required>                    
+                </div>
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label for="firstName">Tarifa</label>
+                    <select style="width:100%" name="id_tarifa" disabled required id="id_tarifa" class="form-control form-control-sm id_tarifas">
+                      <option value="">Seleccionar</option>
+                    </select>
                   </div>
-                  <div class="col-md-3 mb-3"  style="display:none">
+                  <div class="col-md-3 mb-3" id="content_startDate">
                     <label for="lastName">Fecha entrada</label>
-                    <input type="text" autocomplete="off" onfocusout="diferencia_dias()" class="form-control " name="startDate" id="startDate" placeholder="" required>                    
+                    <input type="text" autocomplete="off" disabled class="form-control " name="startDate" id="startDate" placeholder="" required>                    
                   </div>
-                  <div class="col-md-3 mb-3" style="display:none">
+                  <div class="col-md-3 mb-3" id="content_endDate">
                     <label for="lastName">Fecha salida</label>
-                    <input type="text" autocomplete="off" onfocusout="diferencia_dias()" class="form-control" name="endDate" id="endDate" placeholder="" required>
+                    <input type="text" autocomplete="off" disabled class="form-control" name="endDate" id="endDate" placeholder="" required>
                     <input type="hidden" value="0" name="count_noches" id="count_noches">                    
                   </div>
                   <div class="col-md-3 mb-3">
+                    <label for="lastName">No. Niños</label>
+                    <input type="text" autocomplete="off" disabled class="form-control " name="child" id="child" placeholder="" required>                    
+                  </div>
+                  <div class="col-md-3 mb-3">
+                    <label for="lastName">No. Aultos Simple</label>
+                    <input type="text" autocomplete="off" disabled class="form-control" name="adult_s" id="adult_s" placeholder="" required>                    
+                  </div>
+                  <div class="col-md-3 mb-3">
                     <label for="lastName">No. Aultos doble</label>
-                    <input type="text" autocomplete="off" class="form-control " name="adult_d" id="adult_d" placeholder="" required>                    
+                    <input type="text" autocomplete="off" disabled class="form-control " name="adult_d" id="adult_d" placeholder="" required>                    
                   </div>
                   <div class="col-md-3 mb-3">
                     <label for="lastName">No. Aultos Tri /Cua</label>
-                    <input type="text" autocomplete="off" class="form-control" name="adult_t_c" id="adult_t_c" placeholder="" required>                    
+                    <input type="text" autocomplete="off" disabled class="form-control" name="adult_t_c" id="adult_t_c" placeholder="" required>                    
                   </div>
-                  <div class="col-md-12 mb-3" id="content_info_tarifa" >
-                    <div class="multi-collapse collapse show"  >
-                      <div class="card card-body">
-                        <div class="row">
-                          <div class="col-sm-4">
-                            <p for=""><b>No. Noches: </b><span id="txt_nombre_fecha"></span></p>
+                  <div class="col-md-12 mb-3" id="content_info_tarifa" style="display:none" >
+                    <div class="container-fluid">
+                      <div id="ui-view" data-select2-id="ui-view">
+                          <div>
+                              <div class="card">
+                                  <div class="card-body">
+                                    <div class="row mb-4">
+                                      <div class="col-sm-4">
+                                          <h6 class="mb-3">No. noches: <strong>4</strong></h6>
+                                      </div>
+                                      <div class="col-sm-4">
+                                          <h6 class="mb-3">No. Pasajeros: <strong>7</strong></h6>
+                                      </div>
+                                      <div class="col-sm-4">
+                                          <h6 class="mb-3">Infante: <strong>No</strong></h6>
+                                      </div>
+                                  </div>
+                                      <div class="table-responsive-sm">
+                                            <table class="table ">
+                                              <thead>
+                                                  <tr>
+                                                      <th class="center">#</th>
+                                                      <th>Item</th>
+                                                      <th class="center">Cantidad</th>
+                                                      <th style="text-align: right;">Valor unitario</th>
+                                                      <th style="text-align: right;">Total</th>
+                                                  </tr>
+                                              </thead>
+                                              <tbody id="tbody_tarifa">
+                                                  
+                                              </tbody>
+                                          </table>
+                                      </div>
+                                      <div class="row">
+                                          <div class="col-lg-4 col-sm-5 ml-auto">
+                                              <table class="table table-clear">
+                                                  <tbody>
+                                                      <tr>
+                                                          <td class="left">
+                                                              <strong>Subtotal</strong>
+                                                          </td>
+                                                          <td style="text-align: right;">$8.497,00</td>
+                                                      </tr>
+                                                      <tr>
+                                                          <td class="left">
+                                                              <strong>Total por noches</strong>
+                                                          </td>
+                                                          <td style="text-align: right;">
+                                                              <strong>$7.477,36</strong>
+                                                          </td>
+                                                      </tr>
+                                                  </tbody>
+                                              </table>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
                           </div>
-                          <div class="col-sm-4">
-                            <p for=""><b>Dirección: </b><span id="txt_direccion_fecha"></span></p>
-                          </div>
-                          <div class="col-sm-4">
-                            <p for=""><b>Teléfono - Email: </b><span id="txt_telefono_fecha"></span></p>
-                          </div>
-                        </div>
                       </div>
                     </div>
                   </div>
@@ -229,6 +326,7 @@ session_start();
 $(function() {
   traer_hotel()
   traer_titulares()
+  traer_motivos()
 
   $(".loader").css("display", "none")
 
@@ -251,25 +349,111 @@ $(function() {
       }
   });
 
+  detalle_tarifa()
+
 });
 
-function diferencia_dias() {
-  setTimeout(() => {
+function detalle_tarifa() {
+  setInterval(() => {
+    var id_tarifa = $('#id_tarifa option:selected')
+    var child = ""
+    var adult_s = ""
+    var adult_d = ""
+    var adult_t_c = ""
+    var noches = ""
+
+    if (id_tarifa.attr("id") !== "") {
+      child = id_tarifa.attr("child")
+      adult_s = id_tarifa.attr("adult_s")
+      adult_d = id_tarifa.attr("adult_d")
+      adult_t_c = id_tarifa.attr("adult_t_c")
+      validar_noches = id_tarifa.attr("noches")
+    }
     var f_inicio = $('#startDate').val()
     var f_fin = $('#endDate').val()
     if (f_inicio.length > 0 && f_fin.length > 0) {
-      var fecha1 = moment(f_inicio);
-      var fecha2 = moment(f_fin);
 
-      console.log(fecha2.diff(fecha1, 'days'), ' dias de diferencia');
+    var fechaIni = new Date(f_inicio);
+    var fechaFin = new Date(f_fin);
+
+    var diff = fechaFin - fechaIni;
+
+    diferenciaDias = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+      var noches = diferenciaDias
+    
+      
+      if (validar_noches == "1") {
+        if (noches == 0 ) {
+          $("#startDate").val("")
+          $("#endDate").val("")
+          $("#tbody_tarifa").html("")
+          $("#content_info_tarifa").hide()
+          alert("Las fecha de entrada no puede ser igual a la fecha de salida")
+          return false 
+        }
+      }else if (validar_noches == "0") {
+        if (noches > 0 ) {
+          $("#startDate").val("")
+          $("#endDate").val("")
+          $("#tbody_tarifa").html("")
+          $("#content_info_tarifa").hide()
+          alert("La fecha de entrada debe ser igual a la fecha de salida ")
+          return false 
+        }
+      }
+      var inputchild = $("#child").val()
+      var inputadult_s = $("#adult_s").val()
+      var inputadult_d = $("#adult_d").val()
+      var inputadult_t_c = $("#adult_t_c").val()
+
+      var totalchild = parseInt( inputchild )* parseInt( child )
+      var totaladult_s = parseInt( inputadult_s )* parseInt( adult_s )
+      var totaladult_d = parseInt( inputadult_d )* parseInt( adult_d )
+      var totaladult_t_c = parseInt( inputadult_t_c )* parseInt( adult_t_c )
+
+      if ($.trim(inputchild).length < 1 || $.trim(inputadult_s).length < 1 || $.trim(inputadult_d).length < 1 || $.trim(inputadult_t_c).length < 1 ) {
+        $("#content_info_tarifa").hide()
+        return false
+      }
+
+      $("#content_info_tarifa").show()
+      $("#tbody_tarifa").html(`<tr>
+                                    <td class="center">1</td>
+                                    <td class="left">Niños</td>
+                                    <td class="center">${inputchild}</td>
+                                    <td style="text-align: right;">$ ${child}</td>
+                                    <td style="text-align: right;">$ ${totalchild}</td>
+                                </tr>
+                                <tr>
+                                    <td class="center">2</td>
+                                    <td class="left">Adultos simple</td>
+                                    <td class="center">${inputadult_s}</td>
+                                    <td style="text-align: right;">$ ${adult_s}</td>
+                                    <td style="text-align: right;">$ ${totaladult_s}</td>
+                                </tr>
+                                <tr>
+                                    <td class="center">3</td>
+                                    <td class="left">Adultos dobles</td>
+                                    <td class="center">${inputadult_d}</td>
+                                    <td style="text-align: right;">$ ${adult_d}</td>
+                                    <td style="text-align: right;">$ ${totaladult_d}</td>
+                                </tr>
+                                <tr>
+                                    <td class="center">4</td>
+                                    <td class="left">Adultos triple / Cuadruple</td>
+                                    <td class="center">${inputadult_t_c}</td>
+                                    <td style="text-align: right;">$ ${adult_t_c}</td>
+                                    <td style="text-align: right;">$ ${totaladult_t_c}</td>
+                                </tr>`)
+      
     }
-  }, 100);
+  }, 10000);
   
 }
 
 function detalle_hotel(value) {
   if (value !== "") {
-    traer_tarifas(value)
     var elem = $("#id_hotel option:selected")
     var nombre = elem.html()
     var direccion = elem.attr("pais")+ " "+elem.attr("depto")+ " "+elem.attr("ciudad")
@@ -407,10 +591,10 @@ function GuardarCotizacion() {
     
   }
 
-  function traer_tarifas(id) {
+  function traer_motivos() {
       let values = { 
-            codigo: 'traer_tarifas',
-            parametro1: id,
+            codigo: 'traer_motivos',
+            parametro1: "",
             parametro2: ""
       };
       $.ajax({
@@ -424,8 +608,79 @@ function GuardarCotizacion() {
           $(".loader").css("display", "none")
           let obj = JSON.parse(respuesta)
           let fila = ''
+          fila += ''
           $.each(obj["resultado"], function( index, val ) {
-            fila += `<option value='${val.id}' nombre='${val.nombre}' child='${val.child}' adult_s='${val.adult_s}' adult_d='${val.adult_d}' adult_t_c='${val.adult_t_c}'>${val.nombre}</option>`
+            fila += `<option value='${val.id}'>${val.nombre}</option>`
+          });
+
+          $("#id_motivo").html('<option value="">Seleccionar</option>'+fila)
+          
+        },
+        error: function() {
+          $(".loader").css("display", "none")
+          console.log("No se ha podido obtener la información");
+        }
+      });
+
+      $("#id_motivo").select2();
+    
+  }
+
+  function traer_tarifas(tipo) {
+    var id_hotel = $("#id_hotel").val()
+    if (id_hotel == "") {
+      $("input:radio[name='tipo_viaje']").prop('checked',false);
+      
+      alert("Por favor seleccione el hotel")
+      return false
+      
+    }
+
+    setInterval(() => {
+      
+    }, 100);
+
+    $("#id_tarifa").prop('disabled',false);
+    $("#child").prop('disabled',false);
+    $("#adult_s").prop('disabled',false);
+    $("#adult_d").prop('disabled',false);
+    $("#adult_t_c").prop('disabled',false);
+    $("#startDate").prop('disabled',false);
+    $("#endDate").prop('disabled',false);
+    
+      let values = { 
+            codigo: 'traer_tarifas',
+            parametro1: id_hotel,
+            parametro2: tipo
+      };
+      $.ajax({
+        type : 'POST',
+        data: values,
+        url: 'php/sel_recursos.php',
+        beforeSend: function() {
+            $(".loader").css("display", "inline-block")
+        },
+        success: function(respuesta) {
+          $(".loader").css("display", "none")
+          let obj = JSON.parse(respuesta)
+          let fila = ''
+
+          if (obj.success == false) {
+            $("input:radio[name='tipo_viaje']").prop('checked',false);
+            $("#id_tarifa").val("").change("").prop('disabled',true);
+            $("#child").val("").prop('disabled',true);
+            $("#adult_s").val("").prop('disabled',true);
+            $("#adult_d").val("").prop('disabled',true);
+            $("#adult_t_c").val("").prop('disabled',true);
+            $("#startDate").val("").prop('disabled',true);
+            $("#endDate").val("").prop('disabled',true);
+
+            alert("Usted no tiene tarifas parametrizadas para este tipo de viaje")
+            return false
+            
+          } 
+          $.each(obj["resultado"], function( index, val ) {
+            fila += `<option value='${val.id}' id='${val.id}' nombre='${val.nombre}' child='${val.child}' adult_s='${val.adult_s}' adult_d='${val.adult_d}' noches='${val.noches}' adult_t_c='${val.adult_t_c}' noches='${val.noches}'>${val.nombre}</option>`
           });
 
           $("#id_tarifa").html('<option value="">Seleccionar</option>'+fila)

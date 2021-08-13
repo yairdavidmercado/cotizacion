@@ -83,7 +83,7 @@ if ($conn) {
 				echo json_encode($response);
 		}
 	}else if ($codigo == "traer_tarifas") {//titulares
-		$result = mysqli_query($conn, 	"SELECT * FROM tarifas WHERE id_hotel = $parametro1 AND activo = true;");
+		$result = mysqli_query($conn, 	"SELECT * FROM tarifas WHERE id_hotel = $parametro1 AND noches = $parametro2 AND activo = true;");
 		if(mysqli_num_rows($result) > 0)
 		{	
 									$response["resultado"] = array();
@@ -93,9 +93,33 @@ if ($conn) {
 										$datos["id"] 			= $row["id"];
 										$datos["nombre"]		= $row["nombre"];
 										$datos["child"]			= $row["child"];
-										$datos["adult_s"] 			= $row["adult_s"];
+										$datos["adult_s"] 		= $row["adult_s"];
 										$datos["adult_d"] 		= $row["adult_d"];
-										$datos["adult_t_c"] 		= $row["adult_t_c"];
+										$datos["adult_t_c"] 	= $row["adult_t_c"];
+										$datos["noches"] 		= $row["noches"];
+										
+										// push single product into final response array
+										array_push($response["resultado"], $datos);
+									}
+									$response["success"] = true;
+									echo json_encode($response);
+
+		}else{
+				$response["success"] = false;
+				$response["message"] = "No se encontraron registros";
+				// echo no users JSON
+				echo json_encode($response);
+		}
+	}else if ($codigo == "traer_motivos") {//titulares
+		$result = mysqli_query($conn, 	"SELECT * FROM motivos WHERE activo = true;");
+		if(mysqli_num_rows($result) > 0)
+		{	
+									$response["resultado"] = array();
+									while ($row = mysqli_fetch_array($result)) {
+									$datos = array();
+										
+										$datos["id"] 			= $row["id"];
+										$datos["nombre"]		= $row["nombre"];
 										
 										// push single product into final response array
 										array_push($response["resultado"], $datos);
