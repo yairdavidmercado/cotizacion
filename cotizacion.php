@@ -215,19 +215,19 @@ session_start();
                   </div>
                   <div class="col-md-3 mb-3">
                     <label for="lastName">No. Niños</label>
-                    <input type="text" autocomplete="off" disabled class="form-control " name="child" id="child" placeholder="" required>                    
+                    <input type="text" autocomplete="off" disabled onkeypress="return isNumber(event)" class="form-control " name="child" id="child" placeholder="" required>                    
                   </div>
                   <div class="col-md-3 mb-3">
-                    <label for="lastName">No. Aultos Simple</label>
-                    <input type="text" autocomplete="off" disabled class="form-control" name="adult_s" id="adult_s" placeholder="" required>                    
+                    <label for="lastName">No. Adultos Simple</label>
+                    <input type="text" autocomplete="off" disabled onkeypress="return isNumber(event)" class="form-control" name="adult_s" id="adult_s" placeholder="" required>                    
                   </div>
                   <div class="col-md-3 mb-3">
-                    <label for="lastName">No. Aultos doble</label>
-                    <input type="text" autocomplete="off" disabled class="form-control " name="adult_d" id="adult_d" placeholder="" required>                    
+                    <label for="lastName">No. Adultos doble</label>
+                    <input type="text" autocomplete="off" disabled onkeypress="return isNumber(event)" class="form-control " name="adult_d" id="adult_d" placeholder="" required>                    
                   </div>
                   <div class="col-md-3 mb-3">
-                    <label for="lastName">No. Aultos Tri /Cua</label>
-                    <input type="text" autocomplete="off" disabled class="form-control" name="adult_t_c" id="adult_t_c" placeholder="" required>                    
+                    <label for="lastName">No. Adultos Tri /Cua</label>
+                    <input type="text" autocomplete="off" disabled onkeypress="return isNumber(event)" class="form-control" name="adult_t_c" id="adult_t_c" placeholder="" required>                    
                   </div>
                   <div class="col-md-12 mb-3" id="content_info_tarifa" style="display:none" >
                     <div class="container-fluid">
@@ -235,56 +235,31 @@ session_start();
                           <div>
                               <div class="card">
                                   <div class="card-body">
-                                    <div class="row mb-4">
-                                      <div class="col-sm-4">
-                                          <h6 class="mb-3">No. noches: <strong>4</strong></h6>
+                                    <div class="row mb-4" id="detalle_tarifa">
+                                      
+                                    </div>
+                                    <div class="table-responsive-sm">
+                                      <table class="table ">
+                                        <thead>
+                                            <tr>
+                                                <th class="center">#</th>
+                                                <th>Item</th>
+                                                <th class="center">Cantidad</th>
+                                                <th style="text-align: right;">Valor unitario</th>
+                                                <th style="text-align: right;">Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tbody_tarifa">
+                                            
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                    <div class="row">
+                                      <div class="col-lg-5 col-sm-5 ml-auto" id="content_subtotal">
+                                          
                                       </div>
-                                      <div class="col-sm-4">
-                                          <h6 class="mb-3">No. Pasajeros: <strong>7</strong></h6>
-                                      </div>
-                                      <div class="col-sm-4">
-                                          <h6 class="mb-3">Infante: <strong>No</strong></h6>
-                                      </div>
-                                  </div>
-                                      <div class="table-responsive-sm">
-                                            <table class="table ">
-                                              <thead>
-                                                  <tr>
-                                                      <th class="center">#</th>
-                                                      <th>Item</th>
-                                                      <th class="center">Cantidad</th>
-                                                      <th style="text-align: right;">Valor unitario</th>
-                                                      <th style="text-align: right;">Total</th>
-                                                  </tr>
-                                              </thead>
-                                              <tbody id="tbody_tarifa">
-                                                  
-                                              </tbody>
-                                          </table>
-                                      </div>
-                                      <div class="row">
-                                          <div class="col-lg-4 col-sm-5 ml-auto">
-                                              <table class="table table-clear">
-                                                  <tbody>
-                                                      <tr>
-                                                          <td class="left">
-                                                              <strong>Subtotal</strong>
-                                                          </td>
-                                                          <td style="text-align: right;">$8.497,00</td>
-                                                      </tr>
-                                                      <tr>
-                                                          <td class="left">
-                                                              <strong>Total por noches</strong>
-                                                          </td>
-                                                          <td style="text-align: right;">
-                                                              <strong>$7.477,36</strong>
-                                                          </td>
-                                                      </tr>
-                                                  </tbody>
-                                              </table>
-                                          </div>
-                                      </div>
-                                  </div>
+                                    </div>
+                                </div>
                               </div>
                           </div>
                       </div>
@@ -412,43 +387,78 @@ function detalle_tarifa() {
       var totaladult_d = parseInt( inputadult_d )* parseInt( adult_d )
       var totaladult_t_c = parseInt( inputadult_t_c )* parseInt( adult_t_c )
 
-      if ($.trim(inputchild).length < 1 || $.trim(inputadult_s).length < 1 || $.trim(inputadult_d).length < 1 || $.trim(inputadult_t_c).length < 1 ) {
+      if ( $('#id_tarifa').val() == "" || $.trim(inputchild).length < 1 || $.trim(inputadult_s).length < 1 || $.trim(inputadult_d).length < 1 || $.trim(inputadult_t_c).length < 1 ) {
         $("#content_info_tarifa").hide()
+        $("#detalle_tarifa").html("")
         return false
       }
+
+      var total_pasajero = parseInt( inputchild )+parseInt( inputadult_s )+parseInt( inputadult_d )+parseInt( inputadult_t_c)
+      var infante = inputchild == "0" ? "No": "Si"
+      var n_noches = noches == "0" ? "N/A": noches
+      $("#detalle_tarifa").html(`<div class="col-sm-4">
+                                      <h6 class="mb-3">No. noches: <strong>${n_noches}</strong></h6>
+                                  </div>
+                                  <div class="col-sm-4">
+                                      <h6 class="mb-3">No. Pasajeros: <strong>${total_pasajero}</strong></h6>
+                                  </div>
+                                  <div class="col-sm-4">
+                                      <h6 class="mb-3">Infante: <strong>${infante}</strong></h6>
+                                  </div>`)
 
       $("#content_info_tarifa").show()
       $("#tbody_tarifa").html(`<tr>
                                     <td class="center">1</td>
                                     <td class="left">Niños</td>
                                     <td class="center">${inputchild}</td>
-                                    <td style="text-align: right;">$ ${child}</td>
-                                    <td style="text-align: right;">$ ${totalchild}</td>
+                                    <td style="text-align: right;">$${puntosDecimales(child)}</td>
+                                    <td style="text-align: right;">$${puntosDecimales(totalchild)}</td>
                                 </tr>
                                 <tr>
                                     <td class="center">2</td>
                                     <td class="left">Adultos simple</td>
                                     <td class="center">${inputadult_s}</td>
-                                    <td style="text-align: right;">$ ${adult_s}</td>
-                                    <td style="text-align: right;">$ ${totaladult_s}</td>
+                                    <td style="text-align: right;">$${puntosDecimales(adult_s)}</td>
+                                    <td style="text-align: right;">$${puntosDecimales(totaladult_s)}</td>
                                 </tr>
                                 <tr>
                                     <td class="center">3</td>
                                     <td class="left">Adultos dobles</td>
                                     <td class="center">${inputadult_d}</td>
-                                    <td style="text-align: right;">$ ${adult_d}</td>
-                                    <td style="text-align: right;">$ ${totaladult_d}</td>
+                                    <td style="text-align: right;">$${puntosDecimales(adult_d)}</td>
+                                    <td style="text-align: right;">$${puntosDecimales(totaladult_d)}</td>
                                 </tr>
                                 <tr>
                                     <td class="center">4</td>
                                     <td class="left">Adultos triple / Cuadruple</td>
                                     <td class="center">${inputadult_t_c}</td>
-                                    <td style="text-align: right;">$ ${adult_t_c}</td>
-                                    <td style="text-align: right;">$ ${totaladult_t_c}</td>
+                                    <td style="text-align: right;">$${puntosDecimales(adult_t_c)}</td>
+                                    <td style="text-align: right;">$${puntosDecimales(totaladult_t_c)}</td>
                                 </tr>`)
+                                noches = validar_noches == "0" ? "1": noches
+                                var subtotal = totalchild+totaladult_s+totaladult_d+totaladult_t_c
+                                var total = subtotal * parseInt(noches)
+                                $("#content_subtotal").html(`<table class="table table-clear">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td class="left">
+                                                                            <strong>Subtotal</strong>
+                                                                        </td>
+                                                                        <td style="text-align: right;" id="subtotal">$${puntosDecimales(subtotal)}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="left">
+                                                                            <strong>Total por noches</strong>
+                                                                        </td>
+                                                                        <td style="text-align: right;">
+                                                                            <strong>$${puntosDecimales(total)}</strong>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>`)
       
     }
-  }, 10000);
+  }, 100);
   
 }
 
@@ -694,6 +704,19 @@ function GuardarCotizacion() {
 
       $("#id_tarifa").select2();
     
+  }
+
+  function isNumber(evt) {
+      evt = (evt) ? evt : window.event;
+      var charCode = (evt.which) ? evt.which : evt.keyCode;
+      if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+          return false;
+      }
+      return true;
+  }
+
+  function puntosDecimales(value) {
+   return new Intl.NumberFormat("de-DE").format(value)
   }
 
 </script>
