@@ -4,17 +4,21 @@ session_start();
  if (!isset($_SESSION['id'])) {
     header ("Location:index.php"); 
  }
+
+ if (!isset($_SESSION['id_hotel'])) {
+    header ("Location:welcome.php"); 
+  }
 // manipulate session variables
 ?>
 <!doctype html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Jekyll v3.8.6">
-    <title>PQRSF</title>
+    <title>CotiClick</title>
 
     <link rel="canonical" href="https://getbootstrap.com/docs/4.4/examples/offcanvas/">
 
@@ -114,35 +118,6 @@ session_start();
             <h5 class="card-header">Cotizaciones</h5>
             <div class="card-body">
               <form role="form" onsubmit="event.preventDefault(); return GuardarCotizacion();" id="form_guardar" class="needs-validation">
-              
-                <div class="row">
-                  <div class="col-md-6 mb-3">
-                    <label for="id_hotel">Hotel</label>
-                    <select style="width:100%" name="id_hotel" required id="id_hotel" onchange="detalle_hotel(this.value)" class="form-control form-control-sm id_hoteles">
-                      <option value="">Seleccionar</option>
-                    </select>
-                  </div>
-                  <div class="col-md-6 mb-3">
-                    <button class="btn btn-link btn-sm float-right">Crear hotel</button>
-                  </div>
-                  <div class="col-md-12 mb-3" id="content_info_hotel" style="display:none">
-                    <div class="multi-collapse collapse show"  >
-                      <div class="card card-body">
-                        <div class="row">
-                          <div class="col-sm-4">
-                            <p for="" ><b>Hotel: </b><span id="txt_nombre_hotel"></span></p>
-                          </div>
-                          <div class="col-sm-4">
-                            <p for=""><b>Dirección: </b><span id="txt_direccion_hotel"></span></p>
-                          </div>
-                          <div class="col-sm-4">
-                            <p for="" ><b>Teléfono - Email: </b><span id="txt_telefono_hotel"></span></p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
                
                 <div class="row">
                   <div class="col-md-6 mb-3">
@@ -163,10 +138,11 @@ session_start();
                             <p for=""><b>Cédula: </b><span id="txt_cedula_titular"></span></p>
                           </div>
                           <div class="col-sm-4">
-                            <p for=""><b>Dirección: </b><span id="txt_direccion_titular"></span></p>
+                            <p for=""><b>Teléfono: </b><span id="txt_telefono_titular"></span></p>
+                            <p for=""><b>Email: </b><span id="txt_email_titular"></span></p>
                           </div>
                           <div class="col-sm-4">
-                            <p for=""><b>Teléfono - Email: </b><span id="txt_telefono_titular"></span></p>
+                            <p for=""><b>Dirección: </b><span id="txt_direccion_titular"></span></p>
                           </div>
                         </div>
                       </div>
@@ -268,9 +244,52 @@ session_start();
                   </div>
                   <div class="col-md-6 mb-3">
                     <label for="firstName">Planes</label>
-                    <select style="width:100%" name="id_planes" required id="id_planes" class="form-control form-control-sm id_planess">
+                    <select style="width:100%" name="id_planes" onchange="traer_productos(this.value)" required id="id_planes" class="form-control form-control-sm id_planess">
                       <option value="">Seleccionar</option>
                     </select>
+                  </div>
+                  <div class="col-md-12 mb-3" id="content_info_planes" style="display:none">
+                    <div class="multi-collapse collapse show"  >
+                      <div class="card card-body">
+                        <div class="row">
+                          <div class="col-sm-12">
+                            <p for=""><b>Detalles del plan: </b></p>
+                          </div>
+                        </div>
+                        <div class="row" id="content_detalles_plan">
+                          
+                        </div>
+                      </div>
+                    </div>
+                    <div class="multi-collapse collapse show"  >
+                      <div class="card card-body">
+                        <div class="row">
+                          <div class="col-sm-12">
+                            <p for=""><b>Descripción: </b></p>
+                          </div>
+                        </div>
+                        <div class="row" id="descripcion_servicios">
+
+                        </div>
+                      </div>
+                    </div>
+                    <div class="multi-collapse collapse show"  >
+                      <div class="card card-body">
+                        <div class="row">
+                          <div class="col-sm-12">
+                            <p for=""><b>Servicios incluidos: </b></p>
+                          </div>
+                        </div>
+                        <div class="row" id="content_servicios_incluidos">
+
+                        </div>
+                      </div>
+                    </div>
+                    
+                  </div>
+                  <div class="col-md-12 mb-3">
+                    <label for="firstName">Acomodación</label>
+                    <textarea style="width:100%" name="id_acomodacion" required id="id_acomodacion" class="form-control form-control-sm id_acomodacion"></textarea>
                   </div>
                   
                   <div class="col-md-12 mb-3 d-flex justify-content-center">
@@ -302,10 +321,13 @@ session_start();
 <script src="http://momentjs.com/downloads/moment.min.js"></script>
 
 <script>
+var id_hotel = "<?php echo $_SESSION['id_hotel'] ?>"
 $(function() {
-  traer_hotel()
+  $("#menu_inicio").removeClass("active");
+  //traer_hotel()
   traer_titulares()
   traer_motivos()
+  traer_planes(id_hotel)
 
   $(".loader").css("display", "none")
 
@@ -467,34 +489,18 @@ function detalle_tarifa() {
   
 }
 
-function detalle_hotel(value) {
-  if (value !== "") {
-    var elem = $("#id_hotel option:selected")
-    var nombre = elem.html()
-    var direccion = elem.attr("pais")+ " "+elem.attr("depto")+ " "+elem.attr("ciudad")
-    var telefono = elem.attr("telefono")+ " - "+elem.attr("email")
-    $("#txt_nombre_hotel").text(nombre)
-    $("#txt_direccion_hotel").text(direccion)
-    $("#txt_telefono_hotel").text(telefono)
-   $("#content_info_hotel").show()
-  }else{
-    $("#content_info_hotel").hide()
-    $("#id_tarifa").html('<option value="">Seleccionar</option>')
-    $("#id_tarifa").select2()
-  }
-  
-}
-
 function detalle_titular(value) {
   if (value !== "") {
     var elem = $("#id_usuario option:selected")
     var nombre = elem.attr("nombre")
     var direccion = elem.attr("pais")+ " - "+elem.attr("depto")+ " - "+elem.attr("ciudad")
-    var telefono = elem.attr("telefono")+ " - "+elem.attr("email")
+    var telefono = elem.attr("telefono")
+    var email = elem.attr("email")
     var cedula = elem.attr("cedula")
     $("#txt_nombre_titular").text(nombre)
     $("#txt_direccion_titular").text(direccion)
     $("#txt_telefono_titular").text(telefono)
+    $("#txt_email_titular").text(email)
     $("#txt_cedula_titular").text(cedula)
    $("#content_info_titular").show()
   }else{
@@ -641,15 +647,94 @@ function GuardarCotizacion() {
     
   }
 
+  function traer_planes(id_hotel) {
+      let values = { 
+            codigo: 'traer_planes',
+            parametro1: id_hotel,
+            parametro2: ""
+      };
+      $.ajax({
+        type : 'POST',
+        data: values,
+        url: 'php/sel_recursos.php',
+        beforeSend: function() {
+            $(".loader").css("display", "inline-block")
+        },
+        success: function(respuesta) {
+          $(".loader").css("display", "none")
+          let obj = JSON.parse(respuesta)
+          let fila = ''
+          $.each(obj["resultado"], function( index, val ) {
+            fila += `<option value='${val.id}' descripcion='${val.descripcion}'>${val.nombre}</option>`
+          });
+
+          $("#id_planes").html('<option value="">Seleccionar</option>'+fila)
+          
+        },
+        error: function() {
+          $(".loader").css("display", "none")
+          console.log("No se ha podido obtener la información");
+        }
+      });
+
+      $("#id_planes").select2();
+    
+  }
+
+  function traer_productos(id_plan, descripcion) {
+    $("#content_info_planes").hide()
+    var elem = $("#id_planes option:selected")
+    var descripcion = elem.attr("descripcion")
+      let values = { 
+            codigo: 'traer_productos',
+            parametro1: id_plan,
+            parametro2: ""
+      };
+      $.ajax({
+        type : 'POST',
+        data: values,
+        url: 'php/sel_recursos.php',
+        beforeSend: function() {
+            $(".loader").css("display", "inline-block")
+        },
+        success: function(respuesta) {
+          $(".loader").css("display", "none")
+          let obj = JSON.parse(respuesta)
+          let fila = ''
+          let fila2 = ''
+          if (obj["resultado"]. length > 0) {
+            $("#content_info_planes").show()
+            $.each(obj["resultado"], function( index, val ) {
+              if (val.tipo == 'CONSUMO') {
+                fila += `<div class="col-sm-4">
+                        <p for=""><b>*</b> ${val.nombre}</p>
+                      </div>`
+              }
+
+              if (val.tipo == 'SERVICIOS') {
+                fila2 += `<div class="col-sm-4">
+                        <p for=""><b>*</b> ${val.nombre}</p>
+                      </div>`
+              }
+            
+          });
+            
+          }
+
+          $("#content_detalles_plan").html(fila)
+          $("#content_servicios_incluidos").html(fila2)
+          $("#descripcion_servicios").html(`<div class="col-sm-4">${descripcion}</div>`)
+          
+        },
+        error: function() {
+          $(".loader").css("display", "none")
+          console.log("No se ha podido obtener la información");
+        }
+      });
+    
+  }
+
   function traer_tarifas(tipo) {
-    var id_hotel = $("#id_hotel").val()
-    if (id_hotel == "") {
-      $("input:radio[name='tipo_viaje']").prop('checked',false);
-      
-      alert("Por favor seleccione el hotel")
-      return false
-      
-    }
 
     setInterval(() => {
       

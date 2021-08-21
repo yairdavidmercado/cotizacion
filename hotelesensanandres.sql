@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 21-08-2021 a las 06:44:21
+-- Tiempo de generación: 21-08-2021 a las 22:43:47
 -- Versión del servidor: 10.4.19-MariaDB
 -- Versión de PHP: 7.4.19
 
@@ -2082,11 +2082,12 @@ CREATE TABLE `hoteles` (
   `id` bigint(20) NOT NULL,
   `nit` varchar(15) DEFAULT NULL,
   `nombre` varchar(255) DEFAULT NULL,
+  `email` varchar(100) DEFAULT NULL,
+  `telefono` varchar(15) DEFAULT NULL,
+  `direccion` varchar(100) DEFAULT NULL,
   `id_pais` bigint(20) DEFAULT NULL,
   `id_depto` bigint(20) DEFAULT NULL,
   `ciudad` varchar(255) DEFAULT NULL,
-  `email` varchar(100) DEFAULT NULL,
-  `telefono` varchar(15) DEFAULT NULL,
   `avatar` varchar(255) DEFAULT NULL,
   `fecha_crea` datetime DEFAULT current_timestamp(),
   `activo` tinyint(1) DEFAULT 1
@@ -2096,9 +2097,10 @@ CREATE TABLE `hoteles` (
 -- Volcado de datos para la tabla `hoteles`
 --
 
-INSERT INTO `hoteles` (`id`, `nit`, `nombre`, `id_pais`, `id_depto`, `ciudad`, `email`, `telefono`, `avatar`, `fecha_crea`, `activo`) VALUES
-(1, '900223342', 'Hotel El Dorado, su casa en San Andrés', 82, 855, 'san andrés', 'eldorado@gmail.com', '30556777', '../upload/', '2021-08-08 15:53:23', 1),
-(2, '975443356', 'Hotel La fragata, En coveñas', 83, 856, 'Monteria', 'lafragata@gmail.com', '21123', '../upload/', '2021-08-20 23:41:26', 1);
+INSERT INTO `hoteles` (`id`, `nit`, `nombre`, `email`, `telefono`, `direccion`, `id_pais`, `id_depto`, `ciudad`, `avatar`, `fecha_crea`, `activo`) VALUES
+(1, '900223342', 'Hotel El Dorado, su casa en San Andrés', 'eldorado@gmail.com', '30556777', 'Cll -3 esquin', 82, 855, 'san andrés', '../upload/', '2021-08-08 15:53:23', 1),
+(2, '975443356', 'Hotel La fragata, En coveñas', 'lafragata@gmail.com', '21123', 'Cra 12 # gfd', 83, 856, 'Coveñas', '../upload/', '2021-08-20 23:41:26', 1),
+(3, '1231233', 'Hotel El Ploblado, Coveñas Sucre', 'poblado@gmail.com', '2221313', 'Cra 323 No. 23 -45', 84, 888, 'Sucre', '../upload/', '2021-08-21 08:28:26', 1);
 
 -- --------------------------------------------------------
 
@@ -2365,15 +2367,17 @@ CREATE TABLE `permiso_hotel` (
   `id_hotel` int(11) DEFAULT NULL,
   `id_autor` int(11) DEFAULT NULL,
   `fecha_crea` timestamp NOT NULL DEFAULT current_timestamp(),
-  `ativo` tinyint(1) DEFAULT 1
+  `activo` tinyint(1) DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Volcado de datos para la tabla `permiso_hotel`
 --
 
-INSERT INTO `permiso_hotel` (`consec`, `id_usuario`, `id_hotel`, `id_autor`, `fecha_crea`, `ativo`) VALUES
-(1, 1, 1, 1, '2021-08-21 04:39:56', 1);
+INSERT INTO `permiso_hotel` (`consec`, `id_usuario`, `id_hotel`, `id_autor`, `fecha_crea`, `activo`) VALUES
+(1, 1, 1, 1, '2021-08-21 04:39:56', 1),
+(2, 1, 2, 1, '2021-08-21 13:57:52', 1),
+(3, 1, 3, 1, '2021-08-21 13:58:02', 1);
 
 -- --------------------------------------------------------
 
@@ -2384,11 +2388,20 @@ INSERT INTO `permiso_hotel` (`consec`, `id_usuario`, `id_hotel`, `id_autor`, `fe
 CREATE TABLE `planes` (
   `id` int(11) NOT NULL,
   `nombre` varchar(255) DEFAULT NULL,
+  `descripcion` varchar(255) DEFAULT NULL,
   `id_hotel` int(11) DEFAULT NULL,
   `id_autor` int(11) DEFAULT NULL,
   `fecha_crea` datetime DEFAULT current_timestamp(),
   `activo` tinyint(1) DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `planes`
+--
+
+INSERT INTO `planes` (`id`, `nombre`, `descripcion`, `id_hotel`, `id_autor`, `fecha_crea`, `activo`) VALUES
+(1, 'FULL ', 'Tipo buffet internacional, Nacional y regional.', 1, 1, '2021-08-21 13:42:04', 1),
+(2, 'SIMPLE', 'Tipo nacional', 1, 1, '2021-08-21 13:42:26', 1);
 
 -- --------------------------------------------------------
 
@@ -2400,10 +2413,25 @@ CREATE TABLE `productos` (
   `id` int(11) NOT NULL,
   `nombre` varchar(255) DEFAULT NULL,
   `tipo` varchar(255) DEFAULT NULL,
+  `id_hotel` int(11) DEFAULT NULL,
   `id_autor` int(11) DEFAULT NULL,
   `fecha_crea` datetime DEFAULT current_timestamp(),
   `activo` tinyint(1) DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `productos`
+--
+
+INSERT INTO `productos` (`id`, `nombre`, `tipo`, `id_hotel`, `id_autor`, `fecha_crea`, `activo`) VALUES
+(1, 'Desayuno', 'CONSUMO', 0, 1, '2021-08-21 13:48:57', 1),
+(2, 'Almuerzo', 'CONSUMO', 0, 1, '2021-08-21 13:49:47', 1),
+(3, 'Cena', 'CONSUMO', 0, 1, '2021-08-21 13:52:39', 1),
+(4, 'Snack: 10:00 AM – 2:00 AM', 'SERVICIOS', 1, 1, '2021-08-21 13:52:59', 1),
+(5, 'Bar Abierto: 10:00 AM – 2:00 AM', 'SERVICIOS', 1, 1, '2021-08-21 13:53:18', 1),
+(6, 'Shows Nocturno', 'SERVICIOS', 1, 1, '2021-08-21 13:53:33', 1),
+(7, 'Camisetas playeras', 'SERVICIOS', 1, 1, '2021-08-21 13:53:43', 1),
+(8, 'Cocktails de Bienvenida', 'SERVICIOS', 1, 1, '2021-08-21 13:54:26', 1);
 
 -- --------------------------------------------------------
 
@@ -2450,6 +2478,20 @@ CREATE TABLE `tipo_plan` (
   `activo` tinyint(1) DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Volcado de datos para la tabla `tipo_plan`
+--
+
+INSERT INTO `tipo_plan` (`id`, `id_plan`, `id_producto`, `id_autor`, `fecha_crea`, `activo`) VALUES
+(1, 1, 1, 1, '2021-08-21 14:05:28', 1),
+(2, 1, 2, 1, '2021-08-21 14:05:35', 1),
+(3, 1, 3, 1, '2021-08-21 14:05:39', 1),
+(4, 1, 4, 1, '2021-08-21 14:05:45', 1),
+(5, 1, 5, 1, '2021-08-21 14:05:49', 1),
+(6, 1, 6, 1, '2021-08-21 14:05:53', 1),
+(7, 1, 7, 1, '2021-08-21 14:05:57', 1),
+(8, 1, 8, 1, '2021-08-21 14:06:02', 1);
+
 -- --------------------------------------------------------
 
 --
@@ -2483,7 +2525,8 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`id`, `codigo`, `cedula`, `nombre1`, `nombre2`, `apellido1`, `apellido2`, `pass`, `tipo`, `id_pais`, `id_depto`, `ciudad`, `direccion`, `telefono`, `email`, `avatar`, `id_autor`, `fecha_crea`, `activo`) VALUES
-(1, '0001', 1067902678, 'Jair', 'David', 'Mercado', 'Cordero', '375a6441b1e0fe57c3e151c79f195123', 'ADMINISTRADOR', 82, 1707, 'MONTERIA', 'MZ R LT 9', '3225850313', 'yairdavidmercado@gmail.com', '../upload/jair.jpg', 1, '2021-08-08 09:36:08', 1);
+(1, '0001', 1067902678, 'Jair', 'David', 'Mercado', 'Cordero', '375a6441b1e0fe57c3e151c79f195123', 'ADMINISTRADOR', 82, 1707, 'MONTERIA', 'MZ R LT 9', '3225850313', 'yairdavidmercado@gmail.com', '../upload/jair.jpg', 1, '2021-08-08 09:36:08', 1),
+(2, '0', 1067456432, 'Yandris', 'Vannesa', 'Berna', 'Perez', '202cb962ac59075b964b07152d234b70', 'TITULAR', 82, 1707, 'MONTERIA', 'CRA 13 # 4-45', '3124567755', 'yandris@gmail.com', '../upload/yandris.jpg', 1, '2021-08-21 12:53:48', 1);
 
 --
 -- Índices para tablas volcadas
@@ -2579,7 +2622,7 @@ ALTER TABLE `estado`
 -- AUTO_INCREMENT de la tabla `hoteles`
 --
 ALTER TABLE `hoteles`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `motivos`
@@ -2597,19 +2640,19 @@ ALTER TABLE `pais`
 -- AUTO_INCREMENT de la tabla `permiso_hotel`
 --
 ALTER TABLE `permiso_hotel`
-  MODIFY `consec` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `consec` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `planes`
 --
 ALTER TABLE `planes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `productos`
 --
 ALTER TABLE `productos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `tarifas`
@@ -2621,13 +2664,13 @@ ALTER TABLE `tarifas`
 -- AUTO_INCREMENT de la tabla `tipo_plan`
 --
 ALTER TABLE `tipo_plan`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

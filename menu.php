@@ -13,32 +13,32 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
-                    <a class="nav-link active" href="#">Cotización</a>
-            </li>
-            <li id="li_glosas" class="nav-item">
-                <a class="nav-link" href="#">Hoteles</a>
+        <li class="nav-item">
+                    <a class="nav-link active" id="menu_inicio" href="welcome.php">Inicio</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Planes</a>
+                    <a class="nav-link active menu_principal" id="menu_cotizaciones" href="cotizacion.php">Cotización</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Tarifas</a>
+                <a class="nav-link menu_principal" id="menu_hoteles" href="#">Hoteles</a>
             </li>
-            <!-- <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Dropdown
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="#">Action</a>
-                <a class="dropdown-item" href="#">Another action</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#">Something else here</a>
-                </div>
-            </li> -->
+            <li class="nav-item">
+                <a class="nav-link menu_principal" id="menu_planesl" href="#">Planes</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link menu_principal" id="menu_tarifas" href="#">Tarifas</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link menu_principal" id="menu_usuarios" href="#">Usuarios</a>
+            </li>
         </ul>
         <form class="form-inline my-2 my-lg-0">
             <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link active menu_principal" href="#">
+                    <?php echo $_SESSION['nombre_hotel'];?> 
+                    </a>
+                </li>
                 <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <?php echo $_SESSION['nombre1'];?>  <?php echo $_SESSION['apellido1'];?>

@@ -1,9 +1,9 @@
 <?php
 // start a session
 session_start();
-//  if (!isset($_SESSION['idUser'])) {
-//     header ("Location:/cotizacion/index.php"); 
-//  }
+if (isset($_SESSION['id'])) {
+  header ("Location:welcome.php"); 
+}
 // manipulate session variables
 ?>
 <!doctype html>
@@ -131,8 +131,8 @@ $(function() {
        //alert(JSON.stringify(obj[0].length))
        //console.log(obj)
        if (obj.success) {
-        $(".loader").css("display", "none")
-        $(location).attr('href',"cotizacion.php")
+        //$(".loader").css("display", "none")
+        $(location).attr('href',"welcome.php")
        }else{
         $(".loader").css("display", "none")
         alert('Datos invalidos para el acceso')
