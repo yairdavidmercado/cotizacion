@@ -45,6 +45,38 @@ if ($conn) {
 				// echo no users JSON
 				echo json_encode($response);
 		}
+	}else if ($codigo == "card_hotel") {//activos
+		$result = mysqli_query($conn, 	"SELECT *, 
+										(SELECT paisnombre FROM pais WHERE pais.id = id_pais) as pais, 
+										(SELECT estadonombre FROM estado WHERE estado.id = id_depto) as depto 
+										FROM hoteles WHERE activo = true;");
+		if(mysqli_num_rows($result) > 0)
+		{	
+									$response["resultado"] = array();
+									while ($row = mysqli_fetch_array($result)) {
+									$datos = array();
+										
+										$datos["id"] 			= $row["id"];
+										$datos["nit"]			= $row["nit"];
+										$datos["nombre"]		= $row["nombre"];
+										$datos["pais"] 			= $row["pais"];
+										$datos["depto"] 		= $row["depto"];
+										$datos["ciudad"] 		= $row["ciudad"];
+										$datos["telefono"] 		= $row["telefono"];
+										$datos["email"] 		= $row["email"];
+										
+										// push single product into final response array
+										array_push($response["resultado"], $datos);
+									}
+									$response["success"] = true;
+									echo json_encode($response);
+
+		}else{
+				$response["success"] = false;
+				$response["message"] = "No se encontraron registros";
+				// echo no users JSON
+				echo json_encode($response);
+		}
 	}else if ($codigo == "traer_titulares") {//titulares
 		$result = mysqli_query($conn, 	"SELECT *, 
 										(SELECT paisnombre FROM pais WHERE pais.id = id_pais) as pais, 
