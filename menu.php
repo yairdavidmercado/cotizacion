@@ -4,7 +4,7 @@
  }
 ?>
 
-<nav class="navbar navbar-expand-lg fixed-top navbar-dark" style="background-color: #563D7C;">
+<nav class="navbar navbar-expand-lg fixed-top navbar-dark" style="background-color: #002744;">
     <div class="container">
     <a class="navbar-brand" href="#"><img src="assets/img/logos.png" width="140px" alt=""></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">

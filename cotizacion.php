@@ -116,15 +116,11 @@ session_start();
               <form role="form" onsubmit="event.preventDefault(); return GuardarCotizacion();" id="form_guardar" class="needs-validation">
               
                 <div class="row">
-                  <div class="col-md-4 mb-3">
+                  <div class="col-md-6 mb-3">
                     <label for="id_hotel">Hotel</label>
                     <select style="width:100%" name="id_hotel" required id="id_hotel" onchange="detalle_hotel(this.value)" class="form-control form-control-sm id_hoteles">
                       <option value="">Seleccionar</option>
                     </select>
-                  </div>
-                  <div class="col-md-2 mb-3">
-                    <label for="lastName">No. Reserva</label>
-                    <input type="text" autocomplete="off"  class="form-control " name="n_reserva" id="n_reserva" placeholder="" required>                    
                   </div>
                   <div class="col-md-6 mb-3">
                     <button class="btn btn-link btn-sm float-right">Crear hotel</button>
@@ -201,7 +197,7 @@ session_start();
                   <div class="col-md-6 mb-3">
                     <label for="firstName">Tarifa</label>
                     <select style="width:100%" name="id_tarifa" disabled required id="id_tarifa" class="form-control form-control-sm id_tarifas">
-                      <option value="">Seleccionar</option>
+                        <option value="">Seleccionar</option>
                     </select>
                   </div>
                   <div class="col-md-3 mb-3" id="content_startDate">
@@ -213,7 +209,11 @@ session_start();
                     <input type="text" autocomplete="off" disabled class="form-control" name="endDate" id="endDate" placeholder="" required>
                     <input type="hidden" value="0" name="count_noches" id="count_noches">                    
                   </div>
-                  <div class="col-md-3 mb-3">
+                  <div class="col-md-1 mb-3">
+                    <label for="lastName">Infante</label>
+                    <input type="text" autocomplete="off" disabled onkeypress="return isNumber(event)" class="form-control " name="infante" id="infante" placeholder="" required>                    
+                  </div>
+                  <div class="col-md-2 mb-3">
                     <label for="lastName">No. Niños</label>
                     <input type="text" autocomplete="off" disabled onkeypress="return isNumber(event)" class="form-control " name="child" id="child" placeholder="" required>                    
                   </div>
@@ -221,6 +221,7 @@ session_start();
                     <label for="lastName">No. Adultos Simple</label>
                     <input type="text" autocomplete="off" disabled onkeypress="return isNumber(event)" class="form-control" name="adult_s" id="adult_s" placeholder="" required>                    
                   </div>
+                  
                   <div class="col-md-3 mb-3">
                     <label for="lastName">No. Adultos doble</label>
                     <input type="text" autocomplete="off" disabled onkeypress="return isNumber(event)" class="form-control " name="adult_d" id="adult_d" placeholder="" required>                    
@@ -265,12 +266,15 @@ session_start();
                       </div>
                     </div>
                   </div>
-                  <div class="col-md-12 mb-3">
-                    <label for="lastName">Resumen del tipo de solicitud</label>
-                    <textarea class="form-control" required name="descripcion" id="descripcion"></textarea>
+                  <div class="col-md-6 mb-3">
+                    <label for="firstName">Planes</label>
+                    <select style="width:100%" name="id_planes" required id="id_planes" class="form-control form-control-sm id_planess">
+                      <option value="">Seleccionar</option>
+                    </select>
                   </div>
+                  
                   <div class="col-md-12 mb-3 d-flex justify-content-center">
-                    <button type="submit" class="btn btn-success mr-2">Registrar petición</button>
+                    <button type="submit" class="btn btn-success mr-2">Guardar cotización</button>
                     <!-- <div class="btn btn-warning text-white">Cancelar</div> -->
                   </div>
                 </div>
@@ -377,6 +381,7 @@ function detalle_tarifa() {
           return false 
         }
       }
+      var children = $("#infante").val()
       var inputchild = $("#child").val()
       var inputadult_s = $("#adult_s").val()
       var inputadult_d = $("#adult_d").val()
@@ -387,14 +392,14 @@ function detalle_tarifa() {
       var totaladult_d = parseInt( inputadult_d )* parseInt( adult_d )
       var totaladult_t_c = parseInt( inputadult_t_c )* parseInt( adult_t_c )
 
-      if ( $('#id_tarifa').val() == "" || $.trim(inputchild).length < 1 || $.trim(inputadult_s).length < 1 || $.trim(inputadult_d).length < 1 || $.trim(inputadult_t_c).length < 1 ) {
+      if ( $('#id_tarifa').val() == "" || $.trim(inputchild).length < 1 || $.trim(children).length < 1 || $.trim(inputadult_s).length < 1 || $.trim(inputadult_d).length < 1 || $.trim(inputadult_t_c).length < 1 ) {
         $("#content_info_tarifa").hide()
         $("#detalle_tarifa").html("")
         return false
       }
 
       var total_pasajero = parseInt( inputchild )+parseInt( inputadult_s )+parseInt( inputadult_d )+parseInt( inputadult_t_c)
-      var infante = inputchild == "0" ? "No": "Si"
+      var infante = children == "0" ? "No": "Si"
       var n_noches = noches == "0" ? "N/A": noches
       $("#detalle_tarifa").html(`<div class="col-sm-4">
                                       <h6 class="mb-3">No. noches: <strong>${n_noches}</strong></h6>
@@ -442,7 +447,7 @@ function detalle_tarifa() {
                                                                 <tbody>
                                                                     <tr>
                                                                         <td class="left">
-                                                                            <strong>Subtotal</strong>
+                                                                            <strong>Valor por noche</strong>
                                                                         </td>
                                                                         <td style="text-align: right;" id="subtotal">$${puntosDecimales(subtotal)}</td>
                                                                     </tr>
@@ -657,6 +662,7 @@ function GuardarCotizacion() {
     $("#adult_t_c").prop('disabled',false);
     $("#startDate").prop('disabled',false);
     $("#endDate").prop('disabled',false);
+    $("#infante").prop('disabled',false);
     
       let values = { 
             codigo: 'traer_tarifas',
