@@ -308,6 +308,18 @@ session_start();
       </div>
     </div>
   </main>
+
+  <!-- Large modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg">Large modal</button>
+
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      ...
+    </div>
+  </div>
+</div>
+
 <script src="assets/js/jquery.slim.min.js" crossorigin="anonymous"></script>
 <script>window.jQuery || document.write('<script src="assets/js/jquery.slim.min.js"><\/script>')</script>
 <script src="assets/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
@@ -322,7 +334,10 @@ session_start();
 
 <script>
 var id_hotel = "<?php echo $_SESSION['id_hotel'] ?>"
+var cod_vendedor = "<?php echo $_SESSION['codigo'] ?>"
 $(function() {
+  traer_cotizacion("5")
+  
   $("#menu_inicio").removeClass("active");
   //traer_hotel()
   traer_titulares()
@@ -424,7 +439,7 @@ function detalle_tarifa() {
       var infante = children == "0" ? "No": "Si"
       var n_noches = noches == "0" ? "N/A": noches
       $("#detalle_tarifa").html(`<div class="col-sm-4">
-                                      <h6 class="mb-3">No. noches: <strong>${n_noches}</strong></h6>
+                                      <h6 class="mb-3">No. noches: <strong id="cantidad_noches">${n_noches}</strong></h6>
                                   </div>
                                   <div class="col-sm-4">
                                       <h6 class="mb-3">No. Pasajeros: <strong>${total_pasajero}</strong></h6>
@@ -510,25 +525,42 @@ function detalle_titular(value) {
 
 function GuardarCotizacion() {
     
-    let form = $('#form_guardar')[0];
-    let formData = new FormData(form)
-    formData.append("fecha_suceso", $("#fecha_suceso").val());
+    //let form = $('#form_guardar')[0];
+    //let formData = new FormData(form)
+
+    let values = {
+      cod_vendedor : cod_vendedor,
+      n_infante : $("#infante").val(),
+      n_child :  $("#child").val(),
+      n_adult_s :  $("#adult_s").val(),
+      n_adult_d :  $("#adult_d").val(),
+      n_adult_t_c :  $("#adult_t_c").val(),
+      id_hotel :  id_hotel,
+      id_titular :  $("#id_usuario").val(),
+      id_tarifa :  $("#id_tarifa").val(),
+      id_plan :  $("#id_planes").val(),
+      id_motivo :  $("#id_motivo").val(),
+      noche :  $("#cantidad_noches").text(),
+      acomodo :  $("#id_acomodacion").val(),
+      fecha_entrada :  $("#startDate").val(),
+      fecha_salida :  $("#endDate").val(),
+      acomod : $("#id_acomodacion").val(), 
+    }
     $.ajax({
     type : 'POST',
-    enctype: 'multipart/form-data',
-    data: formData,
-    processData: false,
-    contentType: false,
-    url: 'php/guardar_solicitud.php',
+    data: values,
+    url: 'php/guardar_cotizacion.php',
     beforeSend: function() {
         $(".loader").css("display", "inline-block")
     },
     success: function(respuesta) {
       $(".loader").css("display", "none")
+      console.log(respuesta)
       let obj = JSON.parse(respuesta)
       if (obj.success) {
-        alert("Su PQRSDF se ha enviado correctamente, Revisa en la bandeja de entrada o por seguridad de su servidor de correo en spam o correos no deseados.")
-        window.location.href = 'pqrsdf.php';
+        
+        //alert("Su PQRSDF se ha enviado correctamente, Revisa en la bandeja de entrada o por seguridad de su servidor de correo en spam o correos no deseados.")
+        //window.location.href = 'pqrsdf.php';
       }else{
         alert(obj.message)
       }
@@ -733,6 +765,43 @@ function GuardarCotizacion() {
       });
     
   }
+
+  function traer_cotizacion(id) {
+      let values = { 
+            codigo: 'traer_cotizacion',
+            parametro1: id,
+            parametro2: ""
+      };
+      $.ajax({
+        type : 'POST',
+        data: values,
+        url: 'php/sel_recursos.php',
+        beforeSend: function() {
+            $(".loader").css("display", "inline-block")
+        },
+        success: function(respuesta) {
+          console.log(respuesta)
+          return false
+          $(".loader").css("display", "none")
+          let obj = JSON.parse(respuesta)
+          let fila = ''
+          $.each(obj["resultado"], function( index, val ) {
+            fila += `<option value='${val.id}' descripcion='${val.descripcion}'>${val.nombre}</option>`
+          });
+
+          $("#id_planes").html('<option value="">Seleccionar</option>'+fila)
+          
+        },
+        error: function() {
+          $(".loader").css("display", "none")
+          console.log("No se ha podido obtener la información");
+        }
+      });
+
+      $("#id_planes").select2();
+    
+  }
+
 
   function traer_tarifas(tipo) {
 

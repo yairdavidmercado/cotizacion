@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 21-08-2021 a las 22:43:47
+-- Tiempo de generación: 22-08-2021 a las 06:28:43
 -- Versión del servidor: 10.4.19-MariaDB
 -- Versión de PHP: 7.4.19
 
@@ -39,23 +39,37 @@ DELIMITER ;
 
 CREATE TABLE `cotizacion` (
   `id` int(11) NOT NULL,
-  `consec` int(11) NOT NULL,
-  `codigo` varchar(20) DEFAULT NULL,
+  `cod_vendedor` varchar(11) NOT NULL,
+  `n_infante` int(11) DEFAULT NULL,
   `n_child` int(11) DEFAULT NULL,
   `n_adult_s` int(11) DEFAULT NULL,
   `n_adult_d` int(11) DEFAULT NULL,
   `n_adult_t_c` int(11) DEFAULT NULL,
   `id_hotel` int(11) DEFAULT NULL,
+  `id_titular` int(11) NOT NULL,
   `id_tarifa` int(11) DEFAULT NULL,
-  `fecha_expedicion` date DEFAULT NULL,
+  `id_plan` int(11) DEFAULT NULL,
+  `id_motivo` int(11) DEFAULT NULL,
+  `noche` varchar(11) DEFAULT NULL,
+  `acomodo` varchar(255) DEFAULT NULL,
+  `fecha_expedicion` datetime DEFAULT current_timestamp(),
   `fecha_entrada` date DEFAULT NULL,
   `fecha_salida` date DEFAULT NULL,
-  `id_motivo` int(11) DEFAULT NULL,
   `id_autor` int(11) DEFAULT NULL,
   `fecha_crea` datetime DEFAULT current_timestamp(),
-  `activo` tinyint(1) DEFAULT 1,
-  `noche` tinyint(1) DEFAULT NULL
+  `activo` tinyint(1) DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `cotizacion`
+--
+
+INSERT INTO `cotizacion` (`id`, `cod_vendedor`, `n_infante`, `n_child`, `n_adult_s`, `n_adult_d`, `n_adult_t_c`, `id_hotel`, `id_titular`, `id_tarifa`, `id_plan`, `id_motivo`, `noche`, `acomodo`, `fecha_expedicion`, `fecha_entrada`, `fecha_salida`, `id_autor`, `fecha_crea`, `activo`) VALUES
+(1, '1', 0, 1, 1, 1, 1, 1, 2, 3, NULL, 1, '', '45', '2021-08-21 20:08:43', '2021-08-21', '2021-08-21', 1, '2021-08-21 20:08:43', 1),
+(2, '1', 0, 1, 1, 1, 1, 1, 2, 3, NULL, 1, 'N/A', '45', '2021-08-21 20:30:49', '2021-08-21', '2021-08-21', 1, '2021-08-21 20:30:49', 1),
+(3, '1', 0, 1, 1, 1, 1, 1, 2, 1, NULL, 1, '2', '45', '2021-08-21 20:31:41', '2021-08-21', '2021-08-23', 1, '2021-08-21 20:31:41', 1),
+(4, '0001', 0, 1, 1, 1, 1, 1, 2, 1, NULL, 1, '2', '45', '2021-08-21 20:38:18', '2021-08-21', '2021-08-23', 1, '2021-08-21 20:38:18', 1),
+(5, '0001', 0, 1, 1, 1, 1, 1, 2, 3, 1, 1, 'N/A', '12', '2021-08-21 21:53:02', '2021-08-21', '2021-08-21', 1, '2021-08-21 21:53:02', 1);
 
 -- --------------------------------------------------------
 
@@ -2536,8 +2550,7 @@ INSERT INTO `usuarios` (`id`, `codigo`, `cedula`, `nombre1`, `nombre2`, `apellid
 -- Indices de la tabla `cotizacion`
 --
 ALTER TABLE `cotizacion`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `consec` (`consec`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indices de la tabla `estado`
@@ -2610,7 +2623,7 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `cotizacion`
 --
 ALTER TABLE `cotizacion`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `estado`
