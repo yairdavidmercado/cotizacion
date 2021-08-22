@@ -315,7 +315,144 @@ session_start();
 <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
-      ...
+      <div class="modal-header">
+        <h5 class="modal-title">Previsualización de cotización</h5>
+        <button onclick="imprimir_cotizacion('1')" >Imprimir</button>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body" id="print_cotizacion">
+        <div class="row" style="background-color:#ffba54;color:#fff">
+          <div class="col-sm-12" style="background-color:#f79204">
+            <h3 class="text-center">COTIZACIÓN</h3>
+          </div>
+          <div class="col-sm-12">
+            <br>
+          </div>
+          <div class="col-sm-2 mb-3">
+            <img src="assets/img/default.jpg" width="100%" style="border-radius: 20%;">
+            <br>
+          </div>
+          <div class="col-sm-6">
+            <p>Hotel El Dorado, su casa en San Andrés:<br>
+              Teléfono:<br>
+              País - Departamento:</p>
+          </div>
+          <div class="col-sm-4 text-right">
+            <p>
+              <b>No.: </b>53554<br>
+              <b>Fecha expe: </b>08/12/2020 8:00 <br>
+              <b>Código vendedor: </b>1221
+            </p>
+          </div>
+          
+        </div>
+        <div class="row mt-3" style="font-size:12px">
+          <div class="col-sm-12">
+            <h5>Inormación del titular</h5>
+          </div>
+          <div class="col-sm-12">
+            <table width='100%' cellpadding='4' cellspacing='4' border='0'>
+              <tr>
+                <td><b>TITULAR RESERVA</b></td>
+                <td colspan="3">YANDRIS VANNESA BERNA PEREZ</td>
+                <td><b>EMAIL</b></td>
+                <td>yandris@gmail.com</td>
+              </tr>
+              <tr>
+                <td><b>PROCEDENCIA</b></td>
+                <td colspan="3">XXXXXX</td>
+                <td><b>CELULAR</b></td>
+                <td>322 555 7678</td>
+              </tr>
+              <tr>
+                <td><b>FECHA DE ENTREGA</b></td>
+                <td>19-ene.-21</td>
+                <td><b>Nº NOCHE</b></td>
+                <td>4</td>
+                <td>INFANTE</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td><b>FECHA DE SALIDA</b></td>
+                <td>19-ene.-21</td>
+                <td><b>N° PA</b></td>
+                <td>17</td>
+              </tr>
+            </table>
+          </div>
+          <div class="col-sm-12">
+            <div class="table-responsive-sm">
+              <table class="table ">
+                <thead>
+                    <tr>
+                        <th class="center">#</th>
+                        <th>Item</th>
+                        <th class="center">Cantidad</th>
+                        <th style="text-align: right;">Valor unitario</th>
+                        <th style="text-align: right;">Total</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody_tarifa_modal">
+                  <tr>
+                      <td class="center">1</td>
+                      <td class="left">Niños</td>
+                      <td class="center">${inputchild}</td>
+                      <td style="text-align: right;">$${puntosDecimales(child)}</td>
+                      <td style="text-align: right;">$${puntosDecimales(totalchild)}</td>
+                  </tr>
+                  <tr>
+                      <td class="center">2</td>
+                      <td class="left">Adultos simple</td>
+                      <td class="center">${inputadult_s}</td>
+                      <td style="text-align: right;">$${puntosDecimales(adult_s)}</td>
+                      <td style="text-align: right;">$${puntosDecimales(totaladult_s)}</td>
+                  </tr>
+                  <tr>
+                      <td class="center">3</td>
+                      <td class="left">Adultos dobles</td>
+                      <td class="center">${inputadult_d}</td>
+                      <td style="text-align: right;">$${puntosDecimales(adult_d)}</td>
+                      <td style="text-align: right;">$${puntosDecimales(totaladult_d)}</td>
+                  </tr>
+                  <tr>
+                      <td class="center">4</td>
+                      <td class="left">Adultos triple / Cuadruple</td>
+                      <td class="center">${inputadult_t_c}</td>
+                      <td style="text-align: right;">$${puntosDecimales(adult_t_c)}</td>
+                      <td style="text-align: right;">$${puntosDecimales(totaladult_t_c)}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          
+        </div>
+        <div class="row">
+          <div class="col-lg-5 col-sm-5 ml-auto" style="font-size:12px" id="content_subtotal">
+            <table class="table table-clear">
+                <tbody>
+                    <tr>
+                        <td class="left">
+                            <strong>Valor por noche</strong>
+                        </td>
+                        <td style="text-align: right;" id="subtotal">$${puntosDecimales(subtotal)}</td>
+                    </tr>
+                    <tr>
+                        <td class="left">
+                            <strong>Total por noches</strong>
+                        </td>
+                        <td style="text-align: right;">
+                            <strong>$${puntosDecimales(total)}</strong>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+              
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -328,6 +465,7 @@ session_start();
 <script src="assets/js/bootstrap-datepicker.min.js"></script>
 <script src="assets/js/dataTables/jquery.dataTables.min.js"></script>
 <script src="assets/js/dataTables/dataTables.bootstrap4.min.js"></script>
+<script src="assets/js/html2pdf.bundle.min.js"></script>
 <script src="https://www.google.com/recaptcha/api.js" async></script>
 <script src="https://unpkg.com/gijgo@1.9.13/js/gijgo.min.js" type="text/javascript"></script>
 <script src="http://momentjs.com/downloads/moment.min.js"></script>
@@ -877,6 +1015,20 @@ function GuardarCotizacion() {
 
   function puntosDecimales(value) {
    return new Intl.NumberFormat("de-DE").format(value)
+  }
+
+  function imprimir_cotizacion(id) {
+    const element = document.getElementById("print_cotizacion")
+    const opt = {
+      filename: 'myPage.pdf',
+      margin: 2,
+      image: {type: 'jpeg', quality: 1.5},
+      jsPDF: {format: 'letter', orientation: 'portrait'}
+    };
+    // New Promise-based usage:
+    html2pdf().set(opt).from(element).save();
+    // Old monolithic-style usage:
+    html2pdf(element, opt);
   }
 
 </script>

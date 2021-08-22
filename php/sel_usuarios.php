@@ -13,7 +13,7 @@ if (!$conn) {
 }
 
 if ($conn) {
-	$result = mysqli_query($conn, 	"CALL validar_login('$parametro1', '$parametro2');");
+	$result = mysqli_query($conn, 	"SELECT * FROM usuarios WHERE codigo = '$parametro1' OR cedula = '$parametro1' AND pass =  MD5('$parametro2');");
 	if(mysqli_num_rows($result) > 0)
 	{	
 								$response["resultado"] = array();
