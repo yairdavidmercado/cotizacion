@@ -3,7 +3,7 @@
     header ("Location:/cotizacion/index.php"); 
  }
 ?>
-
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css">
 <nav class="navbar navbar-expand-lg fixed-top navbar-dark" style="background-color: #002744;">
     <div class="container">
     <a class="navbar-brand" href="#"><img src="assets/img/logos.png" width="140px" alt=""></a>

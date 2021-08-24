@@ -71,6 +71,8 @@ if ($conn) {
 										$datos["telefono"] 		= $row["telefono"];
 										$datos["email"] 		= $row["email"];
 										$datos["direccion"] 	= $row["direccion"];
+										$datos["id_terminos"] 	= $row["id_terminos"];
+										$datos["avatar"] 		= $row["avatar"];
 										
 										// push single product into final response array
 										array_push($response["resultado"], $datos);
@@ -197,6 +199,7 @@ if ($conn) {
 				echo json_encode($response);
 		}
 	}else if ($codigo == "traer_productos") {//titulares
+		$parametro1 = $parametro1 == '' ? 0 : $parametro1;
 		$result = mysqli_query($conn, 	"SELECT productos.* FROM tipo_plan 
 										INNER JOIN productos ON tipo_plan.id_producto = productos.id 
 										WHERE id_plan = $parametro1 
@@ -229,7 +232,10 @@ if ($conn) {
 		$id_tarifa = '';
 		$id_plan = '';
 		$result = mysqli_query($conn, 	"SELECT cotizacion.*, 
-										(SELECT nombre FROM motivos WHERE motivos.id = cotizacion.id_motivo) AS nombre_motivo
+										(SELECT nombre FROM motivos WHERE motivos.id = cotizacion.id_motivo) AS nombre_motivo,
+										(SELECT nombre FROM planes WHERE planes.id = cotizacion.id_plan) AS nombre_plan,
+										(SELECT descripcion FROM planes WHERE planes.id = cotizacion.id_plan) AS descripcion_plan,
+										(SELECT descripcion FROM terminos_condiciones WHERE terminos_condiciones.id = cotizacion.id_terminos) AS terminos
 										FROM cotizacion 
 										WHERE id = $parametro1;");
 		if(mysqli_num_rows($result) > 0)
@@ -251,11 +257,14 @@ if ($conn) {
 										$datos['id_plan'] = $row["id_plan"];
 										$datos['id_motivo'] = $row["id_motivo"];
 										$datos['noche'] = $row["noche"];
-										$datos['acomodo'] = $row["acomodo"];
+										$datos['acomodo'] = nl2br($row["acomodo"]);
 										$datos['fecha_expedicion'] = $row["fecha_expedicion"];
 										$datos['fecha_entrada'] = $row["fecha_entrada"];
 										$datos['fecha_salida'] = $row["fecha_salida"];
 										$datos['nombre_motivo'] = $row["nombre_motivo"];
+										$datos['terminos'] = nl2br($row["terminos"]);
+										$datos['nombre_plan'] = $row["nombre_plan"];
+										$datos['descripcion_plan'] = $row["descripcion_plan"];
 
 										$id_titular = $row["id_titular"];
 										$id_tarifa = $row["id_tarifa"];

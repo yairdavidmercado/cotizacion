@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 22-08-2021 a las 06:28:43
+-- Tiempo de generación: 24-08-2021 a las 02:32:41
 -- Versión del servidor: 10.4.19-MariaDB
 -- Versión de PHP: 7.4.19
 
@@ -20,16 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `hotelesensanandres`
 --
-
-DELIMITER $$
---
--- Procedimientos
---
-CREATE DEFINER=`admin`@`%` PROCEDURE `validar_login` (IN `id1` VARCHAR(11), IN `pass1` VARCHAR(255))  BEGIN
-    SELECT * FROM usuarios WHERE codigo = id1 OR cedula = id1 AND pass =  MD5(pass1);
-END$$
-
-DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -50,6 +40,7 @@ CREATE TABLE `cotizacion` (
   `id_tarifa` int(11) DEFAULT NULL,
   `id_plan` int(11) DEFAULT NULL,
   `id_motivo` int(11) DEFAULT NULL,
+  `id_terminos` int(11) DEFAULT NULL,
   `noche` varchar(11) DEFAULT NULL,
   `acomodo` varchar(255) DEFAULT NULL,
   `fecha_expedicion` datetime DEFAULT current_timestamp(),
@@ -64,12 +55,33 @@ CREATE TABLE `cotizacion` (
 -- Volcado de datos para la tabla `cotizacion`
 --
 
-INSERT INTO `cotizacion` (`id`, `cod_vendedor`, `n_infante`, `n_child`, `n_adult_s`, `n_adult_d`, `n_adult_t_c`, `id_hotel`, `id_titular`, `id_tarifa`, `id_plan`, `id_motivo`, `noche`, `acomodo`, `fecha_expedicion`, `fecha_entrada`, `fecha_salida`, `id_autor`, `fecha_crea`, `activo`) VALUES
-(1, '1', 0, 1, 1, 1, 1, 1, 2, 3, NULL, 1, '', '45', '2021-08-21 20:08:43', '2021-08-21', '2021-08-21', 1, '2021-08-21 20:08:43', 1),
-(2, '1', 0, 1, 1, 1, 1, 1, 2, 3, NULL, 1, 'N/A', '45', '2021-08-21 20:30:49', '2021-08-21', '2021-08-21', 1, '2021-08-21 20:30:49', 1),
-(3, '1', 0, 1, 1, 1, 1, 1, 2, 1, NULL, 1, '2', '45', '2021-08-21 20:31:41', '2021-08-21', '2021-08-23', 1, '2021-08-21 20:31:41', 1),
-(4, '0001', 0, 1, 1, 1, 1, 1, 2, 1, NULL, 1, '2', '45', '2021-08-21 20:38:18', '2021-08-21', '2021-08-23', 1, '2021-08-21 20:38:18', 1),
-(5, '0001', 0, 1, 1, 1, 1, 1, 2, 3, 1, 1, 'N/A', '12', '2021-08-21 21:53:02', '2021-08-21', '2021-08-21', 1, '2021-08-21 21:53:02', 1);
+INSERT INTO `cotizacion` (`id`, `cod_vendedor`, `n_infante`, `n_child`, `n_adult_s`, `n_adult_d`, `n_adult_t_c`, `id_hotel`, `id_titular`, `id_tarifa`, `id_plan`, `id_motivo`, `id_terminos`, `noche`, `acomodo`, `fecha_expedicion`, `fecha_entrada`, `fecha_salida`, `id_autor`, `fecha_crea`, `activo`) VALUES
+(1, '1', 0, 1, 1, 1, 1, 1, 2, 3, NULL, 1, NULL, '', '45', '2021-08-21 20:08:43', '2021-08-21', '2021-08-21', 1, '2021-08-21 20:08:43', 1),
+(2, '1', 0, 1, 1, 1, 1, 1, 2, 3, NULL, 1, NULL, 'N/A', '45', '2021-08-21 20:30:49', '2021-08-21', '2021-08-21', 1, '2021-08-21 20:30:49', 1),
+(3, '1', 0, 1, 1, 1, 1, 1, 2, 1, NULL, 1, NULL, '2', '45', '2021-08-21 20:31:41', '2021-08-21', '2021-08-23', 1, '2021-08-21 20:31:41', 1),
+(4, '0001', 0, 1, 1, 1, 1, 1, 2, 1, NULL, 1, NULL, '2', '45', '2021-08-21 20:38:18', '2021-08-21', '2021-08-23', 1, '2021-08-21 20:38:18', 1),
+(5, '0001', 0, 1, 1, 1, 1, 1, 2, 3, 1, 1, NULL, 'N/A', '12', '2021-08-21 21:53:02', '2021-08-21', '2021-08-21', 1, '2021-08-21 21:53:02', 1),
+(6, '0001', 0, 0, 1, 2, 1, 1, 2, 3, 1, 1, NULL, 'N/A', 'Buenas', '2021-08-22 10:40:50', '2021-08-22', '2021-08-22', 1, '2021-08-22 10:40:50', 1),
+(7, '0001', 1, 1, 1, 1, 1, 1, 2, 3, 1, 1, 1, 'N/A', 'XXXXX', '2021-08-22 14:27:58', '2021-08-22', '2021-08-22', 1, '2021-08-22 14:27:58', 1),
+(8, '0001', 0, 0, 0, 2, 2, 1, 2, 3, 1, 1, 1, 'N/A', 'XXXXX', '2021-08-22 14:28:15', '2021-08-22', '2021-08-22', 1, '2021-08-22 14:28:15', 1),
+(9, '0001', 1, 1, 2, 0, 1, 1, 2, 3, 1, 1, 1, 'N/A', 'Asd', '2021-08-22 14:43:52', '2021-08-23', '2021-08-23', 1, '2021-08-22 14:43:52', 1),
+(10, '0001', 1, 1, 1, 2, 1, 1, 2, 3, 2, 1, 1, 'N/A', 'Fhh', '2021-08-22 14:50:41', '2021-08-22', '2021-08-22', 1, '2021-08-22 14:50:41', 1),
+(11, '0001', 0, 0, 0, 8, 9, 1, 2, 1, 1, 1, 1, '4', ' 4 Habitaciones Dobles\n 3 Habitaciones Triples', '2021-08-22 20:09:50', '2021-08-22', '2021-08-26', 1, '2021-08-22 20:09:50', 1),
+(12, '0001', 0, 0, 0, 8, 9, 1, 2, 1, 1, 1, 1, '4', ' 4 Habitaciones Dobles\n 3 Habitaciones Triples', '2021-08-22 20:18:06', '2021-08-22', '2021-08-26', 1, '2021-08-22 20:18:06', 1),
+(13, '0001', 0, 0, 0, 8, 9, 1, 2, 1, 1, 1, 1, '5', 'asdadadsa asd ad ad asd\nasd sad\nadsa \naa dsa dd asdasdsadsadad asd\nas d\nasd ', '2021-08-22 20:23:41', '2021-08-22', '2021-08-27', 1, '2021-08-22 20:23:41', 1),
+(14, '0001', 0, 0, 0, 8, 9, 1, 2, 1, 1, 1, 1, '5', 'hfdgfgdsdfs \nsffsdfsffsf f\n fff sfsdfds', '2021-08-22 20:32:12', '2021-08-22', '2021-08-27', 1, '2021-08-22 20:32:12', 1),
+(15, '0001', 0, 0, 0, 8, 9, 1, 2, 1, 1, 1, 1, '6', 'sadadadada dad adad asdasd adasd asdas dsadas dasd adas das\n \nasd asd asdasd asd asdas dasd sadasd ad adsa d\nasdasd asd asd', '2021-08-22 20:37:16', '2021-08-22', '2021-08-28', 1, '2021-08-22 20:37:16', 1),
+(16, '0001', 0, 0, 0, 8, 9, 1, 2, 1, 1, 1, 1, '4', 'sadsD DAS DASD ADSDAD SAD ASDASD ASDASDA DAD ADSAD ASD\nASD ADSA DAD SASDA', '2021-08-22 20:40:04', '2021-08-22', '2021-08-26', 1, '2021-08-22 20:40:04', 1),
+(17, '0001', 0, 0, 0, 8, 9, 1, 2, 3, 1, 1, 1, 'N/A', 'SADASDADSADA AS DASD ASDADAD ADASAD ADA D SADSAD ADSAD ADASDSAD ASDASDASDASD ASD ASD ADASD SAD ASD ASDASD ASDAS DASD SADAS ASDSADASDAS ASDASDAS DSA', '2021-08-22 20:46:55', '2021-08-22', '2021-08-22', 1, '2021-08-22 20:46:55', 1),
+(18, '0001', 0, 0, 0, 0, 1, 1, 2, 3, 1, 1, 1, 'N/A', 'sasdasdsadad ad sadadsa dad', '2021-08-22 20:52:28', '2021-08-22', '2021-08-22', 1, '2021-08-22 20:52:28', 1),
+(19, '0001', 1, 1, 0, 0, 1, 1, 2, 3, 1, 1, 1, 'N/A', 'SADADS DASADA AD ADADA DASD ASDASD ASDSA DADA DAD ADAD ASDS AD SAD', '2021-08-22 20:54:44', '2021-08-22', '2021-08-22', 1, '2021-08-22 20:54:44', 1),
+(20, '0001', 0, 0, 0, 0, 4, 1, 2, 3, 1, 1, 1, 'N/A', 'gjgkjhkj j j jhj j jhkhkjhj kkjhkj', '2021-08-22 20:57:11', '2021-08-22', '2021-08-22', 1, '2021-08-22 20:57:11', 1),
+(21, '0001', 0, 0, 1, 1, 1, 1, 2, 3, 1, 1, 1, 'N/A', 'ghgghkjh', '2021-08-22 20:58:46', '2021-08-22', '2021-08-22', 1, '2021-08-22 20:58:46', 1),
+(22, '0001', 9, 5, 6, 4, 2, 1, 2, 1, 1, 1, 1, '2', 'jkhkjhjkhj ggjhhghj', '2021-08-22 21:00:06', '2021-08-22', '2021-08-24', 1, '2021-08-22 21:00:06', 1),
+(23, '0001', 1, 0, 0, 2, 0, 1, 2, 3, 1, 1, 1, 'N/A', 'Dfgddf', '2021-08-22 21:05:00', '2021-08-22', '2021-08-22', 1, '2021-08-22 21:05:00', 1),
+(24, '0001', 0, 1, 1, 3, 7, 1, 2, 3, 1, 1, 1, 'N/A', 'dadadsadasdsa\nsasdadsdssda', '2021-08-22 22:30:59', '2021-08-22', '2021-08-22', 1, '2021-08-22 22:30:59', 1),
+(25, '0001', 0, 0, 0, 0, 1, 1, 2, 2, 2, 1, 1, '6', 'Sfgfs', '2021-08-22 22:39:14', '2021-08-22', '2021-08-28', 1, '2021-08-22 22:39:14', 1),
+(26, '0001', 1, 0, 0, 8, 9, 1, 2, 2, 1, 1, 1, '1', 'Xxxxxxx', '2021-08-22 22:45:44', '2021-08-22', '2021-08-23', 1, '2021-08-22 22:45:44', 1);
 
 -- --------------------------------------------------------
 
@@ -2101,6 +2113,7 @@ CREATE TABLE `hoteles` (
   `direccion` varchar(100) DEFAULT NULL,
   `id_pais` bigint(20) DEFAULT NULL,
   `id_depto` bigint(20) DEFAULT NULL,
+  `id_terminos` int(11) DEFAULT NULL,
   `ciudad` varchar(255) DEFAULT NULL,
   `avatar` varchar(255) DEFAULT NULL,
   `fecha_crea` datetime DEFAULT current_timestamp(),
@@ -2111,10 +2124,10 @@ CREATE TABLE `hoteles` (
 -- Volcado de datos para la tabla `hoteles`
 --
 
-INSERT INTO `hoteles` (`id`, `nit`, `nombre`, `email`, `telefono`, `direccion`, `id_pais`, `id_depto`, `ciudad`, `avatar`, `fecha_crea`, `activo`) VALUES
-(1, '900223342', 'Hotel El Dorado, su casa en San Andrés', 'eldorado@gmail.com', '30556777', 'Cll -3 esquin', 82, 855, 'san andrés', '../upload/', '2021-08-08 15:53:23', 1),
-(2, '975443356', 'Hotel La fragata, En coveñas', 'lafragata@gmail.com', '21123', 'Cra 12 # gfd', 83, 856, 'Coveñas', '../upload/', '2021-08-20 23:41:26', 1),
-(3, '1231233', 'Hotel El Ploblado, Coveñas Sucre', 'poblado@gmail.com', '2221313', 'Cra 323 No. 23 -45', 84, 888, 'Sucre', '../upload/', '2021-08-21 08:28:26', 1);
+INSERT INTO `hoteles` (`id`, `nit`, `nombre`, `email`, `telefono`, `direccion`, `id_pais`, `id_depto`, `id_terminos`, `ciudad`, `avatar`, `fecha_crea`, `activo`) VALUES
+(1, '900223342', 'Hotel El Dorado, su casa en San Andrés', 'eldorado@gmail.com', '30556777', 'Cll -3 esquin', 82, 855, 1, 'san andrés', 'assets/img/default.jpg', '2021-08-08 15:53:23', 1),
+(2, '975443356', 'Hotel La fragata, En coveñas', 'lafragata@gmail.com', '21123', 'Cra 12 # gfd', 83, 856, 2, 'Coveñas', 'assets/img/default.jpg', '2021-08-20 23:41:26', 1),
+(3, '1231233', 'Hotel El Ploblado, Coveñas Sucre', 'poblado@gmail.com', '2221313', 'Cra 323 No. 23 -45', 84, 888, 3, 'Sucre', 'assets/img/default.jpg', '2021-08-21 08:28:26', 1);
 
 -- --------------------------------------------------------
 
@@ -2480,6 +2493,29 @@ INSERT INTO `tarifas` (`id`, `nombre`, `child`, `adult_s`, `adult_d`, `adult_t_c
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `terminos_condiciones`
+--
+
+CREATE TABLE `terminos_condiciones` (
+  `id` int(11) NOT NULL,
+  `titulo` varchar(100) DEFAULT NULL,
+  `descripcion` text DEFAULT NULL,
+  `id_hotel` int(11) DEFAULT NULL,
+  `id_autor` int(11) DEFAULT NULL,
+  `fecha_crea` timestamp NOT NULL DEFAULT current_timestamp(),
+  `activo` tinyint(1) DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `terminos_condiciones`
+--
+
+INSERT INTO `terminos_condiciones` (`id`, `titulo`, `descripcion`, `id_hotel`, `id_autor`, `fecha_crea`, `activo`) VALUES
+(1, 'TERMINOS Y CONDICIONES', 'TÉRMINOS Y CONDICIONES\r\n 1. NÚMERO DE OCUPANTES: La Habitación salvo acuerdo expreso, sólo podrá ser utilizado por el número de personas indicado en la\r\nconfirmación de la reserva. Este no podrá exceder del número asignado y previsto para cada habitación\r\n2. REQUISITOS DE IDENTIFICACIÓN: El contratante deberá enviarnos todos (incluyendo niños) los nombres de las personas que se\r\nalojaran en nuestros hoteles con su respectivo documento de Identidad vigente que puede ser Cédula de Ciudadanía\r\nColombiana, Cédula de Extranjería o Pasaporte vigentes\r\n3. PRECIOS: Los precios de las Habitaciones dependen del número de personas. La estancia mínima es de 3 noches, exceptuando fechas\r\nespeciales en que esa estancia mínima se puede incrementar. VALORES SUJETOS A TEMPORADA.\r\n4. FORMA DE PAGO: Para realizar su reserva se exigirá el 100% del total, deberá ser pagado en su totalidad en efectivo o con tarjeta de\r\ncrédito. Tenga en cuenta que, en caso de confirmarle disponibilidad, para garantizar su reserva, deberá efectuar el pago inmediato en\r\nefectivo o consignando en nuestra Cuenta Bancaria; TODOS LOS GASTOS GENERADOS POR TRANSFERENCIAS BANCARIAS SERÁN\r\nASUMIDOS POR EL CONTRATANTE.\r\n5. CHECK IN: A PARTIR DE LAS 3 P.M. O ANTES DEPENDIENDO DE LA DISPONIBILIDAD DE LA HABTACION\r\n6. CHECK OUT: DEBERÁ REALIZARSE ANTES DE LA 1:00 P.M. DE LO CONTRARIO SE GENERARÁ UNA NOCHE MÁS CON COSTO ADICIONAL.\r\nSOLICITAMOS A NUESTROS HUÉSPEDES HACER ENTREGA LA HABITACION EN LAS MISMAS CONDICIONES EN QUE FUE RECIBIDO Y\r\nRECOMENDAMOS EL BUEN USO DE TODOS LOS IMPLEMENTOS QUE EN ELLA ENCUENTRE.\r\n7. DAÑOS: Deberán ser informados y pagados antes de abandonar el inmueble.\r\n8. CANCELACIÓN DE RESERVAS: Para CANCELAR una reserva aplica una penalización la cual será equivalente al valor de una noche de\r\nestancia en el inmueble; para cualquier tipo de cancelación se solicita avisar con un mínimo de 7 días, el resto del depósito quedara\r\npara una próxima reserva. Si cancela su reserva en menos del tiempo establecido deberá pagara un recargo adicional. 9. CAMBIO DE FECHA EN SU RESERVA: Todas nuestras habitaciones están sujeto a disponibilidad; Puede que la habitación que usted haya\r\nreservado anteriormente no esté disponible para la nueva fecha, de ser así; será cambiado para una habitación con las mismas\r\ncondiciones del requerido anteriormente. El cambio de fecha en la reserva podría acarrear un recargo, dependiendo de la temporada.\r\n10. ESTADÍAS LARGAS: Tarifas preferenciales con descuento cuando su estadía sea superior a los 15 días o el mes.\r\n11. NORMAS DE CONVIVENCIA: Solicitamos respetar y acatar las normas de convivencia del hotel, para preservar el buen ambiente que\r\nusted y todos los demás residentes se merecen\r\n12. De acuerdo A lo dispuesto en el artículo 17 de la ley 679 de 2001 y la resolución 3840 de 2009; Se rechaza todas las formas de\r\nexplotación, pornografía, violencia, turismo sexual y demás formas del abuso a menores de edad.\r\n13. EL TITULAR DE LA RESERVA DE INFORMAR A TODOS SUS ACOMPAÑANTES SOBRE LOS TÉRMINOS ANTERIORMENTE MENCIONADOS.\r\n14. El hecho de haber realizado una reserva implica la aceptación de los términos condiciones del servicio', 1, 1, '2021-08-22 17:23:27', 1);
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `tipo_plan`
 --
 
@@ -2602,6 +2638,12 @@ ALTER TABLE `tarifas`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indices de la tabla `terminos_condiciones`
+--
+ALTER TABLE `terminos_condiciones`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indices de la tabla `tipo_plan`
 --
 ALTER TABLE `tipo_plan`
@@ -2623,7 +2665,7 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `cotizacion`
 --
 ALTER TABLE `cotizacion`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT de la tabla `estado`
@@ -2672,6 +2714,12 @@ ALTER TABLE `productos`
 --
 ALTER TABLE `tarifas`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT de la tabla `terminos_condiciones`
+--
+ALTER TABLE `terminos_condiciones`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo_plan`

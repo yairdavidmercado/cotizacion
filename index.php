@@ -94,16 +94,16 @@ if (isset($_SESSION['id'])) {
       }
     </style>
   </head>
-  <body class="text-center">
+  <body style="background-color: #002744;" class="text-center">
   <div class="loader"></div>
     <form onsubmit="validar_sesion(); return false;" methods="POST" class="form-signin">
       <div class="mb-3"><img src="assets/img/logos.png" width="200px" alt="" srcset=""></div>
-      <p>Iniciar sesión</p>
+      <label  style="color:#fff">Iniciar sesión</label>
       <label for="inputEmail" class="sr-only">Codigo / identificación</label>
       <input type="text" id="usuario" class="form-control" placeholder="Codigo / identificación" required autofocus>
       <label for="inputPassword" class="sr-only">Contraseña</label>
       <input type="password" id="password" class="form-control" placeholder="Contraseña" required>
-      <button class="btn btn-lg btn-success btn-block" style="color:#fff" type="submit"><b>Iniciar sesión</b></button>
+      <button class="btn btn-lg btn-primary btn-block" style="color:#fff" type="submit"><b>Iniciar sesión</b></button>
       <!-- <p class=" float-left"><a href="/cotizacion/recover.php">¿Olvidaste tu contraseña?</a> </p>
       <p class="text-right"><a href="/cotizacion/registrate.php">Registrate</a> </p> -->
     </form>

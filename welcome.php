@@ -69,12 +69,12 @@ if (!isset($_SESSION['id'])) {
 var id_usuario = "<?php echo $_SESSION['id'] ?>"
 
 $(function() {
-    traer_hotel(id_usuario)
+    card_hotel(id_usuario)
     $(".loader").css("display", "none")
 });
-function traer_hotel(id) {
+function card_hotel(id) {
       let values = { 
-            codigo: 'traer_hotel',
+            codigo: 'card_hotel',
             parametro1: id,
             parametro2: ""
       };
@@ -103,7 +103,7 @@ function traer_hotel(id) {
                                     <div class="title">
                                         <h4>${val.nombre}</h4>
                                     </div>
-                                    
+                                    ${val.id_terminos}
                                     <div class="text">
                                         <span>${val.direccion}</span>
                                         <br>
@@ -113,7 +113,7 @@ function traer_hotel(id) {
                                         <br>
                                     </div>
                                     
-                                    <button onclick="change_hotel(${val.id},'${val.nombre}')" class="btn btn-link">Acceder</button>
+                                    <button onclick="change_hotel(${val.id},'${val.nombre}','${val.id_terminos}','${val.direccion}','${val.telefono}','${val.pais}','${val.depto}','${val.email}','${val.avatar}')" class="btn btn-link">Acceder</button>
                                     
                                 </div>
                             </div>
@@ -136,7 +136,7 @@ function traer_hotel(id) {
                                         <span>Lorem ipsum dolor sit amet, id quo eruditi eloquentiam. Assum decore te sed. Elitr scripta ocurreret qui ad.</span>
                                     </div>
                                     
-                                    <button onclick="change_hotel(${val.id},'${val.nombre}')" class="btn btn-link">Acceder</button>
+                                    <button onclick="change_hotel(${val.id},'${val.nombre}','${val.id_terminos}','${val.direccion}','${val.telefono}','${val.pais}','${val.depto}','${val.email}','${val.avatar}')" class="btn btn-link">Acceder</button>
                                     
                                 </div>
                             </div>`
@@ -162,7 +162,7 @@ function traer_hotel(id) {
                                         <span>Lorem ipsum dolor sit amet, id quo eruditi eloquentiam. Assum decore te sed. Elitr scripta ocurreret qui ad.</span>
                                     </div>
                                     
-                                    <button onclick="change_hotel(${val.id},'${val.nombre}')" class="btn btn-link">Acceder</button>
+                                    <button onclick="change_hotel(${val.id},'${val.nombre}','${val.id_terminos}','${val.direccion}','${val.telefono}','${val.pais}','${val.depto}','${val.email}','${val.avatar}')" class="btn btn-link">Acceder</button>
                                     
                                 </div>
                             </div>`
@@ -182,11 +182,20 @@ function traer_hotel(id) {
     
   }
 
-  function change_hotel(id, nombre) {
+  function change_hotel(id, nombre, id_terminos, direccion, telefono, pais, depto, email, avatar) {
+
       let values = { 
             parametro1: id,
-            parametro2: nombre
+            parametro2: nombre,
+            parametro3: id_terminos,
+            parametro4: direccion,
+            parametro5: telefono,
+            parametro6: pais,
+            parametro7: depto,
+            parametro8: email,
+            parametro9: avatar,
       };
+
       $.ajax({
         type : 'POST',
         data: values,

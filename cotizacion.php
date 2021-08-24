@@ -309,149 +309,22 @@ session_start();
     </div>
   </main>
 
-  <!-- Large modal -->
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg">Large modal</button>
+  <button type="button" id="brn_modal_print" class="btn btn-primary" style="display:none" data-toggle="modal" data-target=".bd-example-modal-lg">Large modal</button>
 
-<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
+        <div id="btn_pdf">
+
+        </div>
         <h5 class="modal-title">Previsualización de cotización</h5>
-        <button onclick="imprimir_cotizacion('1')" >Imprimir</button>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">×</span>
         </button>
       </div>
       <div class="modal-body" id="print_cotizacion">
-        <div class="row" style="background-color:#ffba54;color:#fff">
-          <div class="col-sm-12" style="background-color:#f79204">
-            <h3 class="text-center">COTIZACIÓN</h3>
-          </div>
-          <div class="col-sm-12">
-            <br>
-          </div>
-          <div class="col-sm-2 mb-3">
-            <img src="assets/img/default.jpg" width="100%" style="border-radius: 20%;">
-            <br>
-          </div>
-          <div class="col-sm-6">
-            <p>Hotel El Dorado, su casa en San Andrés:<br>
-              Teléfono:<br>
-              País - Departamento:</p>
-          </div>
-          <div class="col-sm-4 text-right">
-            <p>
-              <b>No.: </b>53554<br>
-              <b>Fecha expe: </b>08/12/2020 8:00 <br>
-              <b>Código vendedor: </b>1221
-            </p>
-          </div>
-          
-        </div>
-        <div class="row mt-3" style="font-size:12px">
-          <div class="col-sm-12">
-            <h5>Inormación del titular</h5>
-          </div>
-          <div class="col-sm-12">
-            <table width='100%' cellpadding='4' cellspacing='4' border='0'>
-              <tr>
-                <td><b>TITULAR RESERVA</b></td>
-                <td colspan="3">YANDRIS VANNESA BERNA PEREZ</td>
-                <td><b>EMAIL</b></td>
-                <td>yandris@gmail.com</td>
-              </tr>
-              <tr>
-                <td><b>PROCEDENCIA</b></td>
-                <td colspan="3">XXXXXX</td>
-                <td><b>CELULAR</b></td>
-                <td>322 555 7678</td>
-              </tr>
-              <tr>
-                <td><b>FECHA DE ENTREGA</b></td>
-                <td>19-ene.-21</td>
-                <td><b>Nº NOCHE</b></td>
-                <td>4</td>
-                <td>INFANTE</td>
-                <td></td>
-              </tr>
-              <tr>
-                <td><b>FECHA DE SALIDA</b></td>
-                <td>19-ene.-21</td>
-                <td><b>N° PA</b></td>
-                <td>17</td>
-              </tr>
-            </table>
-          </div>
-          <div class="col-sm-12">
-            <div class="table-responsive-sm">
-              <table class="table ">
-                <thead>
-                    <tr>
-                        <th class="center">#</th>
-                        <th>Item</th>
-                        <th class="center">Cantidad</th>
-                        <th style="text-align: right;">Valor unitario</th>
-                        <th style="text-align: right;">Total</th>
-                    </tr>
-                </thead>
-                <tbody id="tbody_tarifa_modal">
-                  <tr>
-                      <td class="center">1</td>
-                      <td class="left">Niños</td>
-                      <td class="center">${inputchild}</td>
-                      <td style="text-align: right;">$${puntosDecimales(child)}</td>
-                      <td style="text-align: right;">$${puntosDecimales(totalchild)}</td>
-                  </tr>
-                  <tr>
-                      <td class="center">2</td>
-                      <td class="left">Adultos simple</td>
-                      <td class="center">${inputadult_s}</td>
-                      <td style="text-align: right;">$${puntosDecimales(adult_s)}</td>
-                      <td style="text-align: right;">$${puntosDecimales(totaladult_s)}</td>
-                  </tr>
-                  <tr>
-                      <td class="center">3</td>
-                      <td class="left">Adultos dobles</td>
-                      <td class="center">${inputadult_d}</td>
-                      <td style="text-align: right;">$${puntosDecimales(adult_d)}</td>
-                      <td style="text-align: right;">$${puntosDecimales(totaladult_d)}</td>
-                  </tr>
-                  <tr>
-                      <td class="center">4</td>
-                      <td class="left">Adultos triple / Cuadruple</td>
-                      <td class="center">${inputadult_t_c}</td>
-                      <td style="text-align: right;">$${puntosDecimales(adult_t_c)}</td>
-                      <td style="text-align: right;">$${puntosDecimales(totaladult_t_c)}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-          
-        </div>
-        <div class="row">
-          <div class="col-lg-5 col-sm-5 ml-auto" style="font-size:12px" id="content_subtotal">
-            <table class="table table-clear">
-                <tbody>
-                    <tr>
-                        <td class="left">
-                            <strong>Valor por noche</strong>
-                        </td>
-                        <td style="text-align: right;" id="subtotal">$${puntosDecimales(subtotal)}</td>
-                    </tr>
-                    <tr>
-                        <td class="left">
-                            <strong>Total por noches</strong>
-                        </td>
-                        <td style="text-align: right;">
-                            <strong>$${puntosDecimales(total)}</strong>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-              
-          </div>
-        </div>
+        
       </div>
     </div>
   </div>
@@ -471,10 +344,19 @@ session_start();
 <script src="http://momentjs.com/downloads/moment.min.js"></script>
 
 <script>
-var id_hotel = "<?php echo $_SESSION['id_hotel'] ?>"
-var cod_vendedor = "<?php echo $_SESSION['codigo'] ?>"
+var id_hotel = "<?php echo $_SESSION['id_hotel'] ?>";
+var nombre_hotel = "<?php echo $_SESSION['nombre_hotel'] ?>";
+var id_terminos = "<?php echo $_SESSION['id_terminos'] ?>";
+var direccion_hotel = "<?php echo $_SESSION['direccion_hotel'] ?>";
+var telefono_hotel = "<?php echo $_SESSION['telefono_hotel'] ?>";
+var pais_hotel = "<?php echo $_SESSION['pais_hotel'] ?>";
+var depto_hotel = "<?php echo $_SESSION['depto_hotel'] ?>";
+var email_hotel = "<?php echo $_SESSION['email_hotel'] ?>";
+var avatar_hotel = "<?php echo $_SESSION['avatar_hotel'] ?>";
+
+
+var cod_vendedor = "<?php echo $_SESSION['codigo'] ?>";
 $(function() {
-  traer_cotizacion("5")
   
   $("#menu_inicio").removeClass("active");
   //traer_hotel()
@@ -665,7 +547,6 @@ function GuardarCotizacion() {
     
     //let form = $('#form_guardar')[0];
     //let formData = new FormData(form)
-
     let values = {
       cod_vendedor : cod_vendedor,
       n_infante : $("#infante").val(),
@@ -673,6 +554,7 @@ function GuardarCotizacion() {
       n_adult_s :  $("#adult_s").val(),
       n_adult_d :  $("#adult_d").val(),
       n_adult_t_c :  $("#adult_t_c").val(),
+      id_terminos :  id_terminos,
       id_hotel :  id_hotel,
       id_titular :  $("#id_usuario").val(),
       id_tarifa :  $("#id_tarifa").val(),
@@ -696,7 +578,8 @@ function GuardarCotizacion() {
       console.log(respuesta)
       let obj = JSON.parse(respuesta)
       if (obj.success) {
-        
+        limpiar_formulario()
+        traer_cotizacion(obj.id)
         //alert("Su PQRSDF se ha enviado correctamente, Revisa en la bandeja de entrada o por seguridad de su servidor de correo en spam o correos no deseados.")
         //window.location.href = 'pqrsdf.php';
       }else{
@@ -872,7 +755,7 @@ function GuardarCotizacion() {
           let obj = JSON.parse(respuesta)
           let fila = ''
           let fila2 = ''
-          if (obj["resultado"]. length > 0) {
+          if (obj.success) {
             $("#content_info_planes").show()
             $.each(obj["resultado"], function( index, val ) {
               if (val.tipo == 'CONSUMO') {
@@ -905,6 +788,7 @@ function GuardarCotizacion() {
   }
 
   function traer_cotizacion(id) {
+
       let values = { 
             codigo: 'traer_cotizacion',
             parametro1: id,
@@ -918,16 +802,249 @@ function GuardarCotizacion() {
             $(".loader").css("display", "inline-block")
         },
         success: function(respuesta) {
-          console.log(respuesta)
-          return false
-          $(".loader").css("display", "none")
+          //console.log(respuesta)
+          $("#brn_modal_print").click()
           let obj = JSON.parse(respuesta)
-          let fila = ''
-          $.each(obj["resultado"], function( index, val ) {
-            fila += `<option value='${val.id}' descripcion='${val.descripcion}'>${val.nombre}</option>`
-          });
+          let acomodo = obj["resultado"][0]["acomodo"]
+          let cod_vendedor = obj["resultado"][0]["cod_vendedor"]
+          let fecha_entrada = obj["resultado"][0]["fecha_entrada"]
+          let fecha_expedicion = obj["resultado"][0]["fecha_expedicion"]
+          let fecha_salida = obj["resultado"][0]["fecha_salida"]
+          
+          let nombre_plan = obj["resultado"][0]["nombre_plan"]
+          let descripcion_plan = obj["resultado"][0]["descripcion_plan"]
 
-          $("#id_planes").html('<option value="">Seleccionar</option>'+fila)
+          let n_adult_d = obj["resultado"][0]["n_adult_d"]
+          let n_adult_s = obj["resultado"][0]["n_adult_s"]
+          let n_adult_t_c = obj["resultado"][0]["n_adult_t_c"]
+          let n_child = obj["resultado"][0]["n_child"]
+          let n_infante = obj["resultado"][0]["n_infante"]
+          let noche = obj["resultado"][0]["noche"]
+          let nombre_motivo = obj["resultado"][0]["nombre_motivo"]
+          let terminos = obj["resultado"][0]["terminos"]
+
+            let cedula = ""
+            let ciudad = ""
+            let depto = ""
+            let direccion = ""
+            let email = ""
+            let nombre_titular = ""
+            let pais = ""
+            let telefono = ""
+          $.each(obj["info_titular"], function( index, val ) {
+            cedula = val.cedula
+            ciudad = val.ciudad
+            depto = val.depto
+            direccion = val.direccion
+            email = val.email
+            nombre_titular = val.nombre1+" "+val.nombre2+" "+val.apellido1+" "+val.apellido2
+            pais = val.pais
+            telefono = val.telefono
+
+          })
+            let tarifa_adult_d = 0
+            let tarifa_adult_s = 0
+            let tarifa_adult_t_c = 0
+            let tarifa_child = 0
+            let tarifa_nombre = ""
+
+          $.each(obj["info_tarifa"], function( index, val ) {
+            tarifa_adult_d = parseInt(val.adult_d)
+            tarifa_adult_s = parseInt(val.adult_s)
+            tarifa_adult_t_c = parseInt(val.adult_t_c)
+            tarifa_child = parseInt(val.child)
+            tarifa_nombre = val.nombre
+
+          })
+          let consumo = ""
+          let servicios = ""
+          $.each(obj["info_planes"], function( index, val ) {
+            if (val.tipo == "CONSUMO") {
+              consumo+= "* "+val.nombre+", ";
+            }else if (val.tipo == "SERVICIOS") {
+              servicios+=  "* "+val.nombre+"<br>";
+            }
+
+          })
+
+          
+          let totalchild = parseInt( n_child )* parseInt( tarifa_child )
+          let totaladult_s = parseInt( n_adult_s )* parseInt( tarifa_adult_s )
+          let totaladult_d = parseInt( n_adult_d )* parseInt( tarifa_adult_d )
+          let totaladult_t_c = parseInt( n_adult_t_c )* parseInt( tarifa_adult_t_c )
+
+          let total_pasajero = parseInt( n_child )+parseInt( n_adult_s )+parseInt( n_adult_d )+parseInt( n_adult_t_c)
+
+          let subtotal = totalchild+totaladult_s+totaladult_d+totaladult_t_c
+          let n_noches = noche == "N/A" ? 1 : parseInt(noche)
+          let total = subtotal * parseInt(n_noches)
+          $("#btn_pdf").html(`<span onclick="imprimir_cotizacion('${id}')" style="text-align: right;font-size:28px;cursor:pointer" class="mr-4"><i class="fas fa-print"></i></span>`)
+              let fila = `<div class="row" style="background-color:#02317c;color:#fff">
+                            <div class="col-sm-12" style="background-color:#1a2b48">
+                              <h3 class="text-center">COTIZACIÓN</h3>
+                            </div>
+                          <div class="col-sm-12">
+                            <div class="table-responsive-sm">
+                              <table width='100%' cellpadding='4' cellspacing='4' border='0'>
+                                <tr>
+                                  <td style="width: 200px"><img src="${avatar_hotel}" width="70%" style="border-radius: 20%;"></td>
+                                  <td>
+                                    <p>${nombre_hotel}<br>
+                                    ${telefono_hotel}<br>
+                                    ${direccion_hotel}<br>
+                                    ${pais_hotel} - ${depto_hotel}
+                                    </p>
+                                  </td>
+                                  <td class="text-right">
+                                    <p>
+                                    <b>No.: </b>${id}<br>
+                                    <b>Fecha expe: </b>${fecha_expedicion}<br>
+                                    <b>Código vendedor: </b>${cod_vendedor}
+                                  </p>
+                                  </td>
+                                </tr>
+                              </table>
+                            </div>
+                          </div>   
+                          </div>
+                          <div class="row mt-3" style="font-size:12px">
+                            <div class="col-sm-12">
+                              <h6>Información del titular</h6>
+                              <hr>
+                            </div>
+                            <div class="col-sm-12">
+                              <div class="table-responsive-sm">
+                                <table width='100%' cellpadding='4' cellspacing='4' border='0'>
+                                  <tr>
+                                    <td><b>TITULAR RESERVA</b></td>
+                                    <td colspan="3">${nombre_titular}</td>
+                                    <td><b>EMAIL</b></td>
+                                    <td>${email}</td>
+                                  </tr>
+                                  <tr>
+                                    <td><b>PROCEDENCIA</b></td>
+                                    <td colspan="3">${direccion} ${pais} ${depto} ${ciudad}</td>
+                                    <td><b>CELULAR</b></td>
+                                    <td>${telefono}</td></td>
+                                  </tr>
+                                  <tr>
+                                    <td><b>FECHA DE ENTREGA</b></td>
+                                    <td>${fecha_entrada}</td>
+                                    <td><b>Nº NOCHE</b></td>
+                                    <td>${noche}</td>
+                                    <td>INFANTE</td>
+                                    <td>${n_infante}</td>
+                                  </tr>
+                                  <tr>
+                                    <td><b>FECHA DE SALIDA</b></td>
+                                    <td>${fecha_salida}</td>
+                                    <td><b>N° PA</b></td>
+                                    <td>${total_pasajero}</td>
+                                  </tr>
+                                </table>
+                              </div>
+                            </div>
+                            <div class="col-sm-12 mt-3">
+                              <h6>Detalles</h6>
+                            </div>
+                            <div class="col-sm-12">
+                              <div class="table-responsive-sm">
+                                <table class="table ">
+                                  <thead>
+                                      <tr>
+                                          <th class="center">#</th>
+                                          <th>Item</th>
+                                          <th class="center">Cantidad</th>
+                                          <th style="text-align: right;">Valor unitario</th>
+                                          <th style="text-align: right;">Total</th>
+                                      </tr>
+                                  </thead>
+
+                                  <tbody id="tbody_tarifa_modal">
+                                    <tr>
+                                        <td class="center">1</td>
+                                        <td class="left">Niños</td>
+                                        <td class="center">${n_child}</td>
+                                        <td style="text-align: right;">$${puntosDecimales(tarifa_child)}</td>
+                                        <td style="text-align: right;">$${puntosDecimales(totalchild)}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="center">2</td>
+                                        <td class="left">Adultos simple</td>
+                                        <td class="center">${n_adult_s}</td>
+                                        <td style="text-align: right;">$${puntosDecimales(tarifa_adult_s)}</td>
+                                        <td style="text-align: right;">$${puntosDecimales(totaladult_s)}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="center">3</td>
+                                        <td class="left">Adultos dobles</td>
+                                        <td class="center">${n_adult_d}</td>
+                                        <td style="text-align: right;">$${puntosDecimales( tarifa_adult_d)}</td>
+                                        <td style="text-align: right;">$${puntosDecimales(totaladult_d)}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="center">4</td>
+                                        <td class="left">Adultos triple / Cuadruple</td>
+                                        <td class="center">${n_adult_t_c}</td>
+                                        <td style="text-align: right;">$${puntosDecimales(tarifa_adult_t_c)}</td>
+                                        <td style="text-align: right;">$${puntosDecimales(totaladult_t_c)}</td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>   
+                          </div>
+                          <div class="row">
+                            <div class="col-lg-5 col-sm-5 ml-auto" style="font-size:12px" id="content_subtotal">
+                              <table class="table table-clear">
+                                  <tbody>
+                                      <tr>
+                                          <td class="left">
+                                              <strong>Valor por noche</strong>
+                                          </td>
+                                          <td style="text-align: right;" id="subtotal">$${puntosDecimales(subtotal)}</td>
+                                      </tr>
+                                      <tr>
+                                          <td class="left">
+                                              <strong>Total por noches</strong>
+                                          </td>
+                                          <td style="text-align: right;">
+                                              <strong>$${puntosDecimales(total)}</strong>
+                                          </td>
+                                      </tr>
+                                  </tbody>
+                              </table>
+                                
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-sm-12">
+                              <div class="table-responsive-sm">
+                                <table class="table"  style="font-size:12px">
+                                  <tbody>
+                                    <tr>
+                                      <td ><b>Plan: </b></td>
+                                      <td>${nombre_plan}</td>
+                                      <td class="text-right"><b>Descripción: </b></td>
+                                      <td class="text-right">${descripcion_plan}</td>
+                                    </tr>
+                                    <tr>
+                                      <td><b>Acomodación: </b></td>
+                                      <td  colspan="2">${acomodo}</td>
+                                      <td class="text-right" >
+                                      ${consumo}<br><br>
+                                      <strong>Servicios</strong><br>
+                                      ${servicios}
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
+                          </div>`
+          $(".loader").css("display", "none")
+
+          $("#print_cotizacion").html(fila)
           
         },
         error: function() {
@@ -935,8 +1052,6 @@ function GuardarCotizacion() {
           console.log("No se ha podido obtener la información");
         }
       });
-
-      $("#id_planes").select2();
     
   }
 
@@ -1018,17 +1133,48 @@ function GuardarCotizacion() {
   }
 
   function imprimir_cotizacion(id) {
+    $(".loader").css("display", "inline-block")
     const element = document.getElementById("print_cotizacion")
     const opt = {
-      filename: 'myPage.pdf',
+      filename: 'Cotizacion'+id+'.pdf',
       margin: 2,
-      image: {type: 'jpeg', quality: 1.5},
+      image: {type: 'jpeg', quality: 1},
       jsPDF: {format: 'letter', orientation: 'portrait'}
     };
+
+    html2pdf().set({
+      pagebreak: {mode: 'avoid-all', before:'#pageX'}
+    });
+    // Adds page-breaks according to the CSS break-before, break-after, and break-inside properties.
+    // Only recognizes always/left/right for before/after, and avoid for inside.
+    html2pdf().set({
+      pagebreak: {mode: 'css' }
+    });
     // New Promise-based usage:
     html2pdf().set(opt).from(element).save();
     // Old monolithic-style usage:
-    html2pdf(element, opt);
+    //html2pdf(element, opt);
+    //$(".loader").css("display", "none")
+  }
+
+  function limpiar_formulario(){
+      $("input:radio").prop('checked', false);
+      $("#infante").val("").prop('disabled',true)
+      $("#child").val("").prop('disabled',true)
+      $("#adult_s").val("").prop('disabled',true)
+      $("#adult_d").val("").prop('disabled',true)
+      $("#adult_t_c").val("").prop('disabled',true)
+      $("#id_usuario").val("").change()
+      $("#id_tarifa").val("").change().prop('disabled',true)
+      $("#id_planes").val("").change()
+      $("#id_motivo").val("").change()
+      $("#cantidad_noches").text("")
+      $("#id_acomodacion").val("")
+      $("#startDate").val("").prop('disabled',true)
+      $("#endDate").val("").prop('disabled',true)
+      $("#tbody_tarifa").html("")
+      $("#content_subtotal").html("")
+      $("#content_info_tarifa").hide()
   }
 
 </script>
