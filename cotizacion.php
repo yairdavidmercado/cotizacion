@@ -109,7 +109,7 @@ session_start();
           <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Crear</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Buscar</a>
+          <a class="nav-link" onclick="show_traer_tabla_cotizacion()" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Buscar</a>
         </li>
       </ul>
       <div class="tab-content" id="myTabContent">
@@ -155,6 +155,14 @@ session_start();
                     </select>
                   </div>
                   <div class="col-md-6 mb-3">
+                    <label for="firstName">Planes</label>
+                    <select style="width:100%" name="id_planes" onchange="traer_productos(this.value)" required id="id_planes" class="form-control form-control-sm id_planess">
+                      <option value="">Seleccionar</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="row">
+                <div class="col-md-3 mb-3">
                     <label><span style="font-size:12px">Tipo de viaje</span></label>
                     <br>
                     <div class="form-check-inline">
@@ -168,9 +176,7 @@ session_start();
                       </label>
                     </div>
                   </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-6 mb-3">
+                  <div class="col-md-3 mb-3">
                     <label for="firstName">Tarifa</label>
                     <select style="width:100%" name="id_tarifa" disabled required id="id_tarifa" class="form-control form-control-sm id_tarifas">
                         <option value="">Seleccionar</option>
@@ -187,24 +193,24 @@ session_start();
                   </div>
                   <div class="col-md-1 mb-3">
                     <label for="lastName">Infante</label>
-                    <input type="text" autocomplete="off" disabled onkeypress="return isNumber(event)" class="form-control " name="infante" id="infante" placeholder="" required>                    
+                    <input type="text" autocomplete="off" value="0" disabled onkeypress="return isNumber(event)" class="form-control " name="infante" id="infante" placeholder="" required>                    
                   </div>
                   <div class="col-md-2 mb-3">
                     <label for="lastName">No. Niños</label>
-                    <input type="text" autocomplete="off" disabled onkeypress="return isNumber(event)" class="form-control " name="child" id="child" placeholder="" required>                    
+                    <input type="text" autocomplete="off" value="0" disabled onkeypress="return isNumber(event)" class="form-control " name="child" id="child" placeholder="" required>                    
                   </div>
                   <div class="col-md-3 mb-3">
                     <label for="lastName">No. Adultos Simple</label>
-                    <input type="text" autocomplete="off" disabled onkeypress="return isNumber(event)" class="form-control" name="adult_s" id="adult_s" placeholder="" required>                    
+                    <input type="text" autocomplete="off" value="0" disabled onkeypress="return isNumber(event)" class="form-control" name="adult_s" id="adult_s" placeholder="" required>                    
                   </div>
                   
                   <div class="col-md-3 mb-3">
                     <label for="lastName">No. Adultos doble</label>
-                    <input type="text" autocomplete="off" disabled onkeypress="return isNumber(event)" class="form-control " name="adult_d" id="adult_d" placeholder="" required>                    
+                    <input type="text" autocomplete="off" value="0" disabled onkeypress="return isNumber(event)" class="form-control " name="adult_d" id="adult_d" placeholder="" required>                    
                   </div>
                   <div class="col-md-3 mb-3">
                     <label for="lastName">No. Adultos Tri /Cua</label>
-                    <input type="text" autocomplete="off" disabled onkeypress="return isNumber(event)" class="form-control" name="adult_t_c" id="adult_t_c" placeholder="" required>                    
+                    <input type="text" autocomplete="off" value="0" disabled onkeypress="return isNumber(event)" class="form-control" name="adult_t_c" id="adult_t_c" placeholder="" required>                    
                   </div>
                   <div class="col-md-12 mb-3" id="content_info_tarifa" style="display:none" >
                     <div class="container-fluid">
@@ -241,12 +247,6 @@ session_start();
                           </div>
                       </div>
                     </div>
-                  </div>
-                  <div class="col-md-6 mb-3">
-                    <label for="firstName">Planes</label>
-                    <select style="width:100%" name="id_planes" onchange="traer_productos(this.value)" required id="id_planes" class="form-control form-control-sm id_planess">
-                      <option value="">Seleccionar</option>
-                    </select>
                   </div>
                   <div class="col-md-12 mb-3" id="content_info_planes" style="display:none">
                     <div class="multi-collapse collapse show"  >
@@ -301,7 +301,33 @@ session_start();
             </div>
           </div>
         </div>
-        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">...</div>
+        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+          <br>
+          <br>
+        <div class="responsive">
+          <table id="tabla_cotizacion" class="table table-striped table-bordered" style="width:100%">
+            <thead>
+                <tr>
+                    <th>codigo</th>
+                    <th>cédula</th>
+                    <th>Titular</th>
+                    <th>Noches</th>
+                    <th>Motivo</th>
+                    <th>Plan</th>
+                    <th>Fecha entrada</th>
+                    <th>fecha salida</th>
+                    <th>Fecha expedición</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="body_table_cotizacion">
+                
+            </tbody>
+          </table>
+        </div>
+        
+
+        </div>
       </div>
         
         
@@ -385,6 +411,7 @@ $(function() {
       }
   });
 
+  
   detalle_tarifa()
 
 });
@@ -735,6 +762,8 @@ function GuardarCotizacion() {
   }
 
   function traer_productos(id_plan, descripcion) {
+    validar_plan()
+   
     $("#content_info_planes").hide()
     var elem = $("#id_planes option:selected")
     var descripcion = elem.attr("descripcion")
@@ -1057,7 +1086,12 @@ function GuardarCotizacion() {
 
 
   function traer_tarifas(tipo) {
-
+    var tipo_plan = $("#id_planes").val()
+    if (tipo_plan == "") {
+      alert("por favor selecciona el tipo de plan")
+      $("input:radio").prop('checked', false);
+      return false
+    }
     setInterval(() => {
       
     }, 100);
@@ -1074,7 +1108,8 @@ function GuardarCotizacion() {
       let values = { 
             codigo: 'traer_tarifas',
             parametro1: id_hotel,
-            parametro2: tipo
+            parametro2: tipo,
+            parametro3: tipo_plan
       };
       $.ajax({
         type : 'POST',
@@ -1154,16 +1189,16 @@ function GuardarCotizacion() {
     html2pdf().set(opt).from(element).save();
     // Old monolithic-style usage:
     //html2pdf(element, opt);
-    //$(".loader").css("display", "none")
+    $(".loader").css("display", "none")
   }
 
   function limpiar_formulario(){
       $("input:radio").prop('checked', false);
-      $("#infante").val("").prop('disabled',true)
-      $("#child").val("").prop('disabled',true)
-      $("#adult_s").val("").prop('disabled',true)
-      $("#adult_d").val("").prop('disabled',true)
-      $("#adult_t_c").val("").prop('disabled',true)
+      $("#infante").val("0").prop('disabled',true)
+      $("#child").val("0").prop('disabled',true)
+      $("#adult_s").val("0").prop('disabled',true)
+      $("#adult_d").val("0").prop('disabled',true)
+      $("#adult_t_c").val("0").prop('disabled',true)
       $("#id_usuario").val("").change()
       $("#id_tarifa").val("").change().prop('disabled',true)
       $("#id_planes").val("").change()
@@ -1175,6 +1210,74 @@ function GuardarCotizacion() {
       $("#tbody_tarifa").html("")
       $("#content_subtotal").html("")
       $("#content_info_tarifa").hide()
+  }
+
+  function validar_plan(){
+      $("input:radio").prop('checked', false);
+      $("#infante").val("0").prop('disabled',true)
+      $("#child").val("0").prop('disabled',true)
+      $("#adult_s").val("0").prop('disabled',true)
+      $("#adult_d").val("0").prop('disabled',true)
+      $("#adult_t_c").val("0").prop('disabled',true)
+      $("#id_tarifa").val("").change().prop('disabled',true)
+      $("#cantidad_noches").text("")
+      $("#startDate").val("").prop('disabled',true)
+      $("#endDate").val("").prop('disabled',true)
+      $("#tbody_tarifa").html("")
+      $("#content_subtotal").html("")
+      $("#content_info_tarifa").hide()
+  }
+  function show_traer_tabla_cotizacion(){
+    setTimeout(() => {
+      traer_tabla_cotizacion()
+    }, 100);
+  }
+
+  function traer_tabla_cotizacion(){
+
+    if ( ! $.fn.DataTable.isDataTable('#tabla_cotizacion')) {
+			  dtable = $("#tabla_cotizacion").DataTable({
+					"ajax": {
+					"url": "php/sel_recursos.php",
+					"type": "POST",
+					"deferRender": false,
+					"data":{
+            codigo:'traer_tabla_cotizacion',
+            parametro1: "",
+            parametro2: "",
+          },
+/* 					"dataSrc": function (data) {	
+            console.log(data)
+						return data.data
+					} */
+
+				  },
+				  "columns": [
+          { "data": "id"},
+					{ "data": "cedula_titular"},
+					{ "data": "nombre_titular"},
+          { "data": "noche"},
+					{ "data": "nombre_motivo"},
+					{ "data": "nombre_plan"},
+          { "data": "fecha_entrada"},
+          { "data": "fecha_salida"},
+          { "data": "fecha_expedicion"},
+          { "data": ""}
+				],
+				 "columnDefs": [
+					 {
+						"targets": 9,
+						"data":"",
+						 render: function ( data, type, row ) {
+							return  `<button class="btn btn-link" onclick="traer_cotizacion(${row.id})"><i class="fa fa-eye" aria-hidden="true"></i></button>`;
+						 }
+					}],
+				});
+			}else{
+			   dtable.destroy();
+         traer_tabla_cotizacion();
+			}
+
   }
 
 </script>

@@ -1,10 +1,13 @@
 <?php 
+session_start();
  include 'conexion.php';  
 
 $codigo = $_POST["codigo"];
 $parametro1 = $_POST["parametro1"];
-$parametro2 = $_POST["parametro2"];                
-
+$parametro2 = $_POST["parametro2"]; 
+$parametro3 = isset($_POST["parametro3"]) ? $_POST["parametro3"] : "0" ;                
+$id_autor = $_SESSION['id'];
+$id_hotel = isset($_SESSION['id_hotel']) ? $_SESSION['id_hotel']: "" ;
 //parametros de conexion a la base de datos del cliente
 
 $conn = mysqli_connect(DB_HOST,DB_USER, DB_PASS, DB_NAME); 
@@ -124,7 +127,7 @@ if ($conn) {
 				echo json_encode($response);
 		}
 	}else if ($codigo == "traer_tarifas") {//titulares
-		$result = mysqli_query($conn, 	"SELECT * FROM tarifas WHERE id_hotel = $parametro1 AND noches = $parametro2 AND activo = true;");
+		$result = mysqli_query($conn, 	"SELECT * FROM tarifas WHERE id_hotel = $parametro1 AND noches = $parametro2  AND id_plan = $parametro3 AND activo = true;");
 		if(mysqli_num_rows($result) > 0)
 		{	
 									$response["resultado"] = array();
@@ -341,6 +344,46 @@ if ($conn) {
 
 										}
 									$response["success"] = true;
+									echo json_encode($response);
+
+		}else{
+				$response["success"] = false;
+				$response["message"] = "No se encontraron registros";
+				// echo no users JSON
+				echo json_encode($response);
+		}
+	}else if ($codigo == "traer_tabla_cotizacion") {//titulares
+		$result = mysqli_query($conn, 	"SELECT cotizacion.*, 
+										(SELECT CONCAT(nombre1, ' ', nombre2, ' ', apellido1, ' ', apellido2) FROM usuarios WHERE usuarios.id = cotizacion.id_titular) AS nombre_titular,
+										(SELECT cedula FROM usuarios WHERE usuarios.id = cotizacion.id_titular) AS cedula_titular,
+										(SELECT nombre FROM motivos WHERE motivos.id = cotizacion.id_motivo) AS nombre_motivo,
+										(SELECT nombre FROM planes WHERE planes.id = cotizacion.id_plan) AS nombre_plan
+										FROM cotizacion WHERE cotizacion.id_hotel = $id_hotel AND id_autor = $id_autor");
+		if(mysqli_num_rows($result) > 0)
+		{	
+									$data = array();
+									while ($row = mysqli_fetch_array($result)) {
+									$datos = array();
+										
+									$datos['id'] = $row["id"];
+									$datos['noche'] = $row["noche"];
+									$datos['nombre_titular'] = $row["nombre_titular"];
+									$datos['cedula_titular'] = $row["cedula_titular"];
+									$datos['fecha_expedicion'] = $row["fecha_expedicion"];
+									$datos['fecha_entrada'] = $row["fecha_entrada"];
+									$datos['fecha_salida'] = $row["fecha_salida"];
+									$datos['nombre_motivo'] = $row["nombre_motivo"];
+									$datos['nombre_plan'] = $row["nombre_plan"];
+										
+										
+									// push single product into final response array
+									array_push($data, $datos);
+									}
+									$response = array("draw" => 1,
+								    "recordsTotal" => 0,
+								    "recordsFiltered" => 0,
+									"data" => $data);
+									//$response["success"] = true;
 									echo json_encode($response);
 
 		}else{

@@ -110,10 +110,13 @@ if (isset($_SESSION['id'])) {
 
     <script src="assets/js/jquery.slim.min.js" crossorigin="anonymous"></script>
     <script src="assets/js/ajax/jquery.min.js"></script>
+    <script src="assets/js/notify.js"></script>
 <script>
 $(function() {
   $(".loader").css("display", "none")
-});
+
+  });
+  
   function validar_sesion() {
     var values = { 
         parametro1: $('#usuario').val(),
@@ -128,16 +131,14 @@ $(function() {
     },
     success: function(respuesta) {
        let obj = JSON.parse(respuesta)
-       //alert(JSON.stringify(obj[0].length))
-       //console.log(obj)
+
        if (obj.success) {
         //$(".loader").css("display", "none")
         $(location).attr('href',"welcome.php")
        }else{
         $(".loader").css("display", "none")
-        alert('Datos invalidos para el acceso')
-       }
-       
+        Notifications('Datos invalidos para el acceso', 'danger')
+       }   
     },
     error: function() {
       $(".loader").css("display", "none")
@@ -145,6 +146,11 @@ $(function() {
     }
   });
     
+  }
+
+  function Notifications(mensaje, estado) {
+    //add a new style 'foo'
+    $.notify(mensaje, estado);
   }
 </script>
 </body>

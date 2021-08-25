@@ -65,10 +65,15 @@ if (!isset($_SESSION['id'])) {
     <script>window.jQuery || document.write('<script src="assets/js/jquery.slim.min.js"><\/script>')</script>
     <script src="assets/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/ajax/jquery.min.js"></script>
 <script>
 var id_usuario = "<?php echo $_SESSION['id'] ?>"
 
 $(function() {
+    setTimeout(() => {
+        Notifications("asdasd", "success")
+    }, 1000);
+    
     card_hotel(id_usuario)
     $(".loader").css("display", "none")
 });
@@ -103,7 +108,7 @@ function card_hotel(id) {
                                     <div class="title">
                                         <h4>${val.nombre}</h4>
                                     </div>
-                                    ${val.id_terminos}
+
                                     <div class="text">
                                         <span>${val.direccion}</span>
                                         <br>
@@ -131,9 +136,13 @@ function card_hotel(id) {
                                     <div class="title">
                                         <h4>${val.nombre}</h4>
                                     </div>
-                                    
                                     <div class="text">
-                                        <span>Lorem ipsum dolor sit amet, id quo eruditi eloquentiam. Assum decore te sed. Elitr scripta ocurreret qui ad.</span>
+                                        <span>${val.direccion}</span>
+                                        <br>
+                                        <span>${val.telefono}</span>
+                                        <br>
+                                        <span>${val.pais} - ${val.depto}</span>
+                                        <br>
                                     </div>
                                     
                                     <button onclick="change_hotel(${val.id},'${val.nombre}','${val.id_terminos}','${val.direccion}','${val.telefono}','${val.pais}','${val.depto}','${val.email}','${val.avatar}')" class="btn btn-link">Acceder</button>
@@ -157,9 +166,13 @@ function card_hotel(id) {
                                     <div class="title">
                                         <h4>${val.nombre}</h4>
                                     </div>
-                                    
                                     <div class="text">
-                                        <span>Lorem ipsum dolor sit amet, id quo eruditi eloquentiam. Assum decore te sed. Elitr scripta ocurreret qui ad.</span>
+                                        <span>${val.direccion}</span>
+                                        <br>
+                                        <span>${val.telefono}</span>
+                                        <br>
+                                        <span>${val.pais} - ${val.depto}</span>
+                                        <br>
                                     </div>
                                     
                                     <button onclick="change_hotel(${val.id},'${val.nombre}','${val.id_terminos}','${val.direccion}','${val.telefono}','${val.pais}','${val.depto}','${val.email}','${val.avatar}')" class="btn btn-link">Acceder</button>
