@@ -118,7 +118,8 @@ $(function() {
   });
   
   function validar_sesion() {
-    var values = { 
+    var values = {
+        codigo: 'login', 
         parametro1: $('#usuario').val(),
         parametro2: $('#password').val()
     };

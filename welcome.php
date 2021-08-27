@@ -70,9 +70,6 @@ if (!isset($_SESSION['id'])) {
 var id_usuario = "<?php echo $_SESSION['id'] ?>"
 
 $(function() {
-    setTimeout(() => {
-        Notifications("asdasd", "success")
-    }, 1000);
     
     card_hotel(id_usuario)
     $(".loader").css("display", "none")
