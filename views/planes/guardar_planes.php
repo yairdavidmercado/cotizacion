@@ -2,16 +2,10 @@
     session_start();
    include '../../php/conexion.php';
 
-    $nit = $_POST["nit"];
     $nombre = $_POST["nombre"];
-    $email = $_POST["email"];
-    $telefono = $_POST["telefono"];
-    $direccion = $_POST["direccion"];
-    $id_pais = $_POST["id_pais"];
-    $id_depto = $_POST["id_depto"];
-    $id_terminos = $_POST["id_terminos"];
-    $ciudad = $_POST["ciudad"];
-    $avatar= $_POST["avatar"];
+    $descripcion = $_POST["descripcion"]; 
+    $id_hotel = $_POST["id_hotel"];
+    $ids = $_POST["ids"];
     $id_autor = $_SESSION['id'];
          
         $response = [];
@@ -23,41 +17,45 @@
         }
         // Insert some values
         try{
-             $result = mysqli_query($con, "INSERT INTO hoteles (nit, 
-                                                                    nombre, 
-                                                                    email, 
-                                                                    telefono, 
-                                                                    direccion, 
-                                                                    id_pais, 
-                                                                    id_depto, 
-                                                                    id_terminos, 
-                                                                    ciudad, 
-                                                                    avatar,
+             $result = mysqli_query($con, "INSERT INTO planes (nombre, 
+                                                                    descripcion, 
+                                                                    id_hotel,
                                                                     id_autor )
-                                                            VALUES ('$nit', 
-                                                                    '$nombre', 
-                                                                    '$email', 
-                                                                    '$telefono', 
-                                                                    '$direccion', 
-                                                                    $id_pais, 
-                                                                    $id_depto, 
-                                                                    $id_terminos, 
-                                                                    '$ciudad', 
-                                                                    '$avatar',
+                                                            VALUES ('$nombre', 
+                                                                    '$descripcion', 
+                                                                    $id_hotel,
                                                                     $id_autor);");
 
                 //var_dump($result);
                 mysqli_query($con, $result);
                 if (mysqli_insert_id($con) > 0) {
+
                     $response["success"] = true;
                     $response["id"] = mysqli_insert_id($con);
                     $response["message"] = "Commiting transaction.";
-                echo json_encode($response);
+                    $ids_productos = explode(",", $ids);
+                    $values = "";
+                    for ($i=0; $i < count($ids_productos) ; $i++) { 
+                        $values .= "(".mysqli_insert_id($con).",".$ids_productos[$i]."),";
+                    }
+                    $values = substr($values, 0, -1);
+                    $result1 = mysqli_query($con, "INSERT INTO tipo_plan (id_plan, id_producto) VALUES $values ");
+                    mysqli_query($con, $result1);
+                    if (mysqli_insert_id($con) > 0) {
+                        $response["success2"] = true;
+                        $response["id2"] = mysqli_insert_id($con);
+                        $response["message2"] = "Commiting transaction.";
+                    }else{
+                        $response["success2"] = false;
+                        $response["id2"] = mysqli_insert_id($con);
+                        $response["message2"] = "Rolling back transaction.";
+                    }
+                    echo json_encode($response);
                 } else {
                     $response["success"] = false;
-                    $response["id"] = mysqli_insert_id($con);
+                    $response["id"] = 0;
                     $response["message"] = "Rolling back transaction.";
-                echo json_encode($response);
+                    echo json_encode($response);
                 }
             }catch(Exception $e){
                 $response["success"] = false;

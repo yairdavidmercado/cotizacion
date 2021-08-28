@@ -389,6 +389,7 @@ function GuardarTarifas() {
 
     if ( ! $.fn.DataTable.isDataTable('#tabla_tarifas')) {
 			  dtable = $("#tabla_tarifas").DataTable({
+          "scrollY": true,
 					"ajax": {
 					"url": "tarifas.php",
 					"type": "POST",

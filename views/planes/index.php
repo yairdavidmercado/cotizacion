@@ -109,73 +109,62 @@ session_start();
           <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Crear</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" onclick="show_traer_tabla_productos()" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Buscar</a>
+          <a class="nav-link" onclick="show_traer_tabla_planes()" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Buscar</a>
         </li>
         <li class="nav-item">
           <a class="nav-link " id="productos-tab" data-toggle="tab" href="#productos" role="tab" aria-controls="productos" aria-selected="true">Crear productos</a>
         </li>
-        <li class="nav-item">
+        <!-- <li class="nav-item">
           <a class="nav-link" id="list_productos-tab" data-toggle="tab" href="#list_productos" role="tab" aria-controls="list_productos" aria-selected="false">Buscar productos</a>
-        </li>
+        </li> -->
       </ul>
       <div class="tab-content" id="myTabContent">
         <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
           <div class="card mt-3">
-            <h5 class="card-header">Hotel</h5>
+            <h5 class="card-header">Planes</h5>
             <div class="card-body">
               <form role="form" onsubmit="event.preventDefault(); return GuardarPlanes();" id="form_guardar" class="needs-validation">
                 <div class="row">
-                <div class="col-md-3 mb-3" >
-                    <label for="lastName">NIT</label>
-                    <input type="text" autocomplete="off" class="form-control " name="nit" id="nit" placeholder="" required>                    
+                  <div class="col-sm-6">
+                    <div class="row">
+                      <div class="col-md-12 mb-3" >
+                        <label for="lastName">Nombre</label>
+                        <input type="text" autocomplete="off" class="form-control " name="nombre_planes" id="nombre_planes" placeholder="" required>                    
+                      </div>
+                      <div class="col-md-12 mb-3">
+                        <label for="lastName">Descripción</label>
+                        <textarea style="height:300px"  autocomplete="off" class="form-control" id="descripcion_planes" required></textarea>
+                      
+                      </div>
+                      <div class="col-md-12 mb-3 d-flex">
+                        <button type="submit" class="btn btn-success mr-2">Guardar</button>
+                        <!-- <div class="btn btn-warning text-white">Cancelar</div> -->
+                      </div>
+                    </div>
                   </div>
-                  <div class="col-md-9 mb-3" >
-                    <label for="lastName">Razón social</label>
-                    <input type="text" autocomplete="off" class="form-control " name="nombre" id="nombre" placeholder="" required>                    
-                  </div>
-                  <div class="col-md-6 mb-3">
-                    <label for="lastName">Email</label>
-                    <input type="text" autocomplete="off" class="form-control" name="email" id="email" placeholder="" required>                   
-                  </div>
-                  <div class="col-md-6 mb-3">
-                    <label for="lastName">Teléfono</label>
-                    <input type="text" autocomplete="off" onkeypress="return isNumber(event)" class="form-control " name="telefono" id="telefono" placeholder="" required>                    
-                  </div>
-                  <div class="col-md-3 mb-3">
-                    <label for="firstName">Pais</label>
-                    <select style="width:100%" name="select_pais" onchange="traer_deptos(this.value)" required id="select_pais" class="form-control form-control-sm paises">
-                      <option value="">Seleccionar</option>
-                    </select>
-                  </div>
-                  <div class="col-md-3 mb-3">
-                    <label for="firstName">Departamentos</label>
-                    <select style="width:100%" name="select_deptos" required id="select_deptos" class="form-control form-control-sm deptos">
-                      <option value="">Seleccionar</option>
-                    </select>
-                  </div>
-                  <div class="col-md-6 mb-3">
-                    <label for="lastName">Ciudad</label>
-                    <input type="text" autocomplete="off" class="form-control " name="ciudad" id="ciudad" placeholder="" required>                    
-                  </div>
-                  <div class="col-md-6 mb-3">
-                    <label for="lastName">Dirección</label>
-                    <input type="text" autocomplete="off" class="form-control " name="direccion" id="direccion" placeholder="" required>                    
-                  </div>
-                  <div class="col-md-6 mb-3">
-                    <label for="firstName">Términos y condiciones</label>
-                    <select style="width:100%" name="select_terminos_condiciones" required id="select_terminos_condiciones" class="form-control form-control-sm terminos_condiciones">
-                      <option value="">Seleccionar</option>
-                    </select>
-                  </div>
-                  <div class="col-md-12 mb-3 d-flex justify-content-center">
-                    <button type="submit" class="btn btn-success mr-2">Guardar</button>
-                    <!-- <div class="btn btn-warning text-white">Cancelar</div> -->
+                  <div class="col-sm-6">
+                    <div class="row">
+                      <table class="table table-bordered table-condensed table-hover table-striped">
+                        <thead>
+                          <tr>
+                              <th>
+                              <input type="checkbox" onchange="select_check(this)" name="all">
+                              </th>
+                              <th >
+                                PRODUCTOS
+                              </th>
+                              <th >
+                                TIPO
+                              </th>
+                          </tr>
+                        </thead>
+                        <tbody class="text-left" id="table_check_productos">
+                          
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                 </div>
-                <div class="row">
-                  
-                </div>
-                
               </form>
             </div>
           </div>
@@ -187,13 +176,9 @@ session_start();
             <table id="tabla_planes" class="table table-striped table-bordered" style="width:100%">
               <thead>
                   <tr>
-                      <th>codigo</th>
-                      <th>Razón social</th>
-                      <th>País</th>
-                      <th>Ciudad</th>
-                      <th>Depto</th>
-                      <th>Teléfono</th>
-                      <th>Email</th>
+                      <th>Nombre</th>
+                      <th>Descripción</th>
+                      <th>Cantidad de productos</th>
                       <th>Creación</th>
                       <th></th>
                   </tr>
@@ -205,7 +190,7 @@ session_start();
           </div>
         </div>
         <div class="tab-pane fade show" id="productos" role="tabpanel" aria-labelledby="productos-tab">
-        <div class="card mt-3">
+          <div class="card mt-3">
             <h5 class="card-header">Productos</h5>
             <div class="card-body">
               <form role="form" onsubmit="event.preventDefault(); return GuardarProductos();" id="form_guardar" class="needs-validation">
@@ -261,9 +246,9 @@ session_start();
             </div>
           </div>
         </div>
-        <div class="tab-pane fade show" id="list_productos" role="tabpanel" aria-labelledby="list_productos-tab">
+        <!-- <div class="tab-pane fade show" id="list_productos" role="tabpanel" aria-labelledby="list_productos-tab">
           list
-        </div>
+        </div> -->
       </div>
         
         
@@ -326,12 +311,67 @@ $(function() {
   $("#menu_nombre_hotel").addClass("active");
   //traer_hotel()
   traer_tabla_productos()
+  traer_check_productos()
   $(".loader").css("display", "none")
 
 });
 
 
-function GuardarProductos() {
+function GuardarPlanes() { 
+    var items = document.getElementsByName('brand')
+    var count = 0
+    if( $('.micheckbox').is(':checked') ) {
+      count++
+    }
+    if (count < 1) {
+      alert("Debe seleccionar almenos un producto")
+      return false
+    }
+    var ids_productos = ""
+    for (var i = 0; i < items.length; i++) {
+        if (items[i].checked){
+          ids_productos += items[i].value+","
+        }     
+    }
+    ids_productos = ids_productos.substring(0, ids_productos.length - 1);
+    //let form = $('#form_guardar')[0];
+    //let formData = new FormData(form)
+    let values = {
+        nombre :  $("#nombre_planes").val(),
+        descripcion :  $("#descripcion_planes").val(),
+        ids: ids_productos,
+        id_hotel : id_hotel,
+    }
+    $.ajax({
+    type : 'POST',
+    data: values,
+    url: 'guardar_planes.php',
+    beforeSend: function() {
+        $(".loader").css("display", "inline-block")
+    },
+    success: function(respuesta) {
+      $(".loader").css("display", "none")
+      console.log(respuesta)
+      let obj = JSON.parse(respuesta)
+      if (obj.success) {
+        
+        limpiar_formulario_planes()
+        //traer_tabla_planes()
+       
+      }else{
+        alert(obj.message)
+      }
+
+    },
+    error: function(e) {
+      $(".loader").css("display", "none")
+      console.log("No se ha podido obtener la información"+e);
+    }
+  });
+    
+  }
+
+  function GuardarProductos() { 
     
     //let form = $('#form_guardar')[0];
     //let formData = new FormData(form)
@@ -355,6 +395,7 @@ function GuardarProductos() {
         
         limpiar_formulario_productos()
         traer_tabla_productos()
+        traer_check_productos()
        
       }else{
         alert(obj.message)
@@ -444,29 +485,33 @@ function GuardarProductos() {
     
   }
 
-  function traer_terminos() {
+  function traer_check_productos() {
       let values = { 
-            codigo: 'traer_terminos',
-            parametro1: "",
+            codigo: 'traer_check_productos',
+            parametro1: id_hotel,
             parametro2: ""
       };
       $.ajax({
         type : 'POST',
         data: values,
-        url: '../../php/sel_recursos.php',
+        url: 'planes.php',
         beforeSend: function() {
             $(".loader").css("display", "inline-block")
         },
         success: function(respuesta) {
-          $(".loader").css("display", "none")
+          //$(".loader").css("display", "none")
           let obj = JSON.parse(respuesta)
           let fila = ''
           fila += ''
           $.each(obj["resultado"], function( index, val ) {
-            fila += `<option value='${val.id}'>${val.titulo}</option>`
+            fila += `<tr>
+                        <td style="width:10px"><input value="${val.id}" type="checkbox" class="micheckbox" name="brand"></td>
+                        <td>${val.nombre}</td>
+                        <td>${val.tipo}</td>
+                    </tr>`
           });
 
-          $("#select_terminos_condiciones").html('<option value="">Seleccionar</option>'+fila)
+          $("#table_check_productos").html(fila)
           
         },
         error: function() {
@@ -474,8 +519,6 @@ function GuardarProductos() {
           console.log("No se ha podido obtener la información");
         }
       });
-
-      $("#select_terminos_condiciones").select2();
     
   }
 
@@ -524,31 +567,71 @@ function GuardarProductos() {
     $("#select_tipo_guardado").val("").change()
   }
 
-  function validar_plan(){
-      $("input:radio").prop('checked', false);
-      $("#infante").val("0").prop('disabled',true)
-      $("#child").val("0").prop('disabled',true)
-      $("#adult_s").val("0").prop('disabled',true)
-      $("#adult_d").val("0").prop('disabled',true)
-      $("#adult_t_c").val("0").prop('disabled',true)
-      $("#id_tarifa").val("").change().prop('disabled',true)
-      $("#cantidad_noches").text("")
-      $("#startDate").val("").prop('disabled',true)
-      $("#endDate").val("").prop('disabled',true)
-      $("#tbody_tarifa").html("")
-      $("#content_subtotal").html("")
-      $("#content_info_tarifa").hide()
+  function limpiar_formulario_planes(){
+    
+    $("#nombre_planes").val("").change()
+    $("#descripcion_planes").val("").change()
+    uncheckAll()
+    var items = document.getElementsByName('all');
+    items[0].checked = false
+
   }
-  function show_traer_tabla_productos(){
+
+
+  function show_traer_tabla_planes(){
     setTimeout(() => {
-      traer_tabla_productos()
+      traer_tabla_planes()
     }, 100);
+  }
+
+  function traer_tabla_planes(){
+
+    if ( ! $.fn.DataTable.isDataTable('#tabla_planes')) {
+      dtable = $("#tabla_planes").DataTable({
+        "scrollY": true,
+        "ajax": {
+        "url": "planes.php",
+        "type": "POST",
+        "deferRender": false,
+        "data":{
+          codigo:'traer_planes',
+          parametro1: id_hotel,
+          parametro2: "",
+        },
+        "dataSrc": function (data) {	
+          console.log(data)
+          return data.data
+        }
+
+        },
+        "columns": [
+        { "data": "nombre"},
+        { "data": "descripcion"},
+        { "data": "cantidad_productos"},
+        { "data": "fecha_crea"},
+        { "data": ""}
+
+      ],
+      "columnDefs": [
+        {
+          "targets": 4,
+          "data":"",
+          render: function ( data, type, row ) {
+            return  `<button class="btn btn-link" onclick="traer_cotizacion(${row.id})"><i class="fa fa-eye" aria-hidden="true"></i></button>`;
+          }
+        }],
+      });
+    }else{
+      dtable.destroy();
+      traer_tabla_planes();
+    }
   }
 
   function traer_tabla_productos(){
 
     if ( ! $.fn.DataTable.isDataTable('#tabla_productos')) {
 			  dtable = $("#tabla_productos").DataTable({
+          "scrollY": true,
 					"ajax": {
 					"url": "planes.php",
 					"type": "POST",
@@ -587,6 +670,31 @@ function GuardarProductos() {
 			}
 
   }
+
+  // Select all check boxes : Setting the checked property to true in checkAll() function
+  function checkAll(){
+        var items = document.getElementsByName('brand');
+          for (var i = 0; i < items.length; i++) {
+              if (items[i].type == 'checkbox')
+                  items[i].checked = true;
+          }
+      }
+  // Clear all check boxes : Setting the checked property to false in uncheckAll() function
+      function uncheckAll(){
+        var items = document.getElementsByName('brand');
+          for (var i = 0; i < items.length; i++) {
+              if (items[i].type == 'checkbox')
+                  items[i].checked = false;
+          }
+      }
+
+      function select_check(estado){
+        if (estado.checked) {
+          checkAll()
+        }else{
+          uncheckAll()
+        }
+      }
 
 </script>
 </body>

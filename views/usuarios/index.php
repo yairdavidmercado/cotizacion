@@ -493,6 +493,7 @@ function GuardarUsuario() {
 
     if ( ! $.fn.DataTable.isDataTable('#tabla_usuarios')) {
 			  dtable = $("#tabla_usuarios").DataTable({
+          "scrollY": true,
 					"ajax": {
 					"url": "usuarios.php",
 					"type": "POST",

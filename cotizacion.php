@@ -1237,6 +1237,7 @@ function GuardarCotizacion() {
 
     if ( ! $.fn.DataTable.isDataTable('#tabla_cotizacion')) {
 			  dtable = $("#tabla_cotizacion").DataTable({
+          "scrollY": true,
 					"ajax": {
 					"url": "php/sel_recursos.php",
 					"type": "POST",

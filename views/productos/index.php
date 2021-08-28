@@ -498,6 +498,7 @@ function GuardarHotel() {
 
     if ( ! $.fn.DataTable.isDataTable('#tabla_hotel')) {
 			  dtable = $("#tabla_hotel").DataTable({
+          "scrollY": true,
 					"ajax": {
 					"url": "hoteles.php",
 					"type": "POST",

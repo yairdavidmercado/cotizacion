@@ -293,6 +293,7 @@ function GuardarMotivos() {
 
     if ( ! $.fn.DataTable.isDataTable('#tabla_motivos')) {
 			  dtable = $("#tabla_motivos").DataTable({
+          "scrollY": true,
 					"ajax": {
 					"url": "motivos.php",
 					"type": "POST",
