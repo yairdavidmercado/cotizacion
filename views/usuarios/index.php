@@ -115,7 +115,7 @@ session_start();
       <div class="tab-content" id="myTabContent">
         <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
           <div class="card mt-3">
-            <h5 class="card-header">Hotel</h5>
+            <h5 class="card-header">Usuarios</h5>
             <div class="card-body">
               <form role="form" onsubmit="event.preventDefault(); return GuardarUsuario();" id="form_guardar" class="needs-validation">
                 <div class="row">
@@ -133,7 +133,7 @@ session_start();
                   </div>
                   <div class="col-md-3 mb-3" >
                     <label for="lastName">Segundo nombre</label>
-                    <input type="text" autocomplete="off" class="form-control " name="nombre2" id="nombre2" placeholder="" required>                    
+                    <input type="text" autocomplete="off" class="form-control " name="nombre2" id="nombre2" placeholder="" >                    
                   </div>
                   <div class="col-md-3 mb-3" >
                     <label for="lastName">Primer Apellido</label>
@@ -141,7 +141,7 @@ session_start();
                   </div>
                   <div class="col-md-3 mb-3" >
                     <label for="lastName">Segundo apellido</label>
-                    <input type="text" autocomplete="off" class="form-control " name="apellido2" id="apellido2" placeholder="" required>                    
+                    <input type="text" autocomplete="off" class="form-control " name="apellido2" id="apellido2" placeholder="" >                    
                   </div>
                   <div class="col-md-6 mb-3">
                     <label for="lastName">Email</label>
@@ -158,7 +158,7 @@ session_start();
                     </select>
                   </div>
                   <div class="col-md-3 mb-3">
-                    <label for="firstName">Departamentos</label>
+                    <label for="firstName">Departamento</label>
                     <select style="width:100%" name="select_deptos" required id="select_deptos" class="form-control form-control-sm deptos">
                       <option value="">Seleccionar</option>
                     </select>
@@ -172,7 +172,7 @@ session_start();
                     <input type="text" autocomplete="off" class="form-control " name="direccion" id="direccion" placeholder="" required>                    
                   </div>
                   <div class="col-md-6 mb-3">
-                    <label for="firstName">Términos y condiciones</label>
+                    <label for="firstName">Perfil</label>
                     <select style="width:100%" name="tipo" required id="tipo" class="form-control form-control-sm terminos_condiciones">
                       <option value="">Seleccionar</option>
                       <option value="TITULAR">Titular</option>
@@ -181,7 +181,7 @@ session_start();
                     </select>
                   </div>
                   <div class="col-md-12 mb-3 d-flex justify-content-center">
-                    <button type="submit" class="btn btn-success mr-2">Guardar cotización</button>
+                    <button type="submit" class="btn btn-success mr-2">Guardar usuario</button>
                     <!-- <div class="btn btn-warning text-white">Cancelar</div> -->
                   </div>
                 </div>
@@ -203,10 +203,12 @@ session_start();
                     <th>Cédula</th>
                     <th>Nombre</th>
                     <th>País</th>
-                    <th>Ciudad</th>
                     <th>Depto</th>
+                    <th>Ciudad</th>
+                    <th>Dirección</th>
                     <th>Teléfono</th>
                     <th>Email</th>
+                    <th>Perfil</th>
                     <th>Creación</th>
                     <th></th>
                 </tr>
@@ -492,11 +494,11 @@ function GuardarUsuario() {
     if ( ! $.fn.DataTable.isDataTable('#tabla_usuarios')) {
 			  dtable = $("#tabla_usuarios").DataTable({
 					"ajax": {
-					"url": "hoteles.php",
+					"url": "usuarios.php",
 					"type": "POST",
 					"deferRender": false,
 					"data":{
-            codigo:'trael_hoteles',
+            codigo:'trael_usuarios',
             parametro1: "",
             parametro2: "",
           },
@@ -507,20 +509,29 @@ function GuardarUsuario() {
 
 				  },
 				  "columns": [
-          { "data": "id"},
-					{ "data": "nombre"},
+          { "data": "cedula"},
+					{ "data": "nombre1"},
 					{ "data": "pais"},
           { "data": "depto"},
 					{ "data": "ciudad"},
+          { "data": "direccion"},
 					{ "data": "telefono"},
           { "data": "email"},
+          { "data": "tipo"},
           { "data": "fecha_crea"},
-          { "data": ""}
+          { "data": "id"}
 
 				],
 				 "columnDefs": [
 					 {
-						"targets": 8,
+						"targets": 1,
+						"data":"",
+						 render: function ( data, type, row ) {
+							return  `${row.nombre1} ${row.nombre2} ${row.apellido1} ${row.apellido2}`;
+						 }
+					},
+          {
+						"targets": 10,
 						"data":"",
 						 render: function ( data, type, row ) {
 							return  `<button class="btn btn-link" onclick="traer_cotizacion(${row.id})"><i class="fa fa-eye" aria-hidden="true"></i></button>`;

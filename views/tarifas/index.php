@@ -109,60 +109,64 @@ session_start();
           <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Crear</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" onclick="show_traer_tabla_hotel()" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Buscar</a>
+          <a class="nav-link" onclick="show_traer_tabla_tarifas()" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Buscar</a>
         </li>
       </ul>
       <div class="tab-content" id="myTabContent">
         <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
           <div class="card mt-3">
-            <h5 class="card-header">Hotel</h5>
+            <h5 class="card-header">Tafiras</h5>
             <div class="card-body">
-              <form role="form" onsubmit="event.preventDefault(); return GuardarHotel();" id="form_guardar" class="needs-validation">
+              <form role="form" onsubmit="event.preventDefault(); return GuardarTarifas();" id="form_guardar" class="needs-validation">
                 <div class="row">
-                <div class="col-md-3 mb-3" >
-                    <label for="lastName">NIT</label>
-                    <input type="text" autocomplete="off" class="form-control " name="nit" id="nit" placeholder="" required>                    
-                  </div>
-                  <div class="col-md-9 mb-3" >
-                    <label for="lastName">Razón social</label>
+                  <div class="col-md-6 mb-3" >
+                    <label for="lastName">Titulo</label>
                     <input type="text" autocomplete="off" class="form-control " name="nombre" id="nombre" placeholder="" required>                    
                   </div>
-                  <div class="col-md-6 mb-3">
-                    <label for="lastName">Email</label>
-                    <input type="text" autocomplete="off" class="form-control" name="email" id="email" placeholder="" required>                   
-                  </div>
-                  <div class="col-md-6 mb-3">
-                    <label for="lastName">Teléfono</label>
-                    <input type="text" autocomplete="off" onkeypress="return isNumber(event)" class="form-control " name="telefono" id="telefono" placeholder="" required>                    
+                </div>
+                <div class="row">
+                  <div class="col-md-3 mb-3">
+                    <label for="lastName">Niños</label>
+                    <input type="text" autocomplete="off" class="form-control" onkeypress="return isNumber(event)" name="child" id="child" placeholder="" required>                   
                   </div>
                   <div class="col-md-3 mb-3">
-                    <label for="firstName">Pais</label>
-                    <select style="width:100%" name="select_pais" onchange="traer_deptos(this.value)" required id="select_pais" class="form-control form-control-sm paises">
-                      <option value="">Seleccionar</option>
-                    </select>
+                    <label for="lastName">Adultos normal</label>
+                    <input type="text" autocomplete="off" class="form-control" onkeypress="return isNumber(event)" name="adult_s" id="adult_s" placeholder="" required>                   
                   </div>
                   <div class="col-md-3 mb-3">
-                    <label for="firstName">Departamentos</label>
-                    <select style="width:100%" name="select_deptos" required id="select_deptos" class="form-control form-control-sm deptos">
+                    <label for="lastName">Adultos dole</label>
+                    <input type="text" autocomplete="off" class="form-control" onkeypress="return isNumber(event)" name="adult_d" id="adult_d" placeholder="" required>                   
+                  </div>
+                  <div class="col-md-3 mb-3">
+                    <label for="lastName">Adultos triple/cuadruple</label>
+                    <input type="text" autocomplete="off" class="form-control" onkeypress="return isNumber(event)" name="adult_t_c" id="adult_t_c" placeholder="" required>                   
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="firstName">Planes</label>
+                    <select style="width:100%" name="select_plan" required id="select_plan" class="form-control form-control-sm terminos_condiciones">
                       <option value="">Seleccionar</option>
                     </select>
                   </div>
                   <div class="col-md-6 mb-3">
-                    <label for="lastName">Ciudad</label>
-                    <input type="text" autocomplete="off" class="form-control " name="ciudad" id="ciudad" placeholder="" required>                    
+                    <label><span>Tipo de hospedaje</span></label>
+                    <br>
+                    <div class="form-check-inline">
+                      <label class="form-check-label">
+                        <input type="radio" name="tipo_hospedaje" required value="0" class="form-check-input" value="">Pasadía
+                      </label>
+                    </div>
+                    <div class="form-check-inline">
+                      <label class="form-check-label">
+                        <input type="radio" name="tipo_hospedaje" required value="1" class="form-check-input" value="">Por noche
+                      </label>
+                    </div>
                   </div>
-                  <div class="col-md-6 mb-3">
-                    <label for="lastName">Dirección</label>
-                    <input type="text" autocomplete="off" class="form-control " name="direccion" id="direccion" placeholder="" required>                    
-                  </div>
-                  <div class="col-md-6 mb-3">
-                    <label for="firstName">Términos y condiciones</label>
-                    <select style="width:100%" name="select_terminos_condiciones" required id="select_terminos_condiciones" class="form-control form-control-sm terminos_condiciones">
-                      <option value="">Seleccionar</option>
-                    </select>
+                  <div class="col-md-12 mb-3" >
+                    <label for="lastName">Descripción</label>
+                    <textarea class="form-control" id="descripcion"></textarea>
                   </div>
                   <div class="col-md-12 mb-3 d-flex justify-content-center">
-                    <button type="submit" class="btn btn-success mr-2">Guardar hotel</button>
+                    <button type="submit" class="btn btn-success mr-2">Guardar</button>
                     <!-- <div class="btn btn-warning text-white">Cancelar</div> -->
                   </div>
                 </div>
@@ -178,7 +182,7 @@ session_start();
           <br>
           <br>
         <div class="responsive">
-          <table id="tabla_hotel" class="table table-striped table-bordered" style="width:100%">
+          <table id="tabla_tarifas" class="table table-striped table-bordered" style="width:100%">
             <thead>
                 <tr>
                     <th>codigo</th>
@@ -188,6 +192,7 @@ session_start();
                     <th>Depto</th>
                     <th>Teléfono</th>
                     <th>Email</th>
+                    <th>Creación</th>
                     <th>Creación</th>
                     <th></th>
                 </tr>
@@ -252,42 +257,40 @@ var depto_hotel = "<?php echo $_SESSION['depto_hotel'] ?>";
 var email_hotel = "<?php echo $_SESSION['email_hotel'] ?>";
 var avatar_hotel = "<?php echo $_SESSION['avatar_hotel'] ?>";
 
-
 var cod_vendedor = "<?php echo $_SESSION['codigo'] ?>";
+
 $(function() {
   
   $("#menu_inicio").removeClass("active");
   $(".menu_principal").removeClass("active");
-  $("#menu_hoteles").addClass("active");
+  $("#menu_tarifas").addClass("active");
   $("#menu_nombre_hotel").addClass("active");
   //traer_hotel()
-  traer_paises()
-  traer_terminos()
+  traer_planes()
   $(".loader").css("display", "none")
 
 });
 
 
-function GuardarHotel() {
+function GuardarTarifas() {
     
     //let form = $('#form_guardar')[0];
     //let formData = new FormData(form)
     let values = {
-        nit :  $("#nit").val(),
-        nombre :  $("#nombre").val(),
-        email :  $("#email").val(),
-        telefono :  $("#telefono").val(),
-        direccion :  $("#direccion").val(),
-        id_pais :  $("#select_pais").val(),
-        id_depto :  $("#select_deptos").val(),
-        id_terminos :  $("#select_terminos_condiciones").val(),
-        ciudad :  $("#ciudad").val(),
-        avatar : "/../upload.php"
+      nombre : $("#nombre").val(),
+      child : $("#child").val(),
+      adult_s : $("#adult_s").val(),
+      adult_d : $("#adult_d").val(),
+      adult_t_c : $("#adult_t_c").val(),
+      id_plan : $("#select_plan").val(),
+      id_hotel : id_hotel,
+      descripcion : $("#descripcion").val(),
+      noches : $("input[name='tipo_hospedaje']:checked").val(),
     }
     $.ajax({
     type : 'POST',
     data: values,
-    url: 'guardar_hotel.php',
+    url: 'guardar_tarifas.php',
     beforeSend: function() {
         $(".loader").css("display", "inline-block")
     },
@@ -310,52 +313,12 @@ function GuardarHotel() {
     }
   });
     
-  }
+}
 
-
-  function traer_paises() {
+  function traer_planes() {
       let values = { 
-            codigo: 'traer_paises',
-            parametro1: "",
-            parametro2: ""
-      };
-      $.ajax({
-        type : 'POST',
-        data: values,
-        url: '../../php/sel_recursos.php',
-        beforeSend: function() {
-            $(".loader").css("display", "inline-block")
-        },
-        success: function(respuesta) {
-          $(".loader").css("display", "none")
-          let obj = JSON.parse(respuesta)
-          let fila = ''
-          $.each(obj["resultado"], function( index, val ) {
-            fila += `<option value='${val.id}'>${val.paisnombre}</option>`
-          });
-
-          $("#select_pais").html('<option value="">Seleccionar</option>'+fila)
-          
-        },
-        error: function() {
-          $(".loader").css("display", "none")
-          console.log("No se ha podido obtener la información");
-        }
-      });
-
-      $("#select_pais").select2();
-    
-  }
-
-  function traer_deptos(id) {
-
-    if ( id.length < 1) {
-      $("#select_deptos").html('<option value="">Seleccionar</option>').select2();
-      return false
-    }
-      let values = { 
-            codigo: 'traer_deptos',
-            parametro1: id,
+            codigo: 'traer_planes',
+            parametro1: id_hotel,
             parametro2: ""
       };
       $.ajax({
@@ -371,10 +334,10 @@ function GuardarHotel() {
           let fila = ''
           fila += ''
           $.each(obj["resultado"], function( index, val ) {
-            fila += `<option value='${val.id}'>${val.estadonombre}</option>`
+            fila += `<option value='${val.id}'>${val.nombre}</option>`
           });
 
-          $("#select_deptos").html('<option value="">Seleccionar</option>'+fila)
+          $("#select_plan").html('<option value="">Seleccionar</option>'+fila)
           
         },
         error: function() {
@@ -383,44 +346,10 @@ function GuardarHotel() {
         }
       });
 
-      $("#select_deptos").select2();
+      $("#select_plan").select2();
     
   }
 
-  function traer_terminos() {
-      let values = { 
-            codigo: 'traer_terminos',
-            parametro1: "",
-            parametro2: ""
-      };
-      $.ajax({
-        type : 'POST',
-        data: values,
-        url: '../../php/sel_recursos.php',
-        beforeSend: function() {
-            $(".loader").css("display", "inline-block")
-        },
-        success: function(respuesta) {
-          $(".loader").css("display", "none")
-          let obj = JSON.parse(respuesta)
-          let fila = ''
-          fila += ''
-          $.each(obj["resultado"], function( index, val ) {
-            fila += `<option value='${val.id}'>${val.titulo}</option>`
-          });
-
-          $("#select_terminos_condiciones").html('<option value="">Seleccionar</option>'+fila)
-          
-        },
-        error: function() {
-          $(".loader").css("display", "none")
-          console.log("No se ha podido obtener la información");
-        }
-      });
-
-      $("#select_terminos_condiciones").select2();
-    
-  }
 
   function isNumber(evt) {
       evt = (evt) ? evt : window.event;
@@ -435,76 +364,38 @@ function GuardarHotel() {
    return new Intl.NumberFormat("de-DE").format(value)
   }
 
-  function imprimir_cotizacion(id) {
-    $(".loader").css("display", "inline-block")
-    const element = document.getElementById("print_cotizacion")
-    const opt = {
-      filename: 'Cotizacion'+id+'.pdf',
-      margin: 2,
-      image: {type: 'jpeg', quality: 1},
-      jsPDF: {format: 'letter', orientation: 'portrait'}
-    };
-
-    html2pdf().set({
-      pagebreak: {mode: 'avoid-all', before:'#pageX'}
-    });
-    // Adds page-breaks according to the CSS break-before, break-after, and break-inside properties.
-    // Only recognizes always/left/right for before/after, and avoid for inside.
-    html2pdf().set({
-      pagebreak: {mode: 'css' }
-    });
-    // New Promise-based usage:
-    html2pdf().set(opt).from(element).save();
-    // Old monolithic-style usage:
-    //html2pdf(element, opt);
-    $(".loader").css("display", "none")
-  }
 
   function limpiar_formulario(){
     
-    $("#nit").val("").change()
-    $("#nombre").val("").change()
-    $("#email").val("").change()
-    $("#telefono").val("").change()
-    $("#direccion").val("").change()
-    $("#select_pais").val("").change()
-    $("#select_deptos").val("").change()
-    $("#select_terminos_condiciones").val("").change()
-    $("#ciudad").val("").change()
+      $("#nombre").val("")
+      $("#child").val("")
+      $("#adult_s").val("")
+      $("#adult_d").val("")
+      $("#adult_t_c").val("")
+      $("#id_plan").val("")
+      $("#descripcion").val("")
+      $("#select_plan").val("").change()
+      $("input:radio[name='tipo_hospedaje']").prop('checked',false);
   }
 
-  function validar_plan(){
-      $("input:radio").prop('checked', false);
-      $("#infante").val("0").prop('disabled',true)
-      $("#child").val("0").prop('disabled',true)
-      $("#adult_s").val("0").prop('disabled',true)
-      $("#adult_d").val("0").prop('disabled',true)
-      $("#adult_t_c").val("0").prop('disabled',true)
-      $("#id_tarifa").val("").change().prop('disabled',true)
-      $("#cantidad_noches").text("")
-      $("#startDate").val("").prop('disabled',true)
-      $("#endDate").val("").prop('disabled',true)
-      $("#tbody_tarifa").html("")
-      $("#content_subtotal").html("")
-      $("#content_info_tarifa").hide()
-  }
-  function show_traer_tabla_hotel(){
+
+  function show_traer_tabla_tarifas(){
     setTimeout(() => {
-      traer_tabla_hotel()
+      traer_tabla_tarifas()
     }, 100);
   }
 
-  function traer_tabla_hotel(){
+  function traer_tabla_tarifas(){
 
-    if ( ! $.fn.DataTable.isDataTable('#tabla_hotel')) {
-			  dtable = $("#tabla_hotel").DataTable({
+    if ( ! $.fn.DataTable.isDataTable('#tabla_tarifas')) {
+			  dtable = $("#tabla_tarifas").DataTable({
 					"ajax": {
-					"url": "hoteles.php",
+					"url": "tarifas.php",
 					"type": "POST",
 					"deferRender": false,
 					"data":{
-            codigo:'trael_hoteles',
-            parametro1: "",
+            codigo:'traer_tarifas',
+            parametro1: id_hotel,
             parametro2: "",
           },
 					"dataSrc": function (data) {	
@@ -514,20 +405,20 @@ function GuardarHotel() {
 
 				  },
 				  "columns": [
-          { "data": "id"},
 					{ "data": "nombre"},
-					{ "data": "pais"},
-          { "data": "depto"},
-					{ "data": "ciudad"},
-					{ "data": "telefono"},
-          { "data": "email"},
+					{ "data": "descripcion"},
+          { "data": "child"},
+					{ "data": "adult_s"},
+					{ "data": "adult_d"},
+          { "data": "adult_t_c"},
+          { "data": "nombre_plan"},
+          { "data": "noches"},
           { "data": "fecha_crea"},
           { "data": ""}
-
 				],
 				 "columnDefs": [
 					 {
-						"targets": 8,
+						"targets": 9,
 						"data":"",
 						 render: function ( data, type, row ) {
 							return  `<button class="btn btn-link" onclick="traer_cotizacion(${row.id})"><i class="fa fa-eye" aria-hidden="true"></i></button>`;
@@ -536,7 +427,7 @@ function GuardarHotel() {
 				});
 			}else{
 			   dtable.destroy();
-         traer_tabla_hotel();
+         traer_tabla_tarifas();
 			}
 
   }

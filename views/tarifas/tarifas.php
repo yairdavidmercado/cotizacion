@@ -14,11 +14,9 @@ if (!$conn) {
 }
 
 if ($conn) {
-	if ($codigo == "trael_usuarios") {
-		$result = mysqli_query($conn, 	"SELECT *, 
-										(SELECT paisnombre FROM pais WHERE pais.id = id_pais) as pais, 
-										(SELECT estadonombre FROM estado WHERE estado.id = id_depto) as depto 
-										FROM usuarios WHERE activo = true ;");
+	if ($codigo == "traer_tarifas") {
+		$result = mysqli_query($conn, 	"SELECT *, (SELECT nombre FROM planes WHERE planes.id = tarifas.id_plan) as nombre_plan 
+										FROM tarifas WHERE id_hotel = $parametro1 AND activo = true;");
 		if(mysqli_num_rows($result) > 0)
 		{	
 									$data = array();
@@ -26,19 +24,15 @@ if ($conn) {
 									$datos = array();
 										
 									$datos["id"] 			= $row["id"];
-									$datos["cedula"]		= $row["cedula"];
-									$datos["nombre1"]		= $row["nombre1"];
-									$datos["nombre2"]		= $row["nombre2"];
-									$datos["apellido1"]		= $row["apellido1"];
-									$datos["apellido2"]		= $row["apellido2"];
-									$datos["tipo"]			= $row["tipo"];
-									$datos["pais"] 			= $row["pais"];
-									$datos["depto"] 		= $row["depto"];
-									$datos["ciudad"] 		= $row["ciudad"];
-									$datos["telefono"] 		= $row["telefono"];
-									$datos["email"] 		= $row["email"];
-									$datos["direccion"] 	= $row["direccion"];
+									$datos["nombre"]		= $row["nombre"];
+									$datos["child"]			= $row["child"];
+									$datos["adult_s"] 		= $row["adult_s"];
+									$datos["adult_d"] 		= $row["adult_d"];
+									$datos["adult_t_c"] 	= $row["adult_t_c"];
+									$datos["descripcion"] 	= $row["descripcion"];
+									$datos["nombre_plan"] 	= $row["nombre_plan"];
 									$datos["fecha_crea"] 	= $row["fecha_crea"];
+									$datos["noches"] 		= $row["noches"];
 										
 										// push single product into final response array
 									array_push($data, $datos);

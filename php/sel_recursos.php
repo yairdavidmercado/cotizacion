@@ -140,6 +140,7 @@ if ($conn) {
 										$datos["adult_s"] 		= $row["adult_s"];
 										$datos["adult_d"] 		= $row["adult_d"];
 										$datos["adult_t_c"] 	= $row["adult_t_c"];
+										$datos["descripcion"] 	= $row["descripcion"];
 										$datos["noches"] 		= $row["noches"];
 										
 										// push single product into final response array
@@ -269,9 +270,9 @@ if ($conn) {
 										$datos['nombre_plan'] = $row["nombre_plan"];
 										$datos['descripcion_plan'] = $row["descripcion_plan"];
 
-										$id_titular = $row["id_titular"];
-										$id_tarifa = $row["id_tarifa"];
-										$id_plan = $row["id_plan"];
+										$id_titular = $row["id_titular"] == "" ? "0": $row["id_titular"];
+										$id_tarifa = $row["id_tarifa"] == "" ? "0":  $row["id_tarifa"];
+										$id_plan = $row["id_plan"] == "" ? "0": $row["id_plan"];
 										
 										// push single product into final response array
 										array_push($response["resultado"], $datos);

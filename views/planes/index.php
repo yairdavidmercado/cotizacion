@@ -109,7 +109,13 @@ session_start();
           <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Crear</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" onclick="show_traer_tabla_hotel()" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Buscar</a>
+          <a class="nav-link" onclick="show_traer_tabla_productos()" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Buscar</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link " id="productos-tab" data-toggle="tab" href="#productos" role="tab" aria-controls="productos" aria-selected="true">Crear productos</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="list_productos-tab" data-toggle="tab" href="#list_productos" role="tab" aria-controls="list_productos" aria-selected="false">Buscar productos</a>
         </li>
       </ul>
       <div class="tab-content" id="myTabContent">
@@ -117,7 +123,7 @@ session_start();
           <div class="card mt-3">
             <h5 class="card-header">Hotel</h5>
             <div class="card-body">
-              <form role="form" onsubmit="event.preventDefault(); return GuardarHotel();" id="form_guardar" class="needs-validation">
+              <form role="form" onsubmit="event.preventDefault(); return GuardarPlanes();" id="form_guardar" class="needs-validation">
                 <div class="row">
                 <div class="col-md-3 mb-3" >
                     <label for="lastName">NIT</label>
@@ -162,7 +168,7 @@ session_start();
                     </select>
                   </div>
                   <div class="col-md-12 mb-3 d-flex justify-content-center">
-                    <button type="submit" class="btn btn-success mr-2">Guardar hotel</button>
+                    <button type="submit" class="btn btn-success mr-2">Guardar</button>
                     <!-- <div class="btn btn-warning text-white">Cancelar</div> -->
                   </div>
                 </div>
@@ -177,28 +183,86 @@ session_start();
         <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
           <br>
           <br>
-        <div class="responsive">
-          <table id="tabla_hotel" class="table table-striped table-bordered" style="width:100%">
-            <thead>
-                <tr>
-                    <th>codigo</th>
-                    <th>Razón social</th>
-                    <th>País</th>
-                    <th>Ciudad</th>
-                    <th>Depto</th>
-                    <th>Teléfono</th>
-                    <th>Email</th>
-                    <th>Creación</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody id="body_table_cotizacion">
-                
-            </tbody>
-          </table>
+          <div class="responsive">
+            <table id="tabla_planes" class="table table-striped table-bordered" style="width:100%">
+              <thead>
+                  <tr>
+                      <th>codigo</th>
+                      <th>Razón social</th>
+                      <th>País</th>
+                      <th>Ciudad</th>
+                      <th>Depto</th>
+                      <th>Teléfono</th>
+                      <th>Email</th>
+                      <th>Creación</th>
+                      <th></th>
+                  </tr>
+              </thead>
+              <tbody id="body_table_cotizacion">
+                  
+              </tbody>
+            </table>
+          </div>
         </div>
-        
-
+        <div class="tab-pane fade show" id="productos" role="tabpanel" aria-labelledby="productos-tab">
+        <div class="card mt-3">
+            <h5 class="card-header">Productos</h5>
+            <div class="card-body">
+              <form role="form" onsubmit="event.preventDefault(); return GuardarProductos();" id="form_guardar" class="needs-validation">
+                <div class="row">
+                  <div class="col-md-6 mb-3" >
+                    <label for="lastName">Nombre de producto</label>
+                    <input type="text" autocomplete="off" class="form-control " name="nombre_producto" id="nombre_producto" placeholder="" required>                    
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="firstName">Tipo</label>
+                    <select style="width:100%" name="select_tipo" required id="select_tipo" class="form-control form-control-sm tipo">
+                      <option value="">Seleccionar</option>
+                      <option value="CONSUMO">CONSUMO</option>
+                      <option value="SERVICIO">SERVICIO</option>
+                    </select>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="firstName">Tipo de guardado</label>
+                    <select style="width:100%" name="select_tipo_guardado" required id="select_tipo_guardado" class="form-control form-control-sm tipo_guardado">
+                      <option value="">Seleccionar</option>
+                      <option value="0">General</option>
+                      <option value="<?php echo $_SESSION['id_hotel'] ?>">Solo para <?php echo $_SESSION['nombre_hotel'] ?></option>
+                    </select>
+                  </div>
+                  
+                  <div class="col-md-12 mb-3 d-flex justify-content-center">
+                    <button type="submit" class="btn btn-success mr-2">Guardar </button>
+                    <!-- <div class="btn btn-warning text-white">Cancelar</div> -->
+                  </div>
+                </div>
+                <div class="row">
+                  <br>
+                  <br>
+                  <div class="responsive"  style="width:100%">
+                    <table id="tabla_productos" class="table table-striped table-bordered" style="width:100%">
+                      <thead>
+                          <tr>
+                              <th>Nombre</th>
+                              <th>Tipo</th>
+                              <th>Tipo de guardado</th>
+                              <th>Creación</th>
+                              <th></th>
+                          </tr>
+                      </thead>
+                      <tbody id="body_tabla_productos">
+                          
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="tab-pane fade show" id="list_productos" role="tabpanel" aria-labelledby="list_productos-tab">
+          list
         </div>
       </div>
         
@@ -258,36 +322,28 @@ $(function() {
   
   $("#menu_inicio").removeClass("active");
   $(".menu_principal").removeClass("active");
-  $("#menu_hoteles").addClass("active");
+  $("#menu_planes").addClass("active");
   $("#menu_nombre_hotel").addClass("active");
   //traer_hotel()
-  traer_paises()
-  traer_terminos()
+  traer_tabla_productos()
   $(".loader").css("display", "none")
 
 });
 
 
-function GuardarHotel() {
+function GuardarProductos() {
     
     //let form = $('#form_guardar')[0];
     //let formData = new FormData(form)
     let values = {
-        nit :  $("#nit").val(),
-        nombre :  $("#nombre").val(),
-        email :  $("#email").val(),
-        telefono :  $("#telefono").val(),
-        direccion :  $("#direccion").val(),
-        id_pais :  $("#select_pais").val(),
-        id_depto :  $("#select_deptos").val(),
-        id_terminos :  $("#select_terminos_condiciones").val(),
-        ciudad :  $("#ciudad").val(),
-        avatar : "/../upload.php"
+        nombre :  $("#nombre_producto").val(),
+        tipo :  $("#select_tipo").val(),
+        id_hotel :  $("#select_tipo_guardado").val(),
     }
     $.ajax({
     type : 'POST',
     data: values,
-    url: 'guardar_hotel.php',
+    url: 'guardar_productos.php',
     beforeSend: function() {
         $(".loader").css("display", "inline-block")
     },
@@ -297,7 +353,8 @@ function GuardarHotel() {
       let obj = JSON.parse(respuesta)
       if (obj.success) {
         
-        limpiar_formulario()
+        limpiar_formulario_productos()
+        traer_tabla_productos()
        
       }else{
         alert(obj.message)
@@ -460,17 +517,11 @@ function GuardarHotel() {
     $(".loader").css("display", "none")
   }
 
-  function limpiar_formulario(){
+  function limpiar_formulario_productos(){
     
-    $("#nit").val("").change()
-    $("#nombre").val("").change()
-    $("#email").val("").change()
-    $("#telefono").val("").change()
-    $("#direccion").val("").change()
-    $("#select_pais").val("").change()
-    $("#select_deptos").val("").change()
-    $("#select_terminos_condiciones").val("").change()
-    $("#ciudad").val("").change()
+    $("#nombre_producto").val("").change()
+    $("#select_tipo").val("").change()
+    $("#select_tipo_guardado").val("").change()
   }
 
   function validar_plan(){
@@ -488,23 +539,23 @@ function GuardarHotel() {
       $("#content_subtotal").html("")
       $("#content_info_tarifa").hide()
   }
-  function show_traer_tabla_hotel(){
+  function show_traer_tabla_productos(){
     setTimeout(() => {
-      traer_tabla_hotel()
+      traer_tabla_productos()
     }, 100);
   }
 
-  function traer_tabla_hotel(){
+  function traer_tabla_productos(){
 
-    if ( ! $.fn.DataTable.isDataTable('#tabla_hotel')) {
-			  dtable = $("#tabla_hotel").DataTable({
+    if ( ! $.fn.DataTable.isDataTable('#tabla_productos')) {
+			  dtable = $("#tabla_productos").DataTable({
 					"ajax": {
-					"url": "hoteles.php",
+					"url": "planes.php",
 					"type": "POST",
 					"deferRender": false,
 					"data":{
-            codigo:'trael_hoteles',
-            parametro1: "",
+            codigo:'traer_productos',
+            parametro1: id_hotel,
             parametro2: "",
           },
 					"dataSrc": function (data) {	
@@ -514,20 +565,16 @@ function GuardarHotel() {
 
 				  },
 				  "columns": [
-          { "data": "id"},
 					{ "data": "nombre"},
-					{ "data": "pais"},
-          { "data": "depto"},
-					{ "data": "ciudad"},
-					{ "data": "telefono"},
-          { "data": "email"},
+					{ "data": "tipo"},
+          { "data": "tipo_guardado"},
           { "data": "fecha_crea"},
           { "data": ""}
 
 				],
 				 "columnDefs": [
 					 {
-						"targets": 8,
+						"targets": 4,
 						"data":"",
 						 render: function ( data, type, row ) {
 							return  `<button class="btn btn-link" onclick="traer_cotizacion(${row.id})"><i class="fa fa-eye" aria-hidden="true"></i></button>`;
@@ -536,7 +583,7 @@ function GuardarHotel() {
 				});
 			}else{
 			   dtable.destroy();
-         traer_tabla_hotel();
+         traer_tabla_productos();
 			}
 
   }

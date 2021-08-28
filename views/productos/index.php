@@ -162,7 +162,7 @@ session_start();
                     </select>
                   </div>
                   <div class="col-md-12 mb-3 d-flex justify-content-center">
-                    <button type="submit" class="btn btn-success mr-2">Guardar hotel</button>
+                    <button type="submit" class="btn btn-success mr-2">Guardar cotización</button>
                     <!-- <div class="btn btn-warning text-white">Cancelar</div> -->
                   </div>
                 </div>

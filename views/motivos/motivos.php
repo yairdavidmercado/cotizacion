@@ -14,11 +14,8 @@ if (!$conn) {
 }
 
 if ($conn) {
-	if ($codigo == "trael_usuarios") {
-		$result = mysqli_query($conn, 	"SELECT *, 
-										(SELECT paisnombre FROM pais WHERE pais.id = id_pais) as pais, 
-										(SELECT estadonombre FROM estado WHERE estado.id = id_depto) as depto 
-										FROM usuarios WHERE activo = true ;");
+	if ($codigo == "traer_motivos") {
+		$result = mysqli_query($conn, 	"SELECT * FROM motivos WHERE activo = true;");
 		if(mysqli_num_rows($result) > 0)
 		{	
 									$data = array();
@@ -26,18 +23,8 @@ if ($conn) {
 									$datos = array();
 										
 									$datos["id"] 			= $row["id"];
-									$datos["cedula"]		= $row["cedula"];
-									$datos["nombre1"]		= $row["nombre1"];
-									$datos["nombre2"]		= $row["nombre2"];
-									$datos["apellido1"]		= $row["apellido1"];
-									$datos["apellido2"]		= $row["apellido2"];
-									$datos["tipo"]			= $row["tipo"];
-									$datos["pais"] 			= $row["pais"];
-									$datos["depto"] 		= $row["depto"];
-									$datos["ciudad"] 		= $row["ciudad"];
-									$datos["telefono"] 		= $row["telefono"];
-									$datos["email"] 		= $row["email"];
-									$datos["direccion"] 	= $row["direccion"];
+									$datos["nombre"]		= $row["nombre"];
+									$datos["descripcion"] 	= $row["descripcion"];
 									$datos["fecha_crea"] 	= $row["fecha_crea"];
 										
 										// push single product into final response array
