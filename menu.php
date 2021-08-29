@@ -20,16 +20,22 @@
                     <a class="nav-link active menu_principal" id="menu_cotizaciones" href="/cotizacion/cotizacion.php">Cotización</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link active menu_principal" id="menu_cotizaciones" href="/cotizacion/vauche.php">Vauche</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link menu_principal" id="menu_hoteles" href="/cotizacion/views/hoteles">Hoteles</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link menu_principal" id="menu_planes" href="/cotizacion/views/planes">Planes</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link menu_principal" id="menu_motivos" href="/cotizacion/views/motivos">Motivos</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link menu_principal" id="menu_tarifas" href="/cotizacion/views/tarifas">Tarifas</a>
+                <li class="nav-item dropdown">
+                    <a  class="nav-link  menu_principal dropdown-toggle " href="#" id="navbarDropdown1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Configuración
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown1">
+                    <a class="nav-link menu_principal" style="color:#000" id="menu_planes" href="/cotizacion/views/planes">Planes</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="nav-link menu_principal" style="color:#000" id="menu_motivos" href="/cotizacion/views/motivos">Motivos</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="nav-link menu_principal" style="color:#000" id="menu_tarifas" href="/cotizacion/views/tarifas">Tarifas</a>
+                    </div>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link menu_principal" id="menu_usuarios"  href="/cotizacion/views/usuarios">Usuarios</a>
@@ -43,16 +49,16 @@
                         </a>
                     </li>
                     <li class="nav-item dropdown">
-                    <a  class="nav-link dropdown-toggle " href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <?php echo $_SESSION['nombre1'];?>  <?php echo $_SESSION['apellido1'];?>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                        <!-- <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a> -->
-                        <a class="dropdown-item" href="#"></a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="/cotizacion/php/cerrar_sesion.php">Cerrar sesión</a>
-                    </div>
+                        <a  class="nav-link dropdown-toggle " href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <?php echo $_SESSION['nombre1'];?>  <?php echo $_SESSION['apellido1'];?>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                            <!-- <a class="dropdown-item" href="#">Action</a>
+                            <a class="dropdown-item" href="#">Another action</a> -->
+                            <a class="dropdown-item" href="#"></a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="/cotizacion/php/cerrar_sesion.php">Cerrar sesión</a>
+                        </div>
                     </li>
                 </ul>
             </form>

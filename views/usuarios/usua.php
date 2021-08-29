@@ -19,9 +19,10 @@ if ($conn) {
 										(SELECT paisnombre FROM pais WHERE pais.id = id_pais) as pais, 
 										(SELECT estadonombre FROM estado WHERE estado.id = id_depto) as depto 
 										FROM usuarios WHERE activo = true ;");
+		$data = array();										
 		if(mysqli_num_rows($result) > 0)
 		{	
-									$data = array();
+									
 									while ($row = mysqli_fetch_array($result)) {
 									$datos = array();
 										
@@ -51,10 +52,12 @@ if ($conn) {
 									echo json_encode($response);
 
 		}else{
-				$response["success"] = false;
-				$response["message"] = "No se encontraron registros";
-				// echo no users JSON
-				echo json_encode($response);
+			$response = array("draw" => 1,
+			"recordsTotal" => 0,
+			"recordsFiltered" => 0,
+			"data" => $data);
+			//$response["success"] = true;
+			echo json_encode($response);
 		}
 	}else if ($codigo == "hoteles_asociados") {//activos
 		$result = mysqli_query($conn, 	"SELECT hoteles.*,

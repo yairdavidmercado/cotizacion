@@ -229,7 +229,7 @@ session_start();
     </div>
   </main>
 
-  <button type="button" id="brn_modal_asociar" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg">Large modal</button>
+  <button type="button" id="brn_modal_asociar" class="btn btn-primary" style="display:none" data-toggle="modal" data-target=".bd-example-modal-lg">Large modal</button>
 
 <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg" style="width:80%">
@@ -460,7 +460,7 @@ function GuardarUsuario() {
     $.ajax({
       type : 'POST',
       data: values,
-      url: 'usuarios.php',
+      url: 'usua.php',
       beforeSend: function() {
           $(".loader").css("display", "inline-block")
       },
@@ -499,7 +499,7 @@ function GuardarUsuario() {
     $.ajax({
       type : 'POST',
       data: values,
-      url: 'usuarios.php',
+      url: 'usua.php',
       beforeSend: function() {
           $(".loader").css("display", "inline-block")
       },
@@ -538,7 +538,7 @@ function GuardarUsuario() {
     $.ajax({
     type : 'POST',
     data: values,
-    url: 'usuarios.php',
+    url: 'usua.php',
     beforeSend: function() {
         $(".loader").css("display", "inline-block")
     },
@@ -647,7 +647,7 @@ function GuardarUsuario() {
 			  dtable = $("#tabla_usuarios").DataTable({
           "scrollY": true,
 					"ajax": {
-					"url": "usuarios.php",
+					"url": "usua.php",
 					"type": "POST",
 					"deferRender": false,
 					"data":{

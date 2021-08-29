@@ -344,22 +344,7 @@ if ($conn) {
 																	}
 
 										}
-
-										$info_terminos = mysqli_query($conn, "SELECT terminos_condiciones.* FROM terminos_condiciones WHERE id = $id_hotel;");
-										$datos_planes = array();
-										if(mysqli_num_rows($info_terminos) > 0)
-										{							$response["info_terminos"] = array();
-																	while ($row = mysqli_fetch_array($info_terminos)) {
-
-																		$datos_planes["id"] 					= $row["id"];
-																		$datos_planes["titulo"]					= $row["titulo"];
-																		$datos_planes["descripcion"]			= nl2br($row["descripcion"]);
-																		
-																		// push single product into final response array
-																		array_push($response["info_terminos"], $datos_planes);
-																	}
-
-										}
+										
 									$response["success"] = true;
 									echo json_encode($response);
 
@@ -376,9 +361,10 @@ if ($conn) {
 										(SELECT nombre FROM motivos WHERE motivos.id = cotizacion.id_motivo) AS nombre_motivo,
 										(SELECT nombre FROM planes WHERE planes.id = cotizacion.id_plan) AS nombre_plan
 										FROM cotizacion WHERE cotizacion.id_hotel = $id_hotel AND id_autor = $id_autor");
+		$data = array();										
 		if(mysqli_num_rows($result) > 0)
 		{	
-									$data = array();
+									
 									while ($row = mysqli_fetch_array($result)) {
 									$datos = array();
 										
@@ -404,10 +390,12 @@ if ($conn) {
 									echo json_encode($response);
 
 		}else{
-				$response["success"] = false;
-				$response["message"] = "No se encontraron registros";
-				// echo no users JSON
-				echo json_encode($response);
+			$response = array("draw" => 1,
+			"recordsTotal" => 0,
+			"recordsFiltered" => 0,
+			"data" => $data);
+			//$response["success"] = true;
+			echo json_encode($response);
 		}
 	}else if ($codigo == "traer_paises") {//activos
 		$result = mysqli_query($conn, 	"SELECT * FROM pais");
