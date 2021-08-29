@@ -56,7 +56,95 @@ if ($conn) {
 				// echo no users JSON
 				echo json_encode($response);
 		}
-	}else if($codigo == "2"){
+	}else if ($codigo == "hoteles_asociados") {//activos
+		$result = mysqli_query($conn, 	"SELECT hoteles.*,
+										(SELECT paisnombre FROM pais WHERE pais.id = hoteles.id_pais) AS pais,
+										(SELECT estadonombre FROM estado WHERE estado.id = hoteles.id_depto) AS depto
+										FROM permiso_hotel 
+										INNER JOIN hoteles ON permiso_hotel.id_hotel = hoteles.id 
+										INNER JOIN usuarios ON permiso_hotel.id_usuario = usuarios.id 
+										WHERE usuarios.id = $parametro1");
+		if(mysqli_num_rows($result) > 0)
+		{	
+									$response["resultado"] = array();
+									while ($row = mysqli_fetch_array($result)) {
+									$datos = array();
+										
+										$datos["id"] 			= $row["id"];
+										$datos["nit"]			= $row["nit"];
+										$datos["nombre"]		= $row["nombre"];
+										$datos["pais"] 			= $row["pais"];
+										$datos["depto"] 		= $row["depto"];
+										$datos["ciudad"] 		= $row["ciudad"];
+										$datos["telefono"] 		= $row["telefono"];
+										$datos["email"] 		= $row["email"];
+										$datos["direccion"] 	= $row["direccion"];
+										$datos["id_terminos"] 	= $row["id_terminos"];
+										$datos["avatar"] 		= $row["avatar"];
+										
+										// push single product into final response array
+										array_push($response["resultado"], $datos);
+									}
+									$response["success"] = true;
+									echo json_encode($response);
+
+		}else{
+				$response["success"] = false;
+				$response["message"] = "No se encontraron registros";
+				// echo no users JSON
+				echo json_encode($response);
+		}
+	}else if ($codigo == "hoteles_por_asociar") {//activos
+		$result = mysqli_query($conn, 	"SELECT * FROM hoteles WHERE id NOT IN (SELECT hoteles.id
+										FROM permiso_hotel 
+										INNER JOIN hoteles ON permiso_hotel.id_hotel = hoteles.id 
+										INNER JOIN usuarios ON permiso_hotel.id_usuario = usuarios.id 
+										WHERE usuarios.id = $parametro1)");
+		if(mysqli_num_rows($result) > 0)
+		{	
+									$response["resultado"] = array();
+									while ($row = mysqli_fetch_array($result)) {
+									$datos = array();
+										
+										$datos["id"] 			= $row["id"];
+										$datos["nit"]			= $row["nit"];
+										$datos["nombre"]		= $row["nombre"];
+										$datos["avatar"] 		= $row["avatar"];
+										
+										// push single product into final response array
+										array_push($response["resultado"], $datos);
+									}
+									$response["success"] = true;
+									echo json_encode($response);
+
+		}else{
+				$response["success"] = false;
+				$response["message"] = "No se encontraron registros";
+				// echo no users JSON
+				echo json_encode($response);
+		}
+	}else if ($codigo == "moverto_asociados") {//activos
+		$result = mysqli_query($conn, 	"INSERT INTO permiso_hotel (id_usuario, id_hotel) 
+										VALUES ($parametro2, $parametro1)");
+									mysqli_query($conn, $result);
+									if (mysqli_insert_id($conn) > 0) {
+										$response["success"] = true;
+										$response["id"] = mysqli_insert_id($conn);
+										$response["message"] = "Commiting transaction.";
+									echo json_encode($response);
+									} else {
+										$response["success"] = false;
+										$response["id"] = mysqli_insert_id($conn);
+										$response["message"] = "Rolling back transaction.";
+									echo json_encode($response);
+									}
+	}else if ($codigo == "moverto_sin_asociar") {//activos
+		$result = mysqli_query($conn, 	"DELETE FROM permiso_hotel WHERE id_usuario = $parametro2 AND id_hotel = $parametro1");
+									mysqli_query($conn, $result);
+									$response["success"] = true;
+										$response["id"] = mysqli_insert_id($conn);
+										$response["message"] = "Commiting transaction.";
+										echo json_encode($response);
 
 	}
 	

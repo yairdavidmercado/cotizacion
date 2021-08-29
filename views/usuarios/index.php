@@ -211,6 +211,7 @@ session_start();
                     <th>Perfil</th>
                     <th>Creación</th>
                     <th></th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody id="body_table_cotizacion">
@@ -228,22 +229,52 @@ session_start();
     </div>
   </main>
 
-  <button type="button" id="brn_modal_print" class="btn btn-primary" style="display:none" data-toggle="modal" data-target=".bd-example-modal-lg">Large modal</button>
+  <button type="button" id="brn_modal_asociar" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg">Large modal</button>
 
-<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" style="width:80%">
     <div class="modal-content">
       <div class="modal-header">
-        <div id="btn_pdf">
-
-        </div>
-        <h5 class="modal-title">Previsualización de cotización</h5>
+        <h5 class="modal-title">Asociar usuario a hoteles </h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">×</span>
         </button>
       </div>
-      <div class="modal-body" id="print_cotizacion">
-        
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-6">
+            <table class="table table-bordered table-condensed table-hover table-striped">
+              <thead>
+                <tr>
+                    <th >
+                      Hoteles asociados
+                    </th>
+                    <th>
+                    </th>
+                </tr>
+              </thead>
+              <tbody class="text-left" id="tabla_asociados">
+                
+              </tbody>
+            </table>
+          </div>
+          <div class="col-sm-6">
+          <table class="table table-bordered table-condensed table-hover table-striped">
+              <thead>
+                <tr>
+                    <th>
+                    </th>
+                    <th >
+                      Hoteles sin asociar
+                    </th>
+                </tr>
+              </thead>
+              <tbody class="text-left" id="tabla_por_asociar">
+                
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -412,6 +443,127 @@ function GuardarUsuario() {
     
   }
 
+  function abrir_asociacion_hotel(id) {
+    $("#brn_modal_asociar").click()
+    hoteles_asociados(id)
+    hoteles_por_asociar(id)
+  }
+  
+
+  function hoteles_asociados(id) {
+    
+    let values = { 
+          codigo: 'hoteles_asociados',
+          parametro1: id,
+          parametro2: ""
+    };
+    $.ajax({
+      type : 'POST',
+      data: values,
+      url: 'usuarios.php',
+      beforeSend: function() {
+          $(".loader").css("display", "inline-block")
+      },
+      success: function(respuesta) {
+        $(".loader").css("display", "none")
+        let obj = JSON.parse(respuesta)
+        let fila = ''
+        fila += ''
+        $.each(obj["resultado"], function( index, val ) {
+          fila += `<tr>
+                      <td>${val.nombre}</td>
+                      <td>
+                        <span style="cursor:pointer;:color:red" onclick="mover_hotel_usuario(${val.id}, ${id}, 'moverto_sin_asociar')"><i class="fa fa-chevron-right" aria-hidden="true"></i></span>
+                      </td>
+                  </tr>`
+        });
+
+        $("#tabla_asociados").html(fila)
+        
+      },
+      error: function() {
+        $(".loader").css("display", "none")
+        console.log("No se ha podido obtener la información");
+      }
+    });
+
+  }
+
+  function hoteles_por_asociar(id) {
+    
+    let values = { 
+          codigo: 'hoteles_por_asociar',
+          parametro1: id,
+          parametro2: ""
+    };
+    $.ajax({
+      type : 'POST',
+      data: values,
+      url: 'usuarios.php',
+      beforeSend: function() {
+          $(".loader").css("display", "inline-block")
+      },
+      success: function(respuesta) {
+        $(".loader").css("display", "none")
+        let obj = JSON.parse(respuesta)
+        let fila = ''
+        fila += ''
+        $.each(obj["resultado"], function( index, val ) {
+          fila += `<tr>
+                    <td>
+                    <span style="cursor:pointer;:color:red" onclick="mover_hotel_usuario(${val.id}, ${id}, 'moverto_asociados')"><i class="fa fa-chevron-left" aria-hidden="true"></i></span>
+                    </td>
+                      <td>${val.nombre}</td>
+                  </tr>`
+        });
+
+        $("#tabla_por_asociar").html(fila)
+        
+      },
+      error: function() {
+        $(".loader").css("display", "none")
+        console.log("No se ha podido obtener la información");
+      }
+    });
+
+  }
+
+  function mover_hotel_usuario(id, id_usuario, accion) {
+
+    let values = {
+      codigo :  accion,
+      parametro1 :  id,
+      parametro2 :  id_usuario
+    }
+    $.ajax({
+    type : 'POST',
+    data: values,
+    url: 'usuarios.php',
+    beforeSend: function() {
+        $(".loader").css("display", "inline-block")
+    },
+    success: function(respuesta) {
+      $(".loader").css("display", "none")
+      console.log(respuesta)
+      let obj = JSON.parse(respuesta)
+      if (obj.success) {
+        hoteles_por_asociar(id_usuario)
+        hoteles_asociados(id_usuario)
+        //limpiar_formulario()
+       
+      }else{
+        alert(obj.message)
+      }
+
+    },
+    error: function(e) {
+      $(".loader").css("display", "none")
+      console.log("No se ha podido obtener la información"+e);
+    }
+  });
+    
+  }
+
 
   function isNumber(evt) {
       evt = (evt) ? evt : window.event;
@@ -520,6 +672,7 @@ function GuardarUsuario() {
           { "data": "email"},
           { "data": "tipo"},
           { "data": "fecha_crea"},
+          { "data": "id"},
           { "data": "id"}
 
 				],
@@ -536,6 +689,13 @@ function GuardarUsuario() {
 						"data":"",
 						 render: function ( data, type, row ) {
 							return  `<button class="btn btn-link" onclick="traer_cotizacion(${row.id})"><i class="fa fa-eye" aria-hidden="true"></i></button>`;
+						 }
+					},
+          {
+						"targets": 11,
+						"data":"",
+						 render: function ( data, type, row ) {
+							return  `<button class="btn btn-link" onclick="abrir_asociacion_hotel(${row.id})"><i class="fa fa-eye" aria-hidden="true"></i></button>`;
 						 }
 					}],
 				});

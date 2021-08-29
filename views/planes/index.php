@@ -172,7 +172,7 @@ session_start();
         <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
           <br>
           <br>
-          <div class="responsive">
+          <div class="responsive" style="width:100%">
             <table id="tabla_planes" class="table table-striped table-bordered" style="width:100%">
               <thead>
                   <tr>
@@ -224,7 +224,7 @@ session_start();
                 <div class="row">
                   <br>
                   <br>
-                  <div class="responsive"  style="width:100%">
+                  <div class="responsive" style="width:100%">
                     <table id="tabla_productos" class="table table-striped table-bordered" style="width:100%">
                       <thead>
                           <tr>

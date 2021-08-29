@@ -896,7 +896,7 @@ function GuardarCotizacion() {
 
           })
 
-          
+          let terminos_y_condiciones = obj["info_terminos"][0]["descripcion"]
           let totalchild = parseInt( n_child )* parseInt( tarifa_child )
           let totaladult_s = parseInt( n_adult_s )* parseInt( tarifa_adult_s )
           let totaladult_d = parseInt( n_adult_d )* parseInt( tarifa_adult_d )
@@ -1069,6 +1069,11 @@ function GuardarCotizacion() {
                                   </tbody>
                                 </table>
                               </div>
+                            </div>
+                          </div>
+                          <div class="row" id="pageX" >
+                            <div class="col-sm-12">
+                              <p style="font-size:10px:text-align:justify: margin-top:500px" >${terminos_y_condiciones}</p>
                             </div>
                           </div>`
           $(".loader").css("display", "none")

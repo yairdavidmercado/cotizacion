@@ -344,6 +344,22 @@ if ($conn) {
 																	}
 
 										}
+
+										$info_terminos = mysqli_query($conn, "SELECT terminos_condiciones.* FROM terminos_condiciones WHERE id = $id_hotel;");
+										$datos_planes = array();
+										if(mysqli_num_rows($info_terminos) > 0)
+										{							$response["info_terminos"] = array();
+																	while ($row = mysqli_fetch_array($info_terminos)) {
+
+																		$datos_planes["id"] 					= $row["id"];
+																		$datos_planes["titulo"]					= $row["titulo"];
+																		$datos_planes["descripcion"]			= nl2br($row["descripcion"]);
+																		
+																		// push single product into final response array
+																		array_push($response["info_terminos"], $datos_planes);
+																	}
+
+										}
 									$response["success"] = true;
 									echo json_encode($response);
 
