@@ -2,11 +2,11 @@
 // start a session
 session_start();
  if (!isset($_SESSION['id'])) {
-    header ("Location:index.php"); 
+    header ("Location:/index.php"); 
  }
 
  if (!isset($_SESSION['id_hotel'])) {
-    header ("Location:welcome.php"); 
+    header ("Location:/welcome.php"); 
   }
 // manipulate session variables
 ?>

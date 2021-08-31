@@ -239,7 +239,11 @@ if ($conn) {
 										(SELECT nombre FROM motivos WHERE motivos.id = cotizacion.id_motivo) AS nombre_motivo,
 										(SELECT nombre FROM planes WHERE planes.id = cotizacion.id_plan) AS nombre_plan,
 										(SELECT descripcion FROM planes WHERE planes.id = cotizacion.id_plan) AS descripcion_plan,
-										(SELECT descripcion FROM terminos_condiciones WHERE terminos_condiciones.id = cotizacion.id_terminos) AS terminos
+										(SELECT descripcion FROM terminos_condiciones WHERE terminos_condiciones.id = cotizacion.id_terminos) AS terminos,
+										(SELECT COUNT(vaucher.id) FROM vaucher  WHERE vaucher.id_cotizacion = cotizacion.id AND vaucher.activo = true) as total_vaucher,
+										(SELECT SUM(vaucher.deposito) FROM vaucher  WHERE vaucher.id_cotizacion = cotizacion.id AND vaucher.activo = true) as deposito,
+										(SELECT id FROM vaucher WHERE vaucher.id_cotizacion = cotizacion.id AND vaucher.activo = true order by id desc limit 1) as id_vaucher,
+										(SELECT fecha_crea FROM vaucher WHERE vaucher.id_cotizacion = cotizacion.id AND vaucher.activo = true order by id desc limit 1) as vaucher_fecha_crea
 										FROM cotizacion 
 										WHERE id = $parametro1;");
 		if(mysqli_num_rows($result) > 0)
@@ -269,6 +273,10 @@ if ($conn) {
 										$datos['terminos'] = nl2br($row["terminos"]);
 										$datos['nombre_plan'] = $row["nombre_plan"];
 										$datos['descripcion_plan'] = $row["descripcion_plan"];
+										$datos['total_vaucher'] = $row["total_vaucher"];
+										$datos['deposito'] = $row["deposito"];
+										$datos['id_vaucher'] = $row["id_vaucher"];
+										$datos['vaucher_fecha_crea'] = $row["vaucher_fecha_crea"];
 
 										$id_titular = $row["id_titular"] == "" ? "0": $row["id_titular"];
 										$id_tarifa = $row["id_tarifa"] == "" ? "0":  $row["id_tarifa"];
@@ -465,6 +473,80 @@ if ($conn) {
 				$response["message"] = "No se encontraron registros";
 				// echo no users JSON
 				echo json_encode($response);
+		}
+	}else if ($codigo == "traer_metodo_pago") {//activos
+		$result = mysqli_query($conn, 	"SELECT * FROM metodo_pago");
+		if(mysqli_num_rows($result) > 0)
+		{	
+									$response["resultado"] = array();
+									while ($row = mysqli_fetch_array($result)) {
+									$datos = array();
+										
+										$datos["id"] 			= $row["id"];
+										$datos["nombre"]	= $row["nombre"];
+										
+										// push single product into final response array
+										array_push($response["resultado"], $datos);
+									}
+									$response["success"] = true;
+									echo json_encode($response);
+
+		}else{
+				$response["success"] = false;
+				$response["message"] = "No se encontraron registros";
+				// echo no users JSON
+				echo json_encode($response);
+		}
+	}else if ($codigo == "traer_tabla_vaucher") {//titulares
+		$result = mysqli_query($conn, 	"SELECT cotizacion.*, 
+										(SELECT CONCAT(nombre1, ' ', nombre2, ' ', apellido1, ' ', apellido2) FROM usuarios WHERE usuarios.id = cotizacion.id_titular) AS nombre_titular,
+										(SELECT cedula FROM usuarios WHERE usuarios.id = cotizacion.id_titular) AS cedula_titular,
+										(SELECT nombre FROM motivos WHERE motivos.id = cotizacion.id_motivo) AS nombre_motivo,
+										(SELECT nombre FROM planes WHERE planes.id = cotizacion.id_plan) AS nombre_plan,
+										(SELECT COUNT(vaucher.id) FROM vaucher  WHERE vaucher.id_cotizacion = cotizacion.id AND vaucher.activo = true) as total_vaucher,
+										(SELECT SUM(vaucher.deposito) FROM vaucher  WHERE vaucher.id_cotizacion = cotizacion.id AND vaucher.activo = true) as deposito,
+										(SELECT id FROM vaucher WHERE vaucher.id_cotizacion = cotizacion.id AND vaucher.activo = true order by id desc limit 1) as id_vaucher,
+										(SELECT fecha_crea FROM vaucher WHERE vaucher.id_cotizacion = cotizacion.id AND vaucher.activo = true order by id desc limit 1) as vaucher_fecha_crea
+										FROM cotizacion WHERE cotizacion.id_hotel = $id_hotel AND id_autor = $id_autor");
+		$data = array();										
+		if(mysqli_num_rows($result) > 0)
+		{	
+									
+									while ($row = mysqli_fetch_array($result)) {
+									$datos = array();
+										
+									$datos['id'] = $row["id"];
+									$datos['noche'] = $row["noche"];
+									$datos['nombre_titular'] = $row["nombre_titular"];
+									$datos['cedula_titular'] = $row["cedula_titular"];
+									$datos['fecha_expedicion'] = $row["fecha_expedicion"];
+									$datos['fecha_entrada'] = $row["fecha_entrada"];
+									$datos['fecha_salida'] = $row["fecha_salida"];
+									$datos['nombre_motivo'] = $row["nombre_motivo"];
+									$datos['nombre_plan'] = $row["nombre_plan"];
+									$datos['total_vaucher'] = $row["total_vaucher"];
+									$datos['deposito'] = $row["deposito"];
+									$datos['id_vaucher'] = $row["id_vaucher"];
+									$datos['vaucher_fecha_crea'] = $row["vaucher_fecha_crea"];
+										
+										
+									// push single product into final response array
+									array_push($data, $datos);
+									}
+									$response = array("draw" => 1,
+								    "recordsTotal" => 0,
+								    "recordsFiltered" => 0,
+									"data" => $data);
+									//$response["success"] = true;
+									echo json_encode($response);
+
+		}else{
+			$response = array("draw" => 1,
+			"recordsTotal" => 0,
+			"recordsFiltered" => 0,
+			"data" => $data);
+			//$response["success"] = true;
+			echo json_encode($response);
 		}
 	}
 }

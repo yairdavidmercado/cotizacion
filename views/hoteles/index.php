@@ -3,11 +3,11 @@
 // start a session
 session_start();
  if (!isset($_SESSION['id'])) {
-    header ("Location:index.php"); 
+    header ("Location:/index.php"); 
  }
 
  if (!isset($_SESSION['id_hotel'])) {
-    header ("Location:welcome.php"); 
+    header ("Location:/welcome.php"); 
   }
 // manipulate session variables
 ?>
@@ -256,7 +256,7 @@ var avatar_hotel = "<?php echo $_SESSION['avatar_hotel'] ?>";
 
 var cod_vendedor = "<?php echo $_SESSION['codigo'] ?>";
 $(function() {
-  
+  //alert(id_hotel)
   $("#menu_inicio").removeClass("active");
   $(".menu_principal").removeClass("active");
   $("#menu_hoteles").addClass("active");

@@ -163,7 +163,7 @@ session_start();
                 </div>
                 <div class="row">
                   <div class="col-md-3 mb-3">
-                    <label><span style="font-size:12px">Tipo de viaje</span></label>
+                    <label><span style="font-size:12px">Tipo de hospedaje</span></label>
                     <br>
                     <div class="form-check-inline">
                       <label class="form-check-label">
