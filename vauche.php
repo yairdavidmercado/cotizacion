@@ -813,7 +813,7 @@ function GuardarVaucher() {
     $(".loader").css("display", "inline-block")
     const element = document.getElementById("print_cotizacion")
     const opt = {
-      filename: 'Cotizacion'+id+'.pdf',
+      filename: 'Voucher'+id+'.pdf',
       margin: 2,
       image: {type: 'jpeg', quality: 1},
       jsPDF: {format: 'letter', orientation: 'portrait'}

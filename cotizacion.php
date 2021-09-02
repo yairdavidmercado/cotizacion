@@ -127,7 +127,7 @@ session_start();
                     </select>
                   </div>
                   <div class="col-md-6 mb-3">
-                    <button class="btn btn-link btn-sm float-right">Crear titular</button>
+                    <button type="button" class="btn btn-link btn-sm float-right" data-toggle="modal" data-target=".crear_titular_modal" >Crear titular</button>
                   </div>
                   <div class="col-md-12 mb-3" id="content_info_titular" style="display:none">
                     <div class="multi-collapse collapse show"  >
@@ -356,6 +356,99 @@ session_start();
   </div>
 </div>
 
+
+<div class="modal fade crear_titular_modal" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div id="btn_pdf">
+
+        </div>
+        <h5 class="modal-title">Crear titular</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="card mt-3">
+          <div class="card-body">
+            <form role="form" onsubmit="event.preventDefault(); return GuardarUsuario();" id="form_guardar" class="needs-validation">
+              <div class="row">
+                <div style="display:none" class="col-md-6 mb-3" >
+                  <label for="lastName">Código</label>
+                  <input type="text" autocomplete="off"  value="0" class="form-control " onkeypress="return isNumber(event)" name="codigo" id="codigo" placeholder="" required>                    
+                </div>
+                <div class="col-md-3 mb-3" >
+                  <label for="lastName">Primer nombre</label>
+                  <input type="text" autocomplete="off" class="form-control  "  maxLength="255" name="nombre1" id="nombre1" placeholder="" required>                    
+                </div>
+                <div class="col-md-3 mb-3" >
+                  <label for="lastName">Segundo nombre</label>
+                  <input type="text" autocomplete="off" class="form-control "  maxLength="255" name="nombre2" id="nombre2" placeholder="" >                    
+                </div>
+                <div class="col-md-3 mb-3" >
+                  <label for="lastName">Primer Apellido</label>
+                  <input type="text" autocomplete="off" class="form-control "  maxLength="255" name="apellido1" id="apellido1" placeholder="" required>                    
+                </div>
+                <div class="col-md-3 mb-3" >
+                  <label for="lastName">Segundo apellido</label>
+                  <input type="text" autocomplete="off" class="form-control "  maxLength="255" name="apellido2" id="apellido2" placeholder="" >                    
+                </div>
+                <div class="col-md-6 mb-3" >
+                  <label for="lastName">Cédula</label>
+                  <input type="text" autocomplete="off" class="form-control "  maxLength="11"  onkeypress="return isNumber(event)" name="cedula" id="cedula" placeholder="" required>                    
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="lastName">Email</label>
+                  <input type="email" autocomplete="off" class="form-control"  maxLength="100" name="email" id="email" placeholder="" required>                   
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="lastName">Teléfono</label>
+                  <input type="text" autocomplete="off" onkeypress="return isNumber(event)"  maxLength="15" class="form-control " name="telefono" id="telefono" placeholder="" required>                    
+                </div>
+                <div class="col-md-3 mb-3">
+                  <label for="firstName">Pais</label>
+                  <select style="width:100%" name="select_pais" onchange="traer_deptos(this.value)" required id="select_pais" class="form-control form-control-sm paises">
+                    <option value="">Seleccionar</option>
+                  </select>
+                </div>
+                <div class="col-md-3 mb-3">
+                  <label for="firstName">Departamento</label>
+                  <select style="width:100%" name="select_deptos" required id="select_deptos" class="form-control form-control-sm deptos">
+                    <option value="">Seleccionar</option>
+                  </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="lastName">Ciudad</label>
+                  <input type="text" autocomplete="off" class="form-control "  maxLength="255" name="ciudad" id="ciudad" placeholder="" required>                    
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="lastName">Dirección</label>
+                  <input type="text" autocomplete="off" class="form-control "  maxLength="100" name="direccion" id="direccion" placeholder="" required>                    
+                </div>
+                <div class="col-md-6 mb-3" style="display:none">
+                  <label for="firstName">Perfil</label>
+                  <select style="width:100%" name="tipo" required id="tipo" class="form-control form-control-sm terminos_condiciones">
+                    <option value="TITULAR">Titular</option>
+                  </select>
+                </div>
+                <div class="col-md-12 mb-3 d-flex justify-content-center">
+                  <button type="submit" class="btn btn-success mr-2">Guardar usuario</button>
+                  <!-- <div class="btn btn-warning text-white">Cancelar</div> -->
+                </div>
+              </div>
+              <div class="row">
+                
+              </div>
+              
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script src="assets/js/jquery.slim.min.js" crossorigin="anonymous"></script>
 <script>window.jQuery || document.write('<script src="assets/js/jquery.slim.min.js"><\/script>')</script>
 <script src="assets/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
@@ -388,6 +481,7 @@ $(function() {
   //traer_hotel()
   traer_titulares()
   traer_motivos()
+  traer_paises()
   traer_planes(id_hotel)
 
   $(".loader").css("display", "none")
@@ -551,6 +645,130 @@ function detalle_tarifa() {
     }
   }, 100);
   
+}
+
+function GuardarUsuario() {
+    
+    //let form = $('#form_guardar')[0];
+    //let formData = new FormData(form)
+    let values = {
+      codigo :  $("#codigo").val(),
+      cedula :  $("#cedula").val(),
+      nombre1 :  $("#nombre1").val(),
+      nombre2 :  $("#nombre2").val(),
+      apellido1 :  $("#apellido1").val(),
+      apellido2 :  $("#apellido2").val(),
+      pass :  "202cb962ac59075b964b07152d234b70",
+      tipo :  $("#tipo").val(),
+      id_pais :  $("#select_pais").val(),
+      id_depto :  $("#select_deptos").val(),
+      ciudad :  $("#ciudad").val(),
+      direccion :  $("#direccion").val(),
+      telefono :  $("#telefono").val(),
+      email :  $("#email").val(),
+      avatar : "/../upload.php"
+    }
+    $.ajax({
+    type : 'POST',
+    data: values,
+    url: 'views/usuarios/guardar_usuario.php',
+    beforeSend: function() {
+        $(".loader").css("display", "inline-block")
+    },
+    success: function(respuesta) {
+      $(".loader").css("display", "none")
+      console.log(respuesta)
+      let obj = JSON.parse(respuesta)
+      if (obj.success) {
+        alert(obj.message)
+        limpiar_formulario_usuarios()
+        traer_titulares()
+       
+      }else{
+        alert(obj.message)
+      }
+
+    },
+    error: function(e) {
+      $(".loader").css("display", "none")
+      console.log("No se ha podido obtener la información"+e);
+    }
+  });
+    
+}
+
+function traer_paises() {
+      let values = { 
+            codigo: 'traer_paises',
+            parametro1: "",
+            parametro2: ""
+      };
+      $.ajax({
+        type : 'POST',
+        data: values,
+        url: 'php/sel_recursos.php',
+        beforeSend: function() {
+            $(".loader").css("display", "inline-block")
+        },
+        success: function(respuesta) {
+          $(".loader").css("display", "none")
+          let obj = JSON.parse(respuesta)
+          let fila = ''
+          $.each(obj["resultado"], function( index, val ) {
+            fila += `<option value='${val.id}'>${val.paisnombre}</option>`
+          });
+
+          $("#select_pais").html('<option value="">Seleccionar</option>'+fila)
+          
+        },
+        error: function() {
+          $(".loader").css("display", "none")
+          console.log("No se ha podido obtener la información");
+        }
+      });
+
+      $("#select_pais").select2();
+    
+  }
+
+function traer_deptos(id) {
+
+if ( id.length < 1) {
+  $("#select_deptos").html('<option value="">Seleccionar</option>').select2();
+  return false
+}
+  let values = { 
+        codigo: 'traer_deptos',
+        parametro1: id,
+        parametro2: ""
+  };
+  $.ajax({
+    type : 'POST',
+    data: values,
+    url: 'php/sel_recursos.php',
+    beforeSend: function() {
+        $(".loader").css("display", "inline-block")
+    },
+    success: function(respuesta) {
+      $(".loader").css("display", "none")
+      let obj = JSON.parse(respuesta)
+      let fila = ''
+      fila += ''
+      $.each(obj["resultado"], function( index, val ) {
+        fila += `<option value='${val.id}'>${val.estadonombre}</option>`
+      });
+
+      $("#select_deptos").html('<option value="">Seleccionar</option>'+fila)
+      
+    },
+    error: function() {
+      $(".loader").css("display", "none")
+      console.log("No se ha podido obtener la información");
+    }
+  });
+
+  $("#select_deptos").select2();
+
 }
 
 function detalle_titular(value) {
@@ -1288,6 +1506,21 @@ function GuardarCotizacion() {
          traer_tabla_cotizacion();
 			}
 
+  }
+
+  function limpiar_formulario_usuarios(){
+    
+    $("#cedula").val("").change()
+    $("#nombre1").val("").change()
+    $("#nombre2").val("").change()
+    $("#apellido1").val("").change()
+    $("#apellido2").val("").change()
+    $("#select_pais").val("").change()
+    $("#select_deptos").val("").change()
+    $("#ciudad").val("").change()
+    $("#direccion").val("").change()
+    $("#telefono").val("").change()
+    $("#email").val("").change()
   }
 
 </script>

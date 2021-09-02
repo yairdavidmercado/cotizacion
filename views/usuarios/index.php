@@ -120,35 +120,35 @@
                 <div class="row">
                   <div class="col-md-6 mb-3" >
                     <label for="lastName">Código</label>
-                    <input type="text" autocomplete="off" class="form-control " onkeypress="return isNumber(event)" name="codigo" id="codigo" placeholder="" required>                    
+                    <input type="text" autocomplete="off" class="form-control " maxLength="6" onkeypress="return isNumber(event)" name="codigo" id="codigo" placeholder="" required>                    
                   </div>
                   <div class="col-md-6 mb-3" >
                     <label for="lastName">Cédula</label>
-                    <input type="text" autocomplete="off" class="form-control "  onkeypress="return isNumber(event)" name="cedula" id="cedula" placeholder="" required>                    
+                    <input type="text" autocomplete="off" class="form-control "  maxLength="11"  onkeypress="return isNumber(event)" name="cedula" id="cedula" placeholder="" required>                    
                   </div>
                   <div class="col-md-3 mb-3" >
                     <label for="lastName">Primer nombre</label>
-                    <input type="text" autocomplete="off" class="form-control " name="nombre1" id="nombre1" placeholder="" required>                    
+                    <input type="text" autocomplete="off" class="form-control "  maxLength="255" name="nombre1" id="nombre1" placeholder="" required>                    
                   </div>
                   <div class="col-md-3 mb-3" >
                     <label for="lastName">Segundo nombre</label>
-                    <input type="text" autocomplete="off" class="form-control " name="nombre2" id="nombre2" placeholder="" >                    
+                    <input type="text" autocomplete="off" class="form-control "  maxLength="255" name="nombre2" id="nombre2" placeholder="" >                    
                   </div>
                   <div class="col-md-3 mb-3" >
                     <label for="lastName">Primer Apellido</label>
-                    <input type="text" autocomplete="off" class="form-control " name="apellido1" id="apellido1" placeholder="" required>                    
+                    <input type="text" autocomplete="off" class="form-control "  maxLength="255" name="apellido1" id="apellido1" placeholder="" required>                    
                   </div>
                   <div class="col-md-3 mb-3" >
                     <label for="lastName">Segundo apellido</label>
-                    <input type="text" autocomplete="off" class="form-control " name="apellido2" id="apellido2" placeholder="" >                    
+                    <input type="text" autocomplete="off" class="form-control "  maxLength="255" name="apellido2" id="apellido2" placeholder="" >                    
                   </div>
                   <div class="col-md-6 mb-3">
                     <label for="lastName">Email</label>
-                    <input type="text" autocomplete="off" class="form-control" name="email" id="email" placeholder="" required>                   
+                    <input type="text" autocomplete="off"  maxLength="100" class="form-control" name="email" id="email" placeholder="" required>                   
                   </div>
                   <div class="col-md-6 mb-3">
                     <label for="lastName">Teléfono</label>
-                    <input type="text" autocomplete="off" onkeypress="return isNumber(event)" class="form-control " name="telefono" id="telefono" placeholder="" required>                    
+                    <input type="text" autocomplete="off"  maxLength="15" onkeypress="return isNumber(event)" class="form-control " name="telefono" id="telefono" placeholder="" required>                    
                   </div>
                   <div class="col-md-3 mb-3">
                     <label for="firstName">Pais</label>
@@ -164,17 +164,16 @@
                   </div>
                   <div class="col-md-6 mb-3">
                     <label for="lastName">Ciudad</label>
-                    <input type="text" autocomplete="off" class="form-control " name="ciudad" id="ciudad" placeholder="" required>                    
+                    <input type="text" autocomplete="off"  maxLength="255" class="form-control " name="ciudad" id="ciudad" placeholder="" required>                    
                   </div>
                   <div class="col-md-6 mb-3">
                     <label for="lastName">Dirección</label>
-                    <input type="text" autocomplete="off" class="form-control " name="direccion" id="direccion" placeholder="" required>                    
+                    <input type="text" autocomplete="off"  maxLength="100" class="form-control " name="direccion" id="direccion" placeholder="" required>                    
                   </div>
                   <div class="col-md-6 mb-3">
                     <label for="firstName">Perfil</label>
                     <select style="width:100%" name="tipo" required id="tipo" class="form-control form-control-sm terminos_condiciones">
                       <option value="">Seleccionar</option>
-                      <option value="TITULAR">Titular</option>
                       <option value="OPERADOR">Operador</option>
                       <option value="ADMINISTRADOR">Administrador</option>
                     </select>
@@ -351,7 +350,7 @@ function GuardarUsuario() {
       console.log(respuesta)
       let obj = JSON.parse(respuesta)
       if (obj.success) {
-        
+        alert(obj.message)
         limpiar_formulario()
        
       }else{
