@@ -100,10 +100,10 @@ function card_hotel(id) {
                 
                                 <div class="box-part text-center">
                                     
-                                    <i class="fa fa-instagram fa-3x" aria-hidden="true"></i>
+                                   <img src="${val.avatar}" width="100px">
                                     
                                     <div class="title">
-                                        <h4>${val.nombre}</h4>
+                                        <button onclick="change_hotel(${val.id},'${val.nombre}','${val.id_terminos}','${val.direccion}','${val.telefono}','${val.pais}','${val.depto}','${val.email}','${val.avatar}')" class="btn btn-link"><h4>${val.nombre}</h4></button>
                                     </div>
 
                                     <div class="text">
@@ -114,8 +114,6 @@ function card_hotel(id) {
                                         <span>${val.pais} - ${val.depto}</span>
                                         <br>
                                     </div>
-                                    
-                                    <button onclick="change_hotel(${val.id},'${val.nombre}','${val.id_terminos}','${val.direccion}','${val.telefono}','${val.pais}','${val.depto}','${val.email}','${val.avatar}')" class="btn btn-link">Acceder</button>
                                     
                                 </div>
                             </div>
@@ -128,10 +126,10 @@ function card_hotel(id) {
                 
                                 <div class="box-part text-center">
                                     
-                                    <i class="fa fa-instagram fa-3x" aria-hidden="true"></i>
+                                    <img src="${val.avatar}" width="100px">
                                     
                                     <div class="title">
-                                        <h4>${val.nombre}</h4>
+                                        <button onclick="change_hotel(${val.id},'${val.nombre}','${val.id_terminos}','${val.direccion}','${val.telefono}','${val.pais}','${val.depto}','${val.email}','${val.avatar}')" class="btn btn-link"><h4>${val.nombre}</h4></button>
                                     </div>
                                     <div class="text">
                                         <span>${val.direccion}</span>
@@ -141,8 +139,6 @@ function card_hotel(id) {
                                         <span>${val.pais} - ${val.depto}</span>
                                         <br>
                                     </div>
-                                    
-                                    <button onclick="change_hotel(${val.id},'${val.nombre}','${val.id_terminos}','${val.direccion}','${val.telefono}','${val.pais}','${val.depto}','${val.email}','${val.avatar}')" class="btn btn-link">Acceder</button>
                                     
                                 </div>
                             </div>`
@@ -158,10 +154,10 @@ function card_hotel(id) {
                 
                                 <div class="box-part text-center">
                                     
-                                    <i class="fa fa-instagram fa-3x" aria-hidden="true"></i>
+                                    <img src="${val.avatar}" width="100px">
                                     
                                     <div class="title">
-                                        <h4>${val.nombre}</h4>
+                                        <button onclick="change_hotel(${val.id},'${val.nombre}','${val.id_terminos}','${val.direccion}','${val.telefono}','${val.pais}','${val.depto}','${val.email}','${val.avatar}')" class="btn btn-link"><h4>${val.nombre}</h4></button>
                                     </div>
                                     <div class="text">
                                         <span>${val.direccion}</span>
@@ -171,8 +167,6 @@ function card_hotel(id) {
                                         <span>${val.pais} - ${val.depto}</span>
                                         <br>
                                     </div>
-                                    
-                                    <button onclick="change_hotel(${val.id},'${val.nombre}','${val.id_terminos}','${val.direccion}','${val.telefono}','${val.pais}','${val.depto}','${val.email}','${val.avatar}')" class="btn btn-link">Acceder</button>
                                     
                                 </div>
                             </div>`

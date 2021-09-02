@@ -398,6 +398,7 @@ $(function() {
       iconsLibrary: 'fontawesome',
       minDate: today,
       format: "yyyy-mm-dd",
+      language: 'es',
       maxDate: function () {
           return $('#endDate').val();
       }
@@ -406,6 +407,7 @@ $(function() {
       uiLibrary: 'bootstrap4',
       iconsLibrary: 'fontawesome',
       format: "yyyy-mm-dd",
+      language: 'es',
       minDate: function () {
           return $('#startDate').val();
       }
@@ -505,7 +507,7 @@ function detalle_tarifa() {
                                 </tr>
                                 <tr>
                                     <td class="center">2</td>
-                                    <td class="left">Adultos simple</td>
+                                    <td class="left">Adultos normal</td>
                                     <td class="center">${inputadult_s}</td>
                                     <td style="text-align: right;">$${puntosDecimales(adult_s)}</td>
                                     <td style="text-align: right;">$${puntosDecimales(totaladult_s)}</td>
@@ -957,7 +959,7 @@ function GuardarCotizacion() {
                                     <td>${telefono}</td></td>
                                   </tr>
                                   <tr>
-                                    <td><b>FECHA DE ENTREGA</b></td>
+                                    <td><b>FECHA DE ENTRADA</b></td>
                                     <td>${fecha_entrada}</td>
                                     <td><b>Nº NOCHE</b></td>
                                     <td>${noche}</td>

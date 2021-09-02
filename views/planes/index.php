@@ -204,7 +204,7 @@ session_start();
                     <select style="width:100%" name="select_tipo" required id="select_tipo" class="form-control form-control-sm tipo">
                       <option value="">Seleccionar</option>
                       <option value="CONSUMO">CONSUMO</option>
-                      <option value="SERVICIO">SERVICIO</option>
+                      <option value="SERVICIOS">SERVICIOS</option>
                     </select>
                   </div>
                   <div class="col-md-6 mb-3">

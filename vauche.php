@@ -106,7 +106,7 @@ session_start();
       <div class="col-md-12 order-md-1 mt-5">
       <ul class="nav nav-tabs" id="myTab" role="tablist">
         <li class="nav-item">
-          <a class="nav-link active"  onclick="show_traer_tabla_vaucher()" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Vauches</a>
+          <a class="nav-link active"  onclick="show_traer_tabla_vaucher()" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Voucher</a>
         </li>
         <!-- <li class="nav-item">
           <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Buscar</a>
@@ -626,7 +626,7 @@ function GuardarVaucher() {
                                     <b>No.: </b>${id}<br>
                                     <b>Fecha expe: </b>${fecha_vaucher}<br>
                                     <b>Código vendedor: </b>${cod_vendedor}<br>
-                                    <b>No. Vaucher: </b>${id_vaucher}
+                                    <b>No. Voucher: </b>${id_vaucher}
                                   </p>
                                   </td>
                                 </tr>
