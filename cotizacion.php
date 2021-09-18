@@ -200,7 +200,7 @@ session_start();
                     <input type="text" autocomplete="off" value="0" disabled onkeypress="return isNumber(event)" class="form-control " name="child" id="child" placeholder="" required>                    
                   </div>
                   <div class="col-md-3 mb-3">
-                    <label for="lastName">No. Adultos Simple</label>
+                    <label for="lastName">No. Adultos normal</label>
                     <input type="text" autocomplete="off" value="0" disabled onkeypress="return isNumber(event)" class="form-control" name="adult_s" id="adult_s" placeholder="" required>                    
                   </div>
                   
@@ -357,7 +357,7 @@ session_start();
 </div>
 
 
-<div class="modal fade crear_titular_modal" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+<div class="modal fade crear_titular_modal" id="crear_titular_modal" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
@@ -396,11 +396,11 @@ session_start();
                 </div>
                 <div class="col-md-6 mb-3" >
                   <label for="lastName">Cédula</label>
-                  <input type="text" autocomplete="off" class="form-control "  maxLength="11"  onkeypress="return isNumber(event)" name="cedula" id="cedula" placeholder="" required>                    
+                  <input type="text" autocomplete="off" class="form-control "  maxLength="11"  onkeypress="return isNumber(event)" name="cedula" id="cedula" placeholder="" >                    
                 </div>
                 <div class="col-md-6 mb-3">
                   <label for="lastName">Email</label>
-                  <input type="email" autocomplete="off" class="form-control"  maxLength="100" name="email" id="email" placeholder="" required>                   
+                  <input type="email" autocomplete="off" class="form-control"  maxLength="100" name="email" id="email" placeholder="" >                   
                 </div>
                 <div class="col-md-6 mb-3">
                   <label for="lastName">Teléfono</label>
@@ -414,17 +414,17 @@ session_start();
                 </div>
                 <div class="col-md-3 mb-3">
                   <label for="firstName">Departamento</label>
-                  <select style="width:100%" name="select_deptos" required id="select_deptos" class="form-control form-control-sm deptos">
+                  <select style="width:100%" name="select_deptos" id="select_deptos" class="form-control form-control-sm deptos">
                     <option value="">Seleccionar</option>
                   </select>
                 </div>
                 <div class="col-md-6 mb-3">
                   <label for="lastName">Ciudad</label>
-                  <input type="text" autocomplete="off" class="form-control "  maxLength="255" name="ciudad" id="ciudad" placeholder="" required>                    
+                  <input type="text" autocomplete="off" class="form-control "  maxLength="255" name="ciudad" id="ciudad" placeholder="" >                    
                 </div>
                 <div class="col-md-6 mb-3">
                   <label for="lastName">Dirección</label>
-                  <input type="text" autocomplete="off" class="form-control "  maxLength="100" name="direccion" id="direccion" placeholder="" required>                    
+                  <input type="text" autocomplete="off" class="form-control "  maxLength="100" name="direccion" id="direccion" placeholder="">                    
                 </div>
                 <div class="col-md-6 mb-3" style="display:none">
                   <label for="firstName">Perfil</label>
@@ -727,7 +727,9 @@ function traer_paises() {
         }
       });
 
-      $("#select_pais").select2();
+      $("#select_pais").select2({
+        dropdownParent: $('#crear_titular_modal')
+    });
     
   }
 
@@ -767,7 +769,9 @@ if ( id.length < 1) {
     }
   });
 
-  $("#select_deptos").select2();
+  $("#select_deptos").select2({
+        dropdownParent: $('#crear_titular_modal')
+    });
 
 }
 
@@ -1221,7 +1225,7 @@ function GuardarCotizacion() {
                                     </tr>
                                     <tr>
                                         <td class="center">2</td>
-                                        <td class="left">Adultos simple</td>
+                                        <td class="left">Adultos normal</td>
                                         <td class="center">${n_adult_s}</td>
                                         <td style="text-align: right;">$${puntosDecimales(tarifa_adult_s)}</td>
                                         <td style="text-align: right;">$${puntosDecimales(totaladult_s)}</td>

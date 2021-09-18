@@ -21,8 +21,27 @@
         echo "Failed to connect to MySQL: " . mysqli_connect_error();
         exit;
         }
-        // Insert some values
+        
+        
         try{
+            $result = mysqli_query($con, 	"SELECT * FROM hoteles WHERE nit = $nit");
+            $code = "";										
+            if(mysqli_num_rows($result) > 0)
+            {	
+    
+                $response["success"] = false;
+                $response["message"] = "El NIT ya se encuentra registrado.";
+                echo json_encode($response);
+                exit;
+            }
+
+            if ($avatar !== "assets/img/default.jpg") {
+
+                $file = $avatar; //your data in base64 'data:image/png....';
+                file_put_contents('../../assets/img/avatar'.$nit.'.png', base64_decode(explode(',', $avatar)[1]));
+
+                $avatar = "assets/img/avatar".$nit.".png";
+            }
              $result = mysqli_query($con, "INSERT INTO hoteles (nit, 
                                                                     nombre, 
                                                                     email, 
@@ -51,12 +70,30 @@
                 if (mysqli_insert_id($con) > 0) {
                     $response["success"] = true;
                     $response["id"] = mysqli_insert_id($con);
-                    $response["message"] = "Commiting transaction.";
+                    $response["message"] = "Hotel guardado exitosamente.";
+                    $result = mysqli_query($con, "INSERT INTO permiso_hotel (id_usuario, 
+                                                                    id_hotel,
+                                                                    id_autor )
+                                                            VALUES ($id_autor, 
+                                                                    ".mysqli_insert_id($con).",
+                                                                    $id_autor);");
+
+                    //var_dump($result);
+                    mysqli_query($con, $result);
+                    if (mysqli_insert_id($con) > 0) {
+                        $response["success2"] = true;
+                        $response["id2"] = mysqli_insert_id($con);
+                        $response["message2"] = "Asignación guardada correctamente";
+                    } else {
+                        $response["success2"] = false;
+                        $response["id2"] = mysqli_insert_id($con);
+                        $response["message2"] = "Error al guardar la información de permisos de hotel.";
+                    }
                 echo json_encode($response);
                 } else {
                     $response["success"] = false;
                     $response["id"] = mysqli_insert_id($con);
-                    $response["message"] = "Rolling back transaction.";
+                    $response["message"] = "Error al guardar la información en hotel.";
                 echo json_encode($response);
                 }
             }catch(Exception $e){

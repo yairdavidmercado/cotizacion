@@ -30,11 +30,15 @@
                     Configuración
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown1">
-                    <a class="nav-link menu_principal" style="color:#000" id="menu_planes" href="/cotizacion/views/planes">Planes</a>
+                    <a class="dropdown-item menu_principal" style="color:#000; pading: 6px;" id="menu_planes" href="/cotizacion/views/planes">Planes</a>
                         <div class="dropdown-divider"></div>
-                        <a class="nav-link menu_principal" style="color:#000" id="menu_motivos" href="/cotizacion/views/motivos">Motivos</a>
+                        <a class="dropdown-item menu_principal" style="color:#000; pading: 6px;" id="menu_motivos" href="/cotizacion/views/motivos">Motivos</a>
                         <div class="dropdown-divider"></div>
-                        <a class="nav-link menu_principal" style="color:#000" id="menu_tarifas" href="/cotizacion/views/tarifas">Tarifas</a>
+                        <a class="dropdown-item menu_principal" style="color:#000; pading: 6px;" id="menu_tarifas" href="/cotizacion/views/tarifas">Tarifas</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item menu_principal" style="color:#000; pading: 6px;" id="metodo_pago" href="/cotizacion/views/metodo_pago">Método de pago</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item menu_principal" style="color:#000; pading: 6px;" id="terminos_condiciones" href="/cotizacion/views/terminos_condiciones">Términos y condiciones</a>
                     </div>
                 </li>
                 <li class="nav-item">

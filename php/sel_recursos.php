@@ -7,13 +7,19 @@ $parametro1 = $_POST["parametro1"];
 $parametro2 = $_POST["parametro2"]; 
 $parametro3 = isset($_POST["parametro3"]) ? $_POST["parametro3"] : "0" ;                
 $id_autor = $_SESSION['id'];
+$id_perfil = $_SESSION['perfil'];
 $id_hotel = isset($_SESSION['id_hotel']) ? $_SESSION['id_hotel']: "" ;
 //parametros de conexion a la base de datos del cliente
-
+$condicion = '';
+if ($id_perfil !== 'ADMINISTRADOR') {
+	$condicion = "AND id_autor = $id_autor";
+}
 $conn = mysqli_connect(DB_HOST,DB_USER, DB_PASS, DB_NAME); 
 if (!$conn) {
 	die('No pudo conectarse: ' . mysqli_error());
 }
+
+
 
 if ($conn) {
 	if ($codigo == "traer_hotel") {//activos
@@ -58,7 +64,7 @@ if ($conn) {
 										WHERE usuarios.id = $parametro1 
 										AND hoteles.activo = 1 
 										AND usuarios.activo = 1
-										AND permiso_hotel.activo = 1");
+										AND permiso_hotel.activo = 1 ORDER BY id DESC");
 		if(mysqli_num_rows($result) > 0)
 		{	
 									$response["resultado"] = array();
@@ -93,7 +99,7 @@ if ($conn) {
 		$result = mysqli_query($conn, 	"SELECT *, 
 										(SELECT paisnombre FROM pais WHERE pais.id = id_pais) as pais, 
 										(SELECT estadonombre FROM estado WHERE estado.id = id_depto) as depto 
-										FROM usuarios WHERE activo = true AND tipo = 'TITULAR';");
+										FROM usuarios WHERE activo = true AND tipo = 'TITULAR' ORDER BY id DESC;");
 		if(mysqli_num_rows($result) > 0)
 		{	
 									$response["resultado"] = array();
@@ -368,7 +374,7 @@ if ($conn) {
 										(SELECT cedula FROM usuarios WHERE usuarios.id = cotizacion.id_titular) AS cedula_titular,
 										(SELECT nombre FROM motivos WHERE motivos.id = cotizacion.id_motivo) AS nombre_motivo,
 										(SELECT nombre FROM planes WHERE planes.id = cotizacion.id_plan) AS nombre_plan
-										FROM cotizacion WHERE cotizacion.id_hotel = $id_hotel AND id_autor = $id_autor");
+										FROM cotizacion WHERE cotizacion.id_hotel = $id_hotel $condicion");
 		$data = array();										
 		if(mysqli_num_rows($result) > 0)
 		{	
@@ -452,7 +458,7 @@ if ($conn) {
 				echo json_encode($response);
 		}
 	}else if ($codigo == "traer_terminos") {//activos
-		$result = mysqli_query($conn, 	"SELECT * FROM terminos_condiciones WHERE id_hotel = $id_hotel");
+		$result = mysqli_query($conn, 	"SELECT * FROM terminos_condiciones WHERE activo = true");
 		if(mysqli_num_rows($result) > 0)
 		{	
 									$response["resultado"] = array();
@@ -507,7 +513,7 @@ if ($conn) {
 										(SELECT SUM(vaucher.deposito) FROM vaucher  WHERE vaucher.id_cotizacion = cotizacion.id AND vaucher.activo = true) as deposito,
 										(SELECT id FROM vaucher WHERE vaucher.id_cotizacion = cotizacion.id AND vaucher.activo = true order by id desc limit 1) as id_vaucher,
 										(SELECT fecha_crea FROM vaucher WHERE vaucher.id_cotizacion = cotizacion.id AND vaucher.activo = true order by id desc limit 1) as vaucher_fecha_crea
-										FROM cotizacion WHERE cotizacion.id_hotel = $id_hotel AND id_autor = $id_autor");
+										FROM cotizacion WHERE cotizacion.id_hotel = $id_hotel $condicion");
 		$data = array();										
 		if(mysqli_num_rows($result) > 0)
 		{	

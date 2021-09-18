@@ -126,8 +126,8 @@ session_start();
                       <th>Noches</th>
                       <th>Motivo</th>
                       <th>Plan</th>
-                      <th>Fecha entrada</th>
-                      <th></th>
+                      <th>Total</th>
+                      <th>Deposito</th>
                       <th></th>
                   </tr>
               </thead>
@@ -168,7 +168,7 @@ session_start();
               <div class="row">
                 <div class="col-md-6 mb-3">
                   <label for="lastName">Deposito</label>
-                  <input type="text" autocomplete="off" onkeypress="return isNumber(event)" class="form-control " name="deposito" id="deposito" placeholder="" required>
+                  <input type="text" autocomplete="off"  onkeyup="format(this)" onchange="format(this)" class="form-control " name="deposito" id="deposito" placeholder="" required>
                   <input type="hidden" id="id_cotizacion" required />                    
                 </div>
                 <div class="col-md-6 mb-3">
@@ -276,7 +276,7 @@ function GuardarVaucher() {
     //let formData = new FormData(form)
     let values = {
       id_cotizacion : $("#id_cotizacion").val(),
-      deposito : $("#deposito").val(),
+      deposito : $("#deposito").val().replace(/[.]/g,''),
       id_metodo_pago : $("#id_metodo_pago").val(),
       id_hotel :  id_hotel
     }
@@ -705,7 +705,7 @@ function GuardarVaucher() {
                                     </tr>
                                     <tr>
                                         <td class="center">2</td>
-                                        <td class="left">Adultos simple</td>
+                                        <td class="left">Adultos normal</td>
                                         <td class="center">${n_adult_s}</td>
                                         <td style="text-align: right;">$${puntosDecimales(tarifa_adult_s)}</td>
                                         <td style="text-align: right;">$${puntosDecimales(totaladult_s)}</td>
@@ -873,10 +873,22 @@ function GuardarVaucher() {
 					{ "data": "nombre_motivo"},
 					{ "data": "nombre_plan"},
           { "data": "deposito"},
-          { "data": ""},
+          { "data": "deposito"},
           { "data": ""}
 				],
 				 "columnDefs": [
+           {
+						"targets": 6,
+						"data":"",
+						 render: function ( data, type, row ) {
+               if (row.deposito !== null) {
+                return puntosDecimales(row.deposito);
+               }else{
+                return  ``;
+               }
+							
+						 }
+					},
 					 {
 						"targets": 7,
 						"data":"",
@@ -902,6 +914,20 @@ function GuardarVaucher() {
          traer_tabla_vaucher();
 			}
 
+  }
+
+  function format(input)
+  {
+    var num = input.value.replace(/\./g,'');
+    if(!isNaN(num)){
+      num = num.toString().split('').reverse().join('').replace(/(?=\d*\.?)(\d{3})/g,'$1.');
+      num = num.split('').reverse().join('').replace(/^[\.]/,'');
+      input.value = num;
+    }
+    
+    else{ 
+      input.value = input.value.replace(/[^\d\.]*/g,'');
+    }
   }
 
 </script>

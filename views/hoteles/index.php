@@ -281,7 +281,7 @@ function GuardarHotel() {
         id_depto :  $("#select_deptos").val(),
         id_terminos :  $("#select_terminos_condiciones").val(),
         ciudad :  $("#ciudad").val(),
-        avatar : "/../upload.php"
+        avatar : "assets/img/default.jpg"
     }
     $.ajax({
     type : 'POST',

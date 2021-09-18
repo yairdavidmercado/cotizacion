@@ -2,8 +2,8 @@
     session_start();
     include '../../php/conexion.php';
 
-    $codigo = $_POST["codigo"];
-    $cedula = $_POST["cedula"];
+    $codigo = $_POST["codigo"] == "" ? "0": $_POST["codigo"] ;
+    $cedula =  $_POST["cedula"] == "" ? "0": $_POST["cedula"] ;
     $nombre1 = $_POST["nombre1"];
     $nombre2 = $_POST["nombre2"];
     $apellido1 = $_POST["apellido1"];
@@ -11,7 +11,7 @@
     $pass = $_POST["pass"];
     $tipo = $_POST["tipo"];
     $id_pais = $_POST["id_pais"];
-    $id_depto = $_POST["id_depto"];
+    $id_depto =  $_POST["id_depto"] == "" ? "0": $_POST["id_depto"] ;
     $ciudad = $_POST["ciudad"];
     $direccion = $_POST["direccion"];
     $telefono = $_POST["telefono"];
@@ -28,7 +28,7 @@
     }
     // Insert some values
     try{
-        $result = mysqli_query($con, 	"SELECT * FROM usuarios WHERE cedula = $cedula");
+        /* $result = mysqli_query($con, 	"SELECT * FROM usuarios WHERE cedula = $cedula");
         $code = "";										
         if(mysqli_num_rows($result) > 0)
         {	
@@ -37,7 +37,7 @@
             $response["message"] = "la identificación ya existe.";
             echo json_encode($response);
             exit;
-        }
+        } */
         if ($codigo !== "0") {
             $result = mysqli_query($con, 	"SELECT * FROM usuarios WHERE codigo = $codigo");
             $code = "";										
