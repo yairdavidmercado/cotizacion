@@ -49,7 +49,7 @@
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
                         <a class="nav-link menu_principal" id="menu_nombre_hotel" href="#"> 
-                            <?php echo $_SESSION['nombre_hotel'];?>
+                            <?php echo isset( $_SESSION['nombre_hotel']) ? $_SESSION['nombre_hotel']: "";?>
                         </a>
                     </li>
                     <li class="nav-item dropdown">

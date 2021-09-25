@@ -198,6 +198,8 @@
           <table id="tabla_usuarios" class="table table-striped table-bordered" style="width:100%">
             <thead>
                 <tr>
+                    <th></th>
+                    <th></th>
                     <th>Cédula</th>
                     <th>Nombre</th>
                     <th>País</th>
@@ -208,8 +210,6 @@
                     <th>Email</th>
                     <th>Perfil</th>
                     <th>Creación</th>
-                    <th></th>
-                    <th></th>
                 </tr>
             </thead>
             <tbody id="body_table_cotizacion">
@@ -273,6 +273,102 @@
             </table>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade modal_editar_usuario" id="modal_editar_usuario" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" style="width:80%">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Editar usuario </h5>
+        <button type="button" class="close" data-dismiss="modal" id="close_modal_edit_usuario" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      <div class="card mt-3">
+            <h5 class="card-header">Usuarios</h5>
+            <div class="card-body">
+              <form role="form" onsubmit="event.preventDefault(); return EditarUsuario();" id="form_guardar" class="needs-validation">
+                <div class="row">
+                  <div class="col-md-6 mb-3" >
+                    <label for="lastName">Código</label>
+                    <input type="hidden" id="id_edit">
+                    <input type="text" autocomplete="off" class="form-control " maxLength="6" onkeypress="return isNumber(event)" name="codigo_edit" id="codigo_edit" placeholder="" required>                    
+                  </div>
+                  <div class="col-md-6 mb-3" >
+                    <label for="lastName">Cédula</label>
+                    <input type="text" autocomplete="off" class="form-control "  maxLength="11"  onkeypress="return isNumber(event)" name="cedula_edit" id="cedula_edit" placeholder="" required>                    
+                  </div>
+                  <div class="col-md-3 mb-3" >
+                    <label for="lastName">Primer nombre</label>
+                    <input type="text" autocomplete="off" class="form-control "  maxLength="255" name="nombre1_edit" id="nombre1_edit" placeholder="" required>                    
+                  </div>
+                  <div class="col-md-3 mb-3" >
+                    <label for="lastName">Segundo nombre</label>
+                    <input type="text" autocomplete="off" class="form-control "  maxLength="255" name="nombre2_edit" id="nombre2_edit" placeholder="" >                    
+                  </div>
+                  <div class="col-md-3 mb-3" >
+                    <label for="lastName">Primer Apellido</label>
+                    <input type="text" autocomplete="off" class="form-control "  maxLength="255" name="apellido1_edit" id="apellido1_edit" placeholder="" required>                    
+                  </div>
+                  <div class="col-md-3 mb-3" >
+                    <label for="lastName">Segundo apellido</label>
+                    <input type="text" autocomplete="off" class="form-control "  maxLength="255" name="apellido2_edit" id="apellido2_edit" placeholder="" >                    
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="lastName">Email</label>
+                    <input type="text" autocomplete="off"  maxLength="100" class="form-control" name="email_edit" id="email_edit" placeholder="" >                   
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="lastName">Teléfono</label>
+                    <input type="text" autocomplete="off"  maxLength="15" onkeypress="return isNumber(event)" class="form-control " name="telefono_edit" id="telefono_edit" placeholder="" required>                    
+                  </div>
+                  <div class="col-md-3 mb-3">
+                    <label for="firstName">Pais</label>
+                    <select style="width:100%" name="select_pais_edit" onchange="traer_deptos(this.value)" required id="select_pais_edit" class="form-control form-control-sm paises">
+                      <option value="">Seleccionar</option>
+                    </select>
+                  </div>
+                  <div class="col-md-3 mb-3">
+                    <label for="firstName">Departamento</label>
+                    <select style="width:100%" name="select_deptos_edit" id="select_deptos_edit" class="form-control form-control-sm deptos">
+                      <option value="">Seleccionar</option>
+                    </select>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="lastName">Ciudad</label>
+                    <input type="text" autocomplete="off"  maxLength="255" class="form-control " name="ciudad_edit" id="ciudad_edit" placeholder="" required>                    
+                  </div>
+                  
+                  <div class="col-md-6 mb-3">
+                    <label for="lastName">Dirección</label>
+                    <input type="text" autocomplete="off"  maxLength="100" class="form-control " name="direccion_edit" id="direccion_edit" placeholder="" >                    
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="firstName">Perfil</label>
+                    <select style="width:100%" name="tipo_edit" id="tipo_edit" class="form-control form-control-sm terminos_condiciones">
+                      <option value="">Seleccionar</option>
+                      <option value="OPERADOR">Operador</option>
+                      <option value="ADMINISTRADOR">Administrador</option>
+                      <option value="TITULAR">Titular</option>
+                    </select>
+                  </div>
+                  <div class="col-md-12 mb-3 d-flex justify-content-center">
+                    <button type="submit" class="btn btn-success mr-2">Guardar usuario</button>
+                    <!-- <div class="btn btn-warning text-white">Cancelar</div> -->
+                  </div>
+                </div>
+                <div class="row">
+                  
+                </div>
+                
+              </form>
+            </div>
+          </div>
       </div>
     </div>
   </div>
@@ -364,7 +460,7 @@ function GuardarUsuario() {
     }
   });
     
-  }
+}
 
 
   function traer_paises() {
@@ -389,6 +485,7 @@ function GuardarUsuario() {
           });
 
           $("#select_pais").html('<option value="">Seleccionar</option>'+fila)
+          $("#select_pais_edit").html('<option value="">Seleccionar</option>'+fila)
           
         },
         error: function() {
@@ -398,6 +495,7 @@ function GuardarUsuario() {
       });
 
       $("#select_pais").select2();
+      $("#select_pais_edit").select2();
     
   }
 
@@ -405,6 +503,7 @@ function GuardarUsuario() {
 
     if ( id.length < 1) {
       $("#select_deptos").html('<option value="">Seleccionar</option>').select2();
+      $("#select_deptos_edit").html('<option value="">Seleccionar</option>').select2();
       return false
     }
       let values = { 
@@ -429,6 +528,7 @@ function GuardarUsuario() {
           });
 
           $("#select_deptos").html('<option value="">Seleccionar</option>'+fila)
+          $("#select_deptos_edit").html('<option value="">Seleccionar</option>'+fila)
           
         },
         error: function() {
@@ -438,6 +538,7 @@ function GuardarUsuario() {
       });
 
       $("#select_deptos").select2();
+      $("#select_deptos_edit").select2();
     
   }
 
@@ -639,6 +740,51 @@ function GuardarUsuario() {
     }, 100);
   }
 
+  function traer_usuario_id(id) {
+
+    let values = { 
+            codigo: 'traer_usuarios_id',
+            parametro1: id,
+            parametro2: ""
+      };
+      $.ajax({
+        type : 'POST',
+        data: values,
+        url: 'usua.php',
+        beforeSend: function() {
+            $(".loader").css("display", "inline-block")
+        },
+        success: function(respuesta) {
+          $(".loader").css("display", "none")
+          let obj = JSON.parse(respuesta)
+          let fila = ''
+          $.each(obj["resultado"], function( index, val ) {
+            $("#id_edit").val(val.id)
+            $("#codigo_edit").val(val.codigo).change()
+            $("#cedula_edit").val(val.cedula).change()
+            $("#nombre1_edit").val(val.nombre1).change()
+            $("#nombre2_edit").val(val.nombre2).change()
+            $("#apellido1_edit").val(val.apellido1).change()
+            $("#apellido2_edit").val(val.apellido2).change()
+            $("#tipo_edit").val(val.tipo).change()
+            $("#select_pais_edit").val(val.pais).change()
+            setTimeout(() => {
+              $("#select_deptos_edit").val(val.depto).change()
+            }, 300);
+            $("#ciudad_edit").val(val.ciudad).change()
+            $("#direccion_edit").val(val.direccion).change()
+            $("#telefono_edit").val(val.telefono).change()
+            $("#email_edit").val(val.email).change()
+          });
+          
+        },
+        error: function() {
+          $(".loader").css("display", "none")
+          console.log("No se ha podido obtener la información");
+        }
+      });
+  }
+
   function traer_tabla_usuarios(){
 
     if ( ! $.fn.DataTable.isDataTable('#tabla_usuarios')) {
@@ -660,6 +806,8 @@ function GuardarUsuario() {
 
 				  },
 				  "columns": [
+          { "data": "id"},
+          { "data": "id"},
           { "data": "cedula"},
 					{ "data": "nombre1"},
 					{ "data": "pais"},
@@ -670,27 +818,25 @@ function GuardarUsuario() {
           { "data": "email"},
           { "data": "tipo"},
           { "data": "fecha_crea"},
-          { "data": "id"},
-          { "data": "id"}
 
 				],
 				 "columnDefs": [
 					 {
-						"targets": 1,
+						"targets": 3,
 						"data":"",
 						 render: function ( data, type, row ) {
 							return  `${row.nombre1} ${row.nombre2} ${row.apellido1} ${row.apellido2}`;
 						 }
 					},
           {
-						"targets": 10,
+						"targets": 0,
 						"data":"",
 						 render: function ( data, type, row ) {
-							return  `<button class="btn btn-link" onclick="traer_cotizacion(${row.id})"><i class="fa fa-eye" aria-hidden="true"></i></button>`;
+							return  `<button class="btn btn-link"  data-toggle="modal" data-target="#modal_editar_usuario" onclick="traer_usuario_id(${row.id})"><i class="fa fa-edit" aria-hidden="true"></i></button>`;
 						 }
 					},
           {
-						"targets": 11,
+						"targets": 1,
 						"data":"",
 						 render: function ( data, type, row ) {
 							return  `<button class="btn btn-link" onclick="abrir_asociacion_hotel(${row.id})"><i class="fa fa-eye" aria-hidden="true"></i></button>`;
@@ -702,6 +848,54 @@ function GuardarUsuario() {
          traer_tabla_usuarios();
 			}
 
+  }
+
+  function EditarUsuario() {
+    
+      let values = {
+        id :  $("#id_edit").val(),
+        codigo :  $("#codigo_edit").val(),
+        cedula :  $("#cedula_edit").val(),
+        nombre1 :  $("#nombre1_edit").val(),
+        nombre2 :  $("#nombre2_edit").val(),
+        apellido1 :  $("#apellido1_edit").val(),
+        apellido2 :  $("#apellido2_edit").val(),
+        tipo :  $("#tipo_edit").val(),
+        id_pais :  $("#select_pais_edit").val(),
+        id_depto :  $("#select_deptos_edit").val(),
+        ciudad :  $("#ciudad_edit").val(),
+        direccion :  $("#direccion_edit").val(),
+        telefono :  $("#telefono_edit").val(),
+        email :  $("#email_edit").val(),
+        avatar : "/../upload.php"
+      }
+      $.ajax({
+      type : 'POST',
+      data: values,
+      url: 'editar_usuario.php',
+      beforeSend: function() {
+          $(".loader").css("display", "inline-block")
+      },
+      success: function(respuesta) {
+        $(".loader").css("display", "none")
+        console.log(respuesta)
+        let obj = JSON.parse(respuesta)
+        if (obj.success) {
+          alert(obj.message)
+          traer_tabla_usuarios()
+          $("#close_modal_edit_usuario").click()
+        
+        }else{
+          alert(obj.message)
+        }
+
+      },
+      error: function(e) {
+        $(".loader").css("display", "none")
+        console.log("No se ha podido obtener la información"+e);
+      }
+    });
+      
   }
 
 </script>

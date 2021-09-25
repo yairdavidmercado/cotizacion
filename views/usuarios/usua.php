@@ -149,6 +149,46 @@ if ($conn) {
 										$response["message"] = "Commiting transaction.";
 										echo json_encode($response);
 
+	}else if ($codigo == "traer_usuarios_id") {
+		$result = mysqli_query($conn, 	"SELECT *, 
+										id_pais as pais, 
+										id_depto as depto 
+										FROM usuarios WHERE id = $parametro1 ;");
+		$data = array();										
+		if(mysqli_num_rows($result) > 0)
+		{	
+									$response["resultado"] = array();
+									while ($row = mysqli_fetch_array($result)) {
+									$datos = array();
+										
+									$datos["id"] 			= $row["id"];
+									$datos["codigo"]		= $row["codigo"];
+									$datos["cedula"]		= $row["cedula"];
+									$datos["nombre1"]		= $row["nombre1"];
+									$datos["nombre2"]		= $row["nombre2"];
+									$datos["apellido1"]		= $row["apellido1"];
+									$datos["apellido2"]		= $row["apellido2"];
+									$datos["tipo"]			= $row["tipo"];
+									$datos["pais"] 			= $row["pais"];
+									$datos["depto"] 		= $row["depto"];
+									$datos["ciudad"] 		= $row["ciudad"];
+									$datos["telefono"] 		= $row["telefono"];
+									$datos["email"] 		= $row["email"];
+									$datos["direccion"] 	= $row["direccion"];
+									$datos["fecha_crea"] 	= $row["fecha_crea"];
+										
+										// push single product into final response array
+										array_push($response["resultado"], $datos);
+									}
+									$response["success"] = true;
+									echo json_encode($response);
+
+		}else{
+			$response["success"] = false;
+			$response["message"] = "No se encontraron registros";
+			// echo no users JSON
+			echo json_encode($response);
+		}
 	}
 	
 }

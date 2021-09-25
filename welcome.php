@@ -186,7 +186,6 @@ if (!isset($_SESSION['id'])) {
     <script src="assets/js/select2.full.js"></script>
   
     <script src="assets/js/cropper.min.js" ></script>
-    <script src="assets/js/bootstrap4.min.js"></script>
 <script>
 var id_usuario = "<?php echo $_SESSION['id'] ?>"
 var perfil = "<?php echo $_SESSION['perfil'] ?>"
