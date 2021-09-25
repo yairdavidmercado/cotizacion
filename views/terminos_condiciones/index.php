@@ -164,22 +164,38 @@ session_start();
     </div>
   </main>
 
-  <button type="button" id="brn_modal_print" class="btn btn-primary" style="display:none" data-toggle="modal" data-target=".bd-example-modal-lg">Large modal</button>
+  <button type="button" id="brn_modal_print" class="btn btn-primary" style="display:none" data-toggle="modal" data-target="#modal_editar_terminos">Large modal</button>
 
-<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+<div class="modal fade modal_editar_terminos" id="modal_editar_terminos" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
         <div id="btn_pdf">
 
         </div>
-        <h5 class="modal-title">Previsualización de cotización</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <h5 class="modal-title">Términos y condiciones</h5>
+        <button type="button" class="close" id="close_modal_termimos" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">×</span>
         </button>
       </div>
       <div class="modal-body" id="print_cotizacion">
-        
+        <form role="form" onsubmit="event.preventDefault(); return Editarterminos_condiciones();" id="form_guardar" class="needs-validation">
+            <div class="row">
+              <div class="col-md-12 mb-3" >
+                <label for="lastName">Titulo</label>
+                <input type="hidden" id="id_edit" autocomplete="off" class="form-control " >
+                <input type="text" autocomplete="off" class="form-control " name="titulo_edit" id="titulo_edit" placeholder="" required>                    
+              </div>
+              <div class="col-md-12 mb-3" >
+                <label for="lastName">Descripción</label>
+                <textarea class="form-control" id="descripcion_edit"></textarea>
+              </div>
+              <div class="col-md-12 mb-3 d-flex justify-content-center">
+                <button type="submit" class="btn btn-success mr-2">Guardar</button>
+                <!-- <div class="btn btn-warning text-white">Cancelar</div> -->
+              </div>
+            </div>                
+          </form>
       </div>
     </div>
   </div>
@@ -262,6 +278,45 @@ function Guardarterminos_condiciones() {
 }
 
 
+function Editarterminos_condiciones() {
+    
+    //let form = $('#form_guardar')[0];
+    //let formData = new FormData(form)
+    let values = {
+      id : $("#id_edit").val(),
+      titulo : $("#titulo_edit").val(),
+      id_hotel : id_hotel,
+      descripcion : $("#descripcion_edit").val(),
+    }
+    $.ajax({
+    type : 'POST',
+    data: values,
+    url: 'editar_terminos_condiciones.php',
+    beforeSend: function() {
+        $(".loader").css("display", "inline-block")
+    },
+    success: function(respuesta) {
+      $(".loader").css("display", "none")
+      //console.log(respuesta)
+      let obj = JSON.parse(respuesta)
+      if (obj.success) {
+        $("#close_modal_termimos").click()
+        traer_tabla_terminos_condiciones()
+        alert(obj.message)
+      }else{
+        alert(obj.message)
+      }
+
+    },
+    error: function(e) {
+      $(".loader").css("display", "none")
+      console.log("No se ha podido obtener la información"+e);
+    }
+  });
+    
+}
+
+
   function isNumber(evt) {
       evt = (evt) ? evt : window.event;
       var charCode = (evt.which) ? evt.which : evt.keyCode;
@@ -320,7 +375,7 @@ function Guardarterminos_condiciones() {
 						"targets": 3,
 						"data":"",
 						 render: function ( data, type, row ) {
-							return  `<button class="btn btn-link" onclick="traer_cotizacion(${row.id})"><i class="fa fa-eye" aria-hidden="true"></i></button>`;
+							return  `<button class="btn btn-link" data-toggle="modal" data-target="#modal_editar_terminos" onclick="traer_terminos(${row.id})"><i class="fa fa-eye" aria-hidden="true"></i></button>`;
 						 }
 					}],
 				});
@@ -329,6 +384,38 @@ function Guardarterminos_condiciones() {
          traer_tabla_terminos_condiciones();
 			}
 
+  }
+
+  function traer_terminos(id) {
+    let values = { 
+            codigo: 'traer_terminos_condiciones_id',
+            parametro1: id,
+            parametro2: ""
+      };
+      $.ajax({
+        type : 'POST',
+        data: values,
+        url: 'terminos_condiciones.php',
+        beforeSend: function() {
+            $(".loader").css("display", "inline-block")
+        },
+        success: function(respuesta) {
+          $(".loader").css("display", "none")
+          let obj = JSON.parse(respuesta)
+          let fila = ''
+          $.each(obj["resultado"], function( index, val ) {
+            $("#id_edit").val(val.id)
+            $("#titulo_edit").val(val.titulo).change()
+            $("#descripcion_edit").val(val.descripcion).change()
+          });
+          
+        },
+        error: function() {
+          $(".loader").css("display", "none")
+          console.log("No se ha podido obtener la información");
+        }
+      });
+    
   }
 
 </script>
