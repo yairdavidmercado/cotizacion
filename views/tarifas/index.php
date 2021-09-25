@@ -185,14 +185,14 @@ session_start();
           <table id="tabla_tarifas" class="table table-striped table-bordered" style="width:100%">
             <thead>
                 <tr>
-                    <th>codigo</th>
-                    <th>Razón social</th>
-                    <th>País</th>
-                    <th>Ciudad</th>
-                    <th>Depto</th>
-                    <th>Teléfono</th>
-                    <th>Email</th>
-                    <th>Creación</th>
+                    <th>Titulo</th>
+                    <th>descripcion</th>
+                    <th>Niños</th>
+                    <th>Adultos</th>
+                    <th>Adultos dobles</th>
+                    <th>Adultos triples/dobles</th>
+                    <th>planes</th>
+                    <th>tipo de hospedaje</th>
                     <th>Creación</th>
                     <th></th>
                 </tr>
@@ -212,22 +212,80 @@ session_start();
     </div>
   </main>
 
-  <button type="button" id="brn_modal_print" class="btn btn-primary" style="display:none" data-toggle="modal" data-target=".bd-example-modal-lg">Large modal</button>
+  <button type="button" id="brn_modal_print" class="btn btn-primary" style="display:none" data-toggle="modal" data-target="#modal_editar_tarifas">Large modal</button>
 
-<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+<div class="modal fade bd-example-modal-lg" id="modal_editar_tarifas" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
         <div id="btn_pdf">
 
         </div>
-        <h5 class="modal-title">Previsualización de cotización</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <h5 class="modal-title">Editar tarifas</h5>
+        <button type="button" class="close" id="close_modal_tarifas" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">×</span>
         </button>
       </div>
       <div class="modal-body" id="print_cotizacion">
-        
+        <form role="form" onsubmit="event.preventDefault(); return EditarTarifas();" id="form_guardar" class="needs-validation">
+          <div class="row">
+            <div class="col-md-6 mb-3" >
+              <label for="lastName">Titulo</label>
+              <input type="hidden" autocomplete="off" id="id_edit">
+              <input type="text" autocomplete="off" class="form-control " name="nombre_edit" id="nombre_edit" placeholder="" required>                    
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="lastName">Niños</label>
+              <input type="text" autocomplete="off" class="form-control" onkeypress="return isNumber(event)" name="child_edit" id="child_edit" placeholder="" required>                   
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="lastName">Adultos normal</label>
+              <input type="text" autocomplete="off" class="form-control" onkeypress="return isNumber(event)" name="adult_s_edit" id="adult_s_edit" placeholder="" required>                   
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="lastName">Adultos dole</label>
+              <input type="text" autocomplete="off" class="form-control" onkeypress="return isNumber(event)" name="adult_d_edit" id="adult_d_edit" placeholder="" required>                   
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="lastName">Adultos triple/cuadruple</label>
+              <input type="text" autocomplete="off" class="form-control" onkeypress="return isNumber(event)" name="adult_t_c_edit" id="adult_t_c_edit" placeholder="" required>                   
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="firstName">Planes</label>
+              <select style="width:100%" name="select_plan_edit" required id="select_plan_edit" class="form-control form-control-sm terminos_condiciones">
+                <option value="">Seleccionar</option>
+              </select>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label><span>Tipo de hospedaje</span></label>
+              <br>
+              <div class="form-check-inline">
+                <label class="form-check-label">
+                  <input type="radio" name="tipo_hospedaje_edit" id="tipo_hospedaje_edit0" required value="0" class="form-check-input" value="">Pasadía
+                </label>
+              </div>
+              <div class="form-check-inline">
+                <label class="form-check-label">
+                  <input type="radio" name="tipo_hospedaje_edit"  id="tipo_hospedaje_edit1" required value="1" class="form-check-input" value="">Por noche
+                </label>
+              </div>
+            </div>
+            <div class="col-md-12 mb-3" >
+              <label for="lastName">Descripción</label>
+              <textarea class="form-control" id="descripcion_edit"></textarea>
+            </div>
+            <div class="col-md-12 mb-3 d-flex justify-content-center">
+              <button type="submit" class="btn btn-success mr-2">Guardar</button>
+              <!-- <div class="btn btn-warning text-white">Cancelar</div> -->
+            </div>
+          </div>
+          <div class="row">
+            
+          </div>
+          
+        </form>
       </div>
     </div>
   </div>
@@ -338,6 +396,7 @@ function GuardarTarifas() {
           });
 
           $("#select_plan").html('<option value="">Seleccionar</option>'+fila)
+          $("#select_plan_edit").html('<option value="">Seleccionar</option>'+fila)
           
         },
         error: function() {
@@ -347,6 +406,7 @@ function GuardarTarifas() {
       });
 
       $("#select_plan").select2();
+      $("#select_plan_edit").select2();
     
   }
 
@@ -422,7 +482,7 @@ function GuardarTarifas() {
 						"targets": 9,
 						"data":"",
 						 render: function ( data, type, row ) {
-							return  `<button class="btn btn-link" onclick="traer_cotizacion(${row.id})"><i class="fa fa-eye" aria-hidden="true"></i></button>`;
+							return  `<button class="btn btn-link"  data-toggle="modal" data-target="#modal_editar_tarifas" onclick="traer_tarifas(${row.id})"><i class="fa fa-edit" aria-hidden="true"></i></button>`;
 						 }
 					}],
 				});
@@ -432,6 +492,95 @@ function GuardarTarifas() {
 			}
 
   }
+
+  function traer_tarifas(id) {
+    let values = { 
+            codigo: 'traer_tarifas_id',
+            parametro1: id_hotel,
+            parametro2: id
+      };
+      $.ajax({
+        type : 'POST',
+        data: values,
+        url: 'tarifas.php',
+        beforeSend: function() {
+            $(".loader").css("display", "inline-block")
+        },
+        success: function(respuesta) {
+          $(".loader").css("display", "none")
+          let obj = JSON.parse(respuesta)
+          let fila = ''
+          $.each(obj["resultado"], function( index, val ) {
+            $("#id_edit").val(val.id)
+            $("#nombre_edit").val(val.nombre)
+            $("#child_edit").val(val.child)
+            $("#adult_s_edit").val(val.adult_s)
+            $("#adult_d_edit").val(val.adult_d)
+            $("#adult_t_c_edit").val(val.adult_t_c)
+            $("#id_plan_edit").val(val.id_plan)
+            $("#descripcion_edit").val(val.descripcion)
+            $("#select_plan_edit").val(val.nombre_plan).change()
+            if (val.noches == 1) {
+              $("#tipo_hospedaje_edit1").prop('checked',true);
+              $("#tipo_hospedaje_edit0").prop('checked',false);
+            }else if (val.noches == 0) {
+              $("#tipo_hospedaje_edit1").prop('checked',false);
+              $("#tipo_hospedaje_edit0").prop('checked',true);
+            }
+          });
+          
+        },
+        error: function() {
+          $(".loader").css("display", "none")
+          console.log("No se ha podido obtener la información");
+        }
+      });
+    
+  }
+
+  function EditarTarifas() {
+    
+    //let form = $('#form_guardar')[0];
+    //let formData = new FormData(form)
+    let values = {
+      id : $("#id_edit").val(),
+      nombre : $("#nombre_edit").val(),
+      child : $("#child_edit").val(),
+      adult_s : $("#adult_s_edit").val(),
+      adult_d : $("#adult_d_edit").val(),
+      adult_t_c : $("#adult_t_c_edit").val(),
+      id_plan : $("#select_plan_edit").val(),
+      id_hotel : id_hotel,
+      descripcion : $("#descripcion_edit").val(),
+      noches : $("input[name='tipo_hospedaje_edit']:checked").val(),
+    }
+    $.ajax({
+    type : 'POST',
+    data: values,
+    url: 'editar_tarifas.php',
+    beforeSend: function() {
+        $(".loader").css("display", "inline-block")
+    },
+    success: function(respuesta) {
+      $(".loader").css("display", "none")
+      //console.log(respuesta)
+      let obj = JSON.parse(respuesta)
+      if (obj.success) {
+        $("#close_modal_tarifas").click()
+        traer_tabla_tarifas()
+        alert(obj.message)
+      }else{
+        alert(obj.message)
+      }
+
+    },
+    error: function(e) {
+      $(".loader").css("display", "none")
+      console.log("No se ha podido obtener la información"+e);
+    }
+  });
+    
+}
 
 </script>
 </body>
