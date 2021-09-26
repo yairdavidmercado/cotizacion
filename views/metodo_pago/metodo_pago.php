@@ -45,8 +45,31 @@ if ($conn) {
 			//$response["success"] = true;
 			echo json_encode($response);
 		}
-	}else if($codigo == "2"){
+	}else if ($codigo == "traer_metodo_pago_id") {
+		$result = mysqli_query($conn, 	"SELECT * FROM metodo_pago WHERE id = $parametro1;");
+		$data = array();
+		if(mysqli_num_rows($result) > 0)
+		{	
+									$response["resultado"] = array();
+									while ($row = mysqli_fetch_array($result)) {
+									$datos = array();
+										
+									$datos["id"] 			= $row["id"];
+									$datos["nombre"]		= $row["nombre"];
+									$datos["fecha_crea"] 	= $row["fecha_crea"];
+										
+										// push single product into final response array
+										array_push($response["resultado"], $datos);
+									}
+									$response["success"] = true;
+									echo json_encode($response);
 
+		}else{
+			$response["success"] = false;
+			$response["message"] = "No se encontraron registros";
+			// echo no users JSON
+			echo json_encode($response);
+		}
 	}
 	
 }
