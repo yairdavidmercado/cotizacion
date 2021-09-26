@@ -164,22 +164,38 @@ session_start();
     </div>
   </main>
 
-  <button type="button" id="brn_modal_print" class="btn btn-primary" style="display:none" data-toggle="modal" data-target=".bd-example-modal-lg">Large modal</button>
+  <button type="button" id="brn_modal_print" class="btn btn-primary" style="display:none" data-toggle="modal" data-target="#modal_editar_motivos">Large modal</button>
 
-<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+<div class="modal fade modal_editar_motivos" id="modal_editar_motivos" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
         <div id="btn_pdf">
 
         </div>
-        <h5 class="modal-title">Previsualización de cotización</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <h5 class="modal-title">Editar motivos</h5>
+        <button type="button" class="close" id="close_modal_editar_motivos" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">×</span>
         </button>
       </div>
       <div class="modal-body" id="print_cotizacion">
-        
+        <form role="form" onsubmit="event.preventDefault(); return EditarMotivos();" id="form_guardar" class="needs-validation">
+          <div class="row">
+            <div class="col-md-12 mb-3" >
+              <label for="lastName">Titulo</label>
+              <input type="hidden" id="id_edit">
+              <input type="text" autocomplete="off" class="form-control " name="nombre_edit" id="nombre_edit" placeholder="" required>                    
+            </div>
+            <div class="col-md-12 mb-3" >
+              <label for="lastName">Descripción</label>
+              <textarea class="form-control" id="descripcion_edit"></textarea>
+            </div>
+            <div class="col-md-12 mb-3 d-flex justify-content-center">
+              <button type="submit" class="btn btn-success mr-2">Guardar</button>
+              <!-- <div class="btn btn-warning text-white">Cancelar</div> -->
+            </div>
+          </div>                
+        </form>
       </div>
     </div>
   </div>
@@ -320,7 +336,7 @@ function GuardarMotivos() {
 						"targets": 3,
 						"data":"",
 						 render: function ( data, type, row ) {
-							return  `<button class="btn btn-link" onclick="traer_cotizacion(${row.id})"><i class="fa fa-eye" aria-hidden="true"></i></button>`;
+							return  `<button class="btn btn-link" data-toggle="modal" data-target="#modal_editar_motivos" onclick="traer_motivos(${row.id})"><i class="fa fa-edit" aria-hidden="true"></i></button>`;
 						 }
 					}],
 				});
@@ -330,6 +346,77 @@ function GuardarMotivos() {
 			}
 
   }
+
+  function traer_motivos(id) {
+    let values = { 
+            codigo: 'traer_motivos_id',
+            parametro1: id,
+            parametro2: ""
+      };
+      $.ajax({
+        type : 'POST',
+        data: values,
+        url: 'motivos.php',
+        beforeSend: function() {
+            $(".loader").css("display", "inline-block")
+        },
+        success: function(respuesta) {
+          $(".loader").css("display", "none")
+          let obj = JSON.parse(respuesta)
+          let fila = ''
+          $.each(obj["resultado"], function( index, val ) {
+            $("#id_edit").val(val.id)
+            $("#nombre_edit").val(val.nombre).change()
+            $("#descripcion_edit").val(val.descripcion).change()
+          });
+          
+        },
+        error: function() {
+          $(".loader").css("display", "none")
+          console.log("No se ha podido obtener la información");
+        }
+      });
+    
+  }
+
+  
+function EditarMotivos() {
+    
+    //let form = $('#form_guardar')[0];
+    //let formData = new FormData(form)
+    let values = {
+      id : $("#id_edit").val(),
+      nombre : $("#nombre_edit").val(),
+      id_hotel : id_hotel,
+      descripcion : $("#descripcion_edit").val(),
+    }
+    $.ajax({
+    type : 'POST',
+    data: values,
+    url: 'editar_motivos.php',
+    beforeSend: function() {
+        $(".loader").css("display", "inline-block")
+    },
+    success: function(respuesta) {
+      $(".loader").css("display", "none")
+      console.log(respuesta)
+      let obj = JSON.parse(respuesta)
+      if (obj.success) {
+        $("#close_modal_editar_motivos").click()
+        traer_tabla_motivos()
+        alert(obj.message)
+      }else{
+        alert(obj.message)
+      }
+
+    },
+    error: function(e) {
+      $(".loader").css("display", "none")
+      console.log("No se ha podido obtener la información"+e);
+    }
+  });
+    
+}
 
 </script>
 </body>
