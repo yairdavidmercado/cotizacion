@@ -412,7 +412,7 @@ if ($conn) {
 			echo json_encode($response);
 		}
 	}else if ($codigo == "traer_paises") {//activos
-		$result = mysqli_query($conn, 	"SELECT * FROM pais");
+		$result = mysqli_query($conn, 	"SELECT * FROM pais order by paisnombre ASC");
 		if(mysqli_num_rows($result) > 0)
 		{	
 									$response["resultado"] = array();
@@ -435,7 +435,7 @@ if ($conn) {
 				echo json_encode($response);
 		}
 	}else if ($codigo == "traer_deptos") {//activos
-		$result = mysqli_query($conn, 	"SELECT * FROM estado WHERE ubicacionpaisid = $parametro1");
+		$result = mysqli_query($conn, 	"SELECT * FROM estado WHERE ubicacionpaisid = $parametro1 order by estadonombre ASC");
 		if(mysqli_num_rows($result) > 0)
 		{	
 									$response["resultado"] = array();

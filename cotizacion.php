@@ -727,9 +727,9 @@ function traer_paises() {
         }
       });
 
-      $("#select_pais").select2({
-        dropdownParent: $('#crear_titular_modal')
-    });
+      /* $("#select_pais").select2({
+          dropdownParent: $('#crear_titular_modal')
+      }); */
     
   }
 
@@ -769,9 +769,9 @@ if ( id.length < 1) {
     }
   });
 
-  $("#select_deptos").select2({
+  /* $("#select_deptos").select2({
         dropdownParent: $('#crear_titular_modal')
-    });
+  }); */
 
 }
 

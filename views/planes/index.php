@@ -106,7 +106,7 @@ session_start();
       <div class="col-md-12 order-md-1 mt-5">
       <ul class="nav nav-tabs" id="myTab" role="tablist">
         <li class="nav-item">
-          <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Crear</a>
+          <a class="nav-link active" onclick="traer_check_productos()" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Crear</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" onclick="show_traer_tabla_planes()" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Buscar</a>
@@ -256,22 +256,113 @@ session_start();
     </div>
   </main>
 
-  <button type="button" id="brn_modal_print" class="btn btn-primary" style="display:none" data-toggle="modal" data-target=".bd-example-modal-lg">Large modal</button>
+  <button type="button" id="brn_modal_print" class="btn btn-primary" style="display:none" data-toggle="modal" data-target="#modal_editar_planes">Large modal</button>
 
-<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+<div class="modal fade bd-example-modal-lg" id="modal_editar_planes" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
         <div id="btn_pdf">
 
         </div>
-        <h5 class="modal-title">Previsualización de cotización</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <h5 class="modal-title">Editar planes</h5>
+        <button type="button" class="close" id="close_modal_planes_edit" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">×</span>
         </button>
       </div>
       <div class="modal-body" id="print_cotizacion">
-        
+        <form role="form" onsubmit="event.preventDefault(); return EditarPlanes();" id="form_guardar" class="needs-validation">
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="row">
+                <div class="col-md-12 mb-3" >
+                  <label for="lastName">Nombre</label>
+                  <input type="hidden" id="id_planes_edit">
+                  <input type="text" autocomplete="off" class="form-control " name="nombre_planes_edit" id="nombre_planes_edit" placeholder="" required>                    
+                </div>
+                <div class="col-md-12 mb-3">
+                  <label for="lastName">Descripción</label>
+                  <textarea style="height:300px"  autocomplete="off" class="form-control" id="descripcion_planes_edit" required></textarea>
+                
+                </div>
+                <div class="col-md-12 mb-3 d-flex">
+                  <button type="submit" class="btn btn-success mr-2">Guardar</button>
+                  <!-- <div class="btn btn-warning text-white">Cancelar</div> -->
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="row">
+                <table class="table table-bordered table-condensed table-hover table-striped">
+                  <thead>
+                    <tr>
+                        <th>
+                        <input type="checkbox" onchange="select_check_edit(this)" name="all_edit">
+                        </th>
+                        <th >
+                          PRODUCTOS
+                        </th>
+                        <th >
+                          TIPO
+                        </th>
+                    </tr>
+                  </thead>
+                  <tbody class="text-left" id="table_check_productos_edit">
+                    
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade bd-example-modal-lg" id="modal_editar_productos" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div id="btn_pdf">
+
+        </div>
+        <h5 class="modal-title">Editar productos</h5>
+        <button type="button" class="close" id="close_modal_productos_edit" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body" id="print_cotizacion">
+        <form role="form" onsubmit="event.preventDefault(); return EditarProductos();" id="form_guardar" class="needs-validation">
+          <div class="row">
+            <div class="col-md-6 mb-3" >
+              <label for="lastName">Nombre de producto</label>
+              <input type="hidden" id="id_productos_edit">
+              <input type="text" autocomplete="off" class="form-control " name="nombre_producto_edit" id="nombre_producto_edit" placeholder="" required>                    
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="firstName">Tipo</label>
+              <select style="width:100%" name="select_tipo_edit" required id="select_tipo_edit" class="form-control form-control-sm tipo">
+                <option value="">Seleccionar</option>
+                <option value="CONSUMO">CONSUMO</option>
+                <option value="SERVICIOS">SERVICIOS</option>
+              </select>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="firstName">Tipo de guardado</label>
+              <select style="width:100%" name="select_tipo_guardado_edit" required id="select_tipo_guardado_edit" class="form-control form-control-sm tipo_guardado">
+                <option value="">Seleccionar</option>
+                <option value="0">General</option>
+                <option value="<?php echo $_SESSION['id_hotel'] ?>">Solo para <?php echo $_SESSION['nombre_hotel'] ?></option>
+              </select>
+            </div>
+            
+            <div class="col-md-12 mb-3 d-flex justify-content-center">
+              <button type="submit" class="btn btn-success mr-2">Guardar </button>
+              <!-- <div class="btn btn-warning text-white">Cancelar</div> -->
+            </div>
+          </div>
+        </form>
       </div>
     </div>
   </div>
@@ -369,7 +460,7 @@ function GuardarPlanes() {
     }
   });
     
-  }
+}
 
   function GuardarProductos() { 
     
@@ -406,7 +497,7 @@ function GuardarPlanes() {
       $(".loader").css("display", "none")
       console.log("No se ha podido obtener la información"+e);
     }
-  });
+    });
     
   }
 
@@ -499,7 +590,7 @@ function GuardarPlanes() {
             $(".loader").css("display", "inline-block")
         },
         success: function(respuesta) {
-          //$(".loader").css("display", "none")
+          $(".loader").css("display", "none")
           let obj = JSON.parse(respuesta)
           let fila = ''
           fila += ''
@@ -535,30 +626,6 @@ function GuardarPlanes() {
    return new Intl.NumberFormat("de-DE").format(value)
   }
 
-  function imprimir_cotizacion(id) {
-    $(".loader").css("display", "inline-block")
-    const element = document.getElementById("print_cotizacion")
-    const opt = {
-      filename: 'Cotizacion'+id+'.pdf',
-      margin: 2,
-      image: {type: 'jpeg', quality: 1},
-      jsPDF: {format: 'letter', orientation: 'portrait'}
-    };
-
-    html2pdf().set({
-      pagebreak: {mode: 'avoid-all', before:'#pageX'}
-    });
-    // Adds page-breaks according to the CSS break-before, break-after, and break-inside properties.
-    // Only recognizes always/left/right for before/after, and avoid for inside.
-    html2pdf().set({
-      pagebreak: {mode: 'css' }
-    });
-    // New Promise-based usage:
-    html2pdf().set(opt).from(element).save();
-    // Old monolithic-style usage:
-    //html2pdf(element, opt);
-    $(".loader").css("display", "none")
-  }
 
   function limpiar_formulario_productos(){
     
@@ -617,7 +684,7 @@ function GuardarPlanes() {
           "targets": 4,
           "data":"",
           render: function ( data, type, row ) {
-            return  `<button class="btn btn-link" onclick="traer_cotizacion(${row.id})"><i class="fa fa-eye" aria-hidden="true"></i></button>`;
+            return  `<button class="btn btn-link" data-toggle="modal" data-target="#modal_editar_planes" onclick="traer_planes_id(${row.id})"><i class="fa fa-edit" aria-hidden="true"></i></button>`;
           }
         }],
       });
@@ -630,7 +697,7 @@ function GuardarPlanes() {
   function traer_tabla_productos(){
 
     if ( ! $.fn.DataTable.isDataTable('#tabla_productos')) {
-			  dtable = $("#tabla_productos").DataTable({
+			  dtable2 = $("#tabla_productos").DataTable({
           "scrollY": true,
 					"ajax": {
 					"url": "planes.php",
@@ -660,12 +727,12 @@ function GuardarPlanes() {
 						"targets": 4,
 						"data":"",
 						 render: function ( data, type, row ) {
-							return  `<button class="btn btn-link" onclick="traer_cotizacion(${row.id})"><i class="fa fa-eye" aria-hidden="true"></i></button>`;
+							return  `<a class="btn btn-link" data-toggle="modal" data-target="#modal_editar_productos" onclick="traer_productos_id(${row.id})"><i class="fa fa-edit" aria-hidden="true"></i></a>`;
 						 }
 					}],
 				});
 			}else{
-			   dtable.destroy();
+			   dtable2.destroy();
          traer_tabla_productos();
 			}
 
@@ -695,6 +762,222 @@ function GuardarPlanes() {
           uncheckAll()
         }
       }
+
+    function traer_planes_id(id) {
+      let values = { 
+            codigo: 'traer_planes_id',
+            parametro1: id_hotel,
+            parametro2: id
+      };
+      $.ajax({
+        type : 'POST',
+        data: values,
+        url: 'planes.php',
+        beforeSend: function() {
+            $(".loader").css("display", "inline-block")
+        },
+        success: function(respuesta) {
+          console.log(respuesta)
+          $(".loader").css("display", "none")
+          let obj = JSON.parse(respuesta)
+          let fila = ''
+          let checked = ''
+          fila += ''
+          $.each(obj["resultado"], function( index, val ) {
+            $("#id_planes_edit").val(val.id).change()
+            $("#nombre_planes_edit").val(val.nombre).change()
+            $("#descripcion_planes_edit").val(val.descripcion).change()
+          })
+          $.each(obj["info_productos"], function( index, val ) {
+            if (val.checked == 1) {
+              checked = 'checked'
+            }else if(val.checked == 0){
+              checked = ''
+            }
+            fila += `<tr>
+                        <td style="width:10px"><input value="${val.id}" type="checkbox" ${checked} class="micheckbox_edit" name="brand_edit"></td>
+                        <td>${val.nombre}</td>
+                        <td>${val.tipo}</td>
+                    </tr>`
+          });
+
+          $("#table_check_productos_edit").html(fila)
+          
+        },
+        error: function() {
+          $(".loader").css("display", "none")
+          console.log("No se ha podido obtener la información");
+        }
+      });
+    
+    }
+
+   // Select all check boxes : Setting the checked property to true in checkAll() function
+   function checkAllEdit(){
+        var items = document.getElementsByName('brand_edit');
+          for (var i = 0; i < items.length; i++) {
+              if (items[i].type == 'checkbox')
+                  items[i].checked = true;
+          }
+      }
+  // Clear all check boxes : Setting the checked property to false in uncheckAllEdit() function
+      function uncheckAllEdit(){
+        var items = document.getElementsByName('brand_edit');
+          for (var i = 0; i < items.length; i++) {
+              if (items[i].type == 'checkbox')
+                  items[i].checked = false;
+          }
+      }
+
+      function select_check_edit(estado){
+        if (estado.checked) {
+          checkAllEdit()
+        }else{
+          uncheckAllEdit()
+        }
+      }
+
+  function EditarPlanes() { 
+    var items = document.getElementsByName('brand_edit')
+    var count = 0
+    if( $('.micheckbox_edit').is(':checked') ) {
+      count++
+    }
+    if (count < 1) {
+      alert("Debe seleccionar almenos un producto")
+      return false
+    }
+    var ids_productos = ""
+    for (var i = 0; i < items.length; i++) {
+        if (items[i].checked){
+          ids_productos += items[i].value+","
+        }     
+    }
+    ids_productos = ids_productos.substring(0, ids_productos.length - 1);
+    //let form = $('#form_guardar')[0];
+    //let formData = new FormData(form)
+    let values = {
+        id :  $("#id_planes_edit").val(),
+        nombre :  $("#nombre_planes_edit").val(),
+        descripcion :  $("#descripcion_planes_edit").val(),
+        ids: ids_productos,
+        id_hotel : id_hotel,
+    }
+    $.ajax({
+    type : 'POST',
+    data: values,
+    url: 'editar_planes.php',
+    beforeSend: function() {
+        $(".loader").css("display", "inline-block")
+    },
+    success: function(respuesta) {
+      $(".loader").css("display", "none")
+      console.log(respuesta)
+      let obj = JSON.parse(respuesta)
+      if (obj.success) {
+        traer_tabla_planes()
+        $("#close_modal_planes_edit").click()
+        //traer_tabla_planes()
+       
+      }else{
+        alert(obj.message)
+      }
+
+    },
+    error: function(e) {
+      $(".loader").css("display", "none")
+      console.log("No se ha podido obtener la información"+e);
+    }
+  });
+    
+}
+
+function traer_productos_id(id) {
+      let values = { 
+            codigo: 'traer_productos_id',
+            parametro1: id_hotel,
+            parametro2: id
+      };
+      $.ajax({
+        type : 'POST',
+        data: values,
+        url: 'planes.php',
+        beforeSend: function() {
+            $(".loader").css("display", "inline-block")
+        },
+        success: function(respuesta) {
+          console.log(respuesta)
+          $(".loader").css("display", "none")
+          let obj = JSON.parse(respuesta)
+          let fila = ''
+          let checked = ''
+          fila += ''
+          $.each(obj["resultado"], function( index, val ) {
+            $("#id_productos_edit").val(val.id).change()
+            $("#nombre_producto_edit").val(val.nombre).change()
+            $("#select_tipo_edit").val(val.tipo).change()
+            $("#select_tipo_guardado_edit").val(val.tipo_guardado).change()
+          })
+          $.each(obj["info_productos"], function( index, val ) {
+            if (val.checked == 1) {
+              checked = 'checked'
+            }else if(val.checked == 0){
+              checked = ''
+            }
+            fila += `<tr>
+                        <td style="width:10px"><input value="${val.id}" type="checkbox" ${checked} class="micheckbox_edit" name="brand_edit"></td>
+                        <td>${val.nombre}</td>
+                        <td>${val.tipo}</td>
+                    </tr>`
+          });
+
+          $("#table_check_productos_edit").html(fila)
+          
+        },
+        error: function() {
+          $(".loader").css("display", "none")
+          console.log("No se ha podido obtener la información");
+        }
+      });
+    
+    }
+
+  function EditarProductos() { 
+    
+    let values = {
+        id :  $("#id_productos_edit").val(),
+        nombre :  $("#nombre_producto_edit").val(),
+        tipo :  $("#select_tipo_edit").val(),
+        id_hotel :  $("#select_tipo_guardado_edit").val(),
+    }
+    $.ajax({
+    type : 'POST',
+    data: values,
+    url: 'editar_productos.php',
+    beforeSend: function() {
+        $(".loader").css("display", "inline-block")
+    },
+    success: function(respuesta) {
+      $(".loader").css("display", "none")
+      console.log(respuesta)
+      let obj = JSON.parse(respuesta)
+      if (obj.success) {
+        $('#close_modal_productos_edit').click()
+        traer_tabla_productos()
+        traer_check_productos()
+       
+      }else{
+        alert(obj.message)
+      }
+
+    },
+    error: function(e) {
+      $(".loader").css("display", "none")
+      console.log("No se ha podido obtener la información"+e);
+    }
+    });
+    
+  }
 
 </script>
 </body>
