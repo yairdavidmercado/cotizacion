@@ -120,14 +120,15 @@ session_start();
             <table id="tabla_vaucher" class="table table-striped table-bordered" style="width:100%">
               <thead>
                   <tr>
-                      <th>codigo</th>
-                      <th>cédula</th>
+                      <th>Codigo</th>
+                      <th>No. Reserva</th>
+                      <th>Cédula</th>
                       <th>Titular</th>
                       <th>Noches</th>
                       <th>Motivo</th>
-                      <th>Plan</th>
-                      <th>Total</th>
+                      <th>Cantidad</th>
                       <th>Deposito</th>
+                      <th></th>
                       <th></th>
                   </tr>
               </thead>
@@ -166,6 +167,10 @@ session_start();
             <form role="form" onsubmit="event.preventDefault(); return GuardarVaucher();" id="form_guardar" class="needs-validation">
               
               <div class="row">
+                <div class="col-md-6 mb-3" id="content_id_reserva" style="display:none" >
+                  <label for="lastName">No. reserva</label>
+                  <input type="text" autocomplete="off" class="form-control " name="id_reserva" id="id_reserva" placeholder="" required>                  
+                </div>
                 <div class="col-md-6 mb-3">
                   <label for="lastName">Deposito</label>
                   <input type="text" autocomplete="off"  onkeyup="format(this)" onchange="format(this)" class="form-control " name="deposito" id="deposito" placeholder="" required>
@@ -173,7 +178,7 @@ session_start();
                 </div>
                 <div class="col-md-6 mb-3">
                   <label for="firstName">Método de pago</label>
-                  <select style="width:100%" name="id_metodo_pago" required id="id_metodo_pago" class="form-control form-control-sm id_metodo_pagos">
+                  <select style="width:100%" name="id_metodo_pago" required id="id_metodo_pago" class="form-control id_metodo_pagos">
                     <option value="">Seleccionar</option>
                   </select>
                 </div>
@@ -275,6 +280,7 @@ function GuardarVaucher() {
     //let form = $('#form_guardar')[0];
     //let formData = new FormData(form)
     let values = {
+      id_reserva : $("#id_reserva").val(),
       id_cotizacion : $("#id_cotizacion").val(),
       deposito : $("#deposito").val().replace(/[.]/g,''),
       id_metodo_pago : $("#id_metodo_pago").val(),
@@ -504,9 +510,15 @@ function GuardarVaucher() {
     
   }
 
-  function crear_vaucher(id){
+  function crear_vaucher(id, id_reserva){
+    if (id_reserva == null) {
+      $("#content_id_reserva").show()
+    }else{
+      $("#content_id_reserva").hide()
+    }
     $("#brn_modal_vaucher").click()
     $("#id_cotizacion").val(id)
+    $("#id_reserva").val(id_reserva)
   }
 
   function traer_cotizacion(id) {
@@ -544,9 +556,10 @@ function GuardarVaucher() {
           let noche = obj["resultado"][0]["noche"]
           let nombre_motivo = obj["resultado"][0]["nombre_motivo"]
           let terminos = obj["resultado"][0]["terminos"]
-          let deposito = obj["resultado"][0]["deposito"]
+          let deposito = obj["resultado"][0]["deposito"] == null ? 0 : obj["resultado"][0]["deposito"]
           let fecha_vaucher = obj["resultado"][0]["vaucher_fecha_crea"]
           let id_vaucher = obj["resultado"][0]["id_vaucher"]
+          let n_reserva = obj["resultado"][0]["n_reserva"]
 
             let cedula = ""
             let ciudad = ""
@@ -623,7 +636,7 @@ function GuardarVaucher() {
                                   </td>
                                   <td class="text-right">
                                     <p>
-                                    <b>No.: </b>${id}<br>
+                                    <b>No.: </b>${n_reserva}<br>
                                     <b>Fecha expe: </b>${fecha_vaucher}<br>
                                     <b>Código vendedor: </b>${cod_vendedor}<br>
                                     <b>No. Voucher: </b>${id_vaucher}
@@ -867,45 +880,47 @@ function GuardarVaucher() {
 				  },
 				  "columns": [
           { "data": "id"},
+          { "data": "n_voucher"},
 					{ "data": "cedula_titular"},
 					{ "data": "nombre_titular"},
           { "data": "noche"},
 					{ "data": "nombre_motivo"},
-					{ "data": "nombre_plan"},
+					{ "data": "total_vaucher"},
           { "data": "deposito"},
-          { "data": "deposito"},
+          { "data": ""},
           { "data": ""}
 				],
 				 "columnDefs": [
            {
-						"targets": 6,
+						"targets": 7,
 						"data":"",
 						 render: function ( data, type, row ) {
                if (row.deposito !== null) {
                 return puntosDecimales(row.deposito);
                }else{
-                return  ``;
+                return  `0`;
                }
 							
 						 }
 					},
 					 {
-						"targets": 7,
+						"targets": 8,
 						"data":"",
 						 render: function ( data, type, row ) {
-               if (row.deposito !== null) {
+              return  `<button class="btn btn-link" onclick="traer_cotizacion(${row.id})"><i class="fa fa-eye" aria-hidden="true"></i></button>`;
+               /* if (row.deposito !== null) {
                 return  `<button class="btn btn-link" onclick="traer_cotizacion(${row.id})"><i class="fa fa-eye" aria-hidden="true"></i></button>`;
                }else{
                 return  ``;
-               }
+               } */
 							
 						 }
 					},
           {
-						"targets": 8,
+						"targets": 9,
 						"data":"",
 						 render: function ( data, type, row ) {
-							return  `<button class="btn btn-link" onclick="crear_vaucher(${row.id})"><i class="fa fa-edit" aria-hidden="true"></i></button>`;
+							return  `<button class="btn btn-link" onclick="crear_vaucher(${row.id}, ${row.n_voucher})"><i class="fa fa-edit" aria-hidden="true"></i></button>`;
 						 }
 					}],
 				});

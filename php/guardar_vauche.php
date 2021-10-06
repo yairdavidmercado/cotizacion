@@ -2,6 +2,7 @@
     session_start();
    include 'conexion.php';
 
+   $id_reserva = $_POST["id_reserva"];
    $id_cotizacion = $_POST["id_cotizacion"];
    $deposito = $_POST["deposito"];
    $id_metodo_pago = $_POST["id_metodo_pago"];
@@ -17,8 +18,8 @@
         }
         // Insert some values
         try{
-             $result = mysqli_query($con, "INSERT INTO vaucher (id_cotizacion, deposito, id_metodo_pago, id_hotel, id_autor)
-                                                            VALUES ($id_cotizacion ,$deposito,$id_metodo_pago ,$id_hotel,$id_autor);");
+             $result = mysqli_query($con, "INSERT INTO vaucher (reserva, id_cotizacion, deposito, id_metodo_pago, id_hotel, id_autor)
+                                                            VALUES ($id_reserva, $id_cotizacion ,$deposito,$id_metodo_pago ,$id_hotel,$id_autor);");
 
                 //var_dump($result);
                 mysqli_query($con, $result);

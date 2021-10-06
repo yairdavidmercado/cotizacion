@@ -246,6 +246,7 @@ if ($conn) {
 										(SELECT nombre FROM planes WHERE planes.id = cotizacion.id_plan) AS nombre_plan,
 										(SELECT descripcion FROM planes WHERE planes.id = cotizacion.id_plan) AS descripcion_plan,
 										(SELECT descripcion FROM terminos_condiciones WHERE terminos_condiciones.id = cotizacion.id_terminos) AS terminos,
+										(SELECT reserva FROM vaucher  WHERE vaucher.id_cotizacion = cotizacion.id AND vaucher.activo = true LIMIT 1 ) as n_reserva,
 										(SELECT COUNT(vaucher.id) FROM vaucher  WHERE vaucher.id_cotizacion = cotizacion.id AND vaucher.activo = true) as total_vaucher,
 										(SELECT SUM(vaucher.deposito) FROM vaucher  WHERE vaucher.id_cotizacion = cotizacion.id AND vaucher.activo = true) as deposito,
 										(SELECT id FROM vaucher WHERE vaucher.id_cotizacion = cotizacion.id AND vaucher.activo = true order by id desc limit 1) as id_vaucher,
@@ -282,6 +283,7 @@ if ($conn) {
 										$datos['total_vaucher'] = $row["total_vaucher"];
 										$datos['deposito'] = $row["deposito"];
 										$datos['id_vaucher'] = $row["id_vaucher"];
+										$datos['n_reserva'] = $row["n_reserva"];
 										$datos['vaucher_fecha_crea'] = $row["vaucher_fecha_crea"];
 
 										$id_titular = $row["id_titular"] == "" ? "0": $row["id_titular"];
@@ -509,6 +511,7 @@ if ($conn) {
 										(SELECT cedula FROM usuarios WHERE usuarios.id = cotizacion.id_titular) AS cedula_titular,
 										(SELECT nombre FROM motivos WHERE motivos.id = cotizacion.id_motivo) AS nombre_motivo,
 										(SELECT nombre FROM planes WHERE planes.id = cotizacion.id_plan) AS nombre_plan,
+										(SELECT reserva FROM vaucher  WHERE vaucher.id_cotizacion = cotizacion.id AND vaucher.activo = true LIMIT 1) as n_voucher,
 										(SELECT COUNT(vaucher.id) FROM vaucher  WHERE vaucher.id_cotizacion = cotizacion.id AND vaucher.activo = true) as total_vaucher,
 										(SELECT SUM(vaucher.deposito) FROM vaucher  WHERE vaucher.id_cotizacion = cotizacion.id AND vaucher.activo = true) as deposito,
 										(SELECT id FROM vaucher WHERE vaucher.id_cotizacion = cotizacion.id AND vaucher.activo = true order by id desc limit 1) as id_vaucher,
@@ -530,6 +533,7 @@ if ($conn) {
 									$datos['fecha_salida'] = $row["fecha_salida"];
 									$datos['nombre_motivo'] = $row["nombre_motivo"];
 									$datos['nombre_plan'] = $row["nombre_plan"];
+									$datos['n_voucher'] = $row["n_voucher"];
 									$datos['total_vaucher'] = $row["total_vaucher"];
 									$datos['deposito'] = $row["deposito"];
 									$datos['id_vaucher'] = $row["id_vaucher"];

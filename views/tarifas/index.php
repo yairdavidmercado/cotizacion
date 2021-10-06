@@ -115,7 +115,7 @@ session_start();
       <div class="tab-content" id="myTabContent">
         <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
           <div class="card mt-3">
-            <h5 class="card-header">Tafiras</h5>
+            <h5 class="card-header">Tarifas</h5>
             <div class="card-body">
               <form role="form" onsubmit="event.preventDefault(); return GuardarTarifas();" id="form_guardar" class="needs-validation">
                 <div class="row">
