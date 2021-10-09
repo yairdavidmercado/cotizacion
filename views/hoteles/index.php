@@ -227,6 +227,80 @@ session_start();
   </div>
 </div>
 
+
+<div class="modal fade modal_edit_hotel" id="modal_edit_hotel" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div id="btn_pdf">
+
+        </div>
+        <h5 class="modal-title">Editar hotel</h5>
+        <button type="button" class="close" id="close_modal_edit_hotel" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body" >
+        <form role="form" onsubmit="event.preventDefault(); return EditarHotel();" id="form_guardar" class="needs-validation">
+          <div class="row">
+          <div class="col-md-3 mb-3" >
+              <label for="lastName">NIT</label>
+              <input type="text" autocomplete="off" disabled class="form-control " name="nit_edit" id="nit_edit" placeholder="" required>
+              <input type="hidden" name="id_edit" id="id_edit" >                    
+            </div>
+            <div class="col-md-9 mb-3" >
+              <label for="lastName">Razón social</label>
+              <input type="text" autocomplete="off" class="form-control " name="nombre_edit" id="nombre_edit" placeholder="" required>                    
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="lastName">Email</label>
+              <input type="text" autocomplete="off" class="form-control" name="email_edit" id="email_edit" placeholder="" required>                   
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="lastName">Teléfono</label>
+              <input type="text" autocomplete="off" onkeypress="return isNumber(event)" class="form-control " name="telefono_edit" id="telefono_edit" placeholder="" required>                    
+            </div>
+            <div class="col-md-3 mb-3">
+              <label for="firstName">Pais</label>
+              <select style="width:100%" name="select_pais_edit" onchange="traer_deptos(this.value)" required id="select_pais_edit" class="form-control form-control-sm paises">
+                <option value="">Seleccionar</option>
+              </select>
+            </div>
+            <div class="col-md-3 mb-3">
+              <label for="firstName">Departamentos</label>
+              <select style="width:100%" name="select_deptos_edit" required id="select_deptos_edit" class="form-control form-control-sm deptos">
+                <option value="">Seleccionar</option>
+              </select>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="lastName">Ciudad</label>
+              <input type="text" autocomplete="off" class="form-control " name="ciudad_edit" id="ciudad_edit" placeholder="" required>                    
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="lastName">Dirección</label>
+              <input type="text" autocomplete="off" class="form-control " name="direccion_edit" id="direccion_edit" placeholder="" required>                    
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="firstName">Términos y condiciones</label>
+              <select style="width:100%" name="select_terminos_condiciones_edit" required id="select_terminos_condiciones_edit" class="form-control form-control-sm terminos_condiciones">
+                <option value="">Seleccionar</option>
+              </select>
+            </div>
+            <div class="col-md-12 mb-3 d-flex justify-content-center">
+              <button type="submit" class="btn btn-success mr-2">Guardar hotel</button>
+              <!-- <div class="btn btn-warning text-white">Cancelar</div> -->
+            </div>
+          </div>
+          <div class="row">
+            
+          </div>
+          
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script src="../../assets/js/jquery.slim.min.js" crossorigin="anonymous"></script>
 <script>window.jQuery || document.write('<script src="../../assets/js/jquery.slim.min.js"><\/script>')</script>
 <script src="../../assets/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
@@ -334,6 +408,7 @@ function GuardarHotel() {
           });
 
           $("#select_pais").html('<option value="">Seleccionar</option>'+fila)
+          $("#select_pais_edit").html('<option value="">Seleccionar</option>'+fila)
           
         },
         error: function() {
@@ -350,6 +425,7 @@ function GuardarHotel() {
 
     if ( id.length < 1) {
       $("#select_deptos").html('<option value="">Seleccionar</option>').select2();
+      $("#select_deptos_edit").html('<option value="">Seleccionar</option>')
       return false
     }
       let values = { 
@@ -374,6 +450,7 @@ function GuardarHotel() {
           });
 
           $("#select_deptos").html('<option value="">Seleccionar</option>'+fila)
+          $("#select_deptos_edit").html('<option value="">Seleccionar</option>'+fila)
           
         },
         error: function() {
@@ -409,6 +486,7 @@ function GuardarHotel() {
           });
 
           $("#select_terminos_condiciones").html('<option value="">Seleccionar</option>'+fila)
+          $("#select_terminos_condiciones_edit").html('<option value="">Seleccionar</option>'+fila)
           
         },
         error: function() {
@@ -530,7 +608,7 @@ function GuardarHotel() {
 						"targets": 8,
 						"data":"",
 						 render: function ( data, type, row ) {
-							return  `<button class="btn btn-link" onclick="traer_cotizacion(${row.id})"><i class="fa fa-eye" aria-hidden="true"></i></button>`;
+							return  `<button class="btn btn-link"  data-toggle="modal" data-target="#modal_edit_hotel" onclick="traer_hoteles(${row.id})"><i class="fa fa-edit" aria-hidden="true"></i></button>`;
 						 }
 					}],
 				});
@@ -540,6 +618,90 @@ function GuardarHotel() {
 			}
 
   }
+
+  function traer_hoteles(id) {
+    let values = { 
+            codigo: 'traer_hoteles_id',
+            parametro1: id,
+            parametro2: ""
+      };
+      $.ajax({
+        type : 'POST',
+        data: values,
+        url: 'hoteles.php',
+        beforeSend: function() {
+            $(".loader").css("display", "inline-block")
+        },
+        success: function(respuesta) {
+          $(".loader").css("display", "none")
+          let obj = JSON.parse(respuesta)
+          let fila = ''
+          $.each(obj["resultado"], function( index, val ) {
+            $("#id_edit").val(val.id)
+            $("#nit_edit").val(val.nit)
+            $("#nombre_edit").val(val.nombre).change()
+            $("#email_edit").val(val.email).change()
+            $("#telefono_edit").val(val.telefono).change()
+            $("#select_pais_edit").val(val.pais).change()
+            setTimeout(() => {
+              $("#select_deptos_edit").val(val.depto).change()
+            }, 500);
+            $("#ciudad_edit").val(val.ciudad).change()
+            $("#direccion_edit").val(val.direccion).change()
+            $("#select_terminos_condiciones_edit").val(val.id_terminos).change()
+          });
+          
+        },
+        error: function() {
+          $(".loader").css("display", "none")
+          console.log("No se ha podido obtener la información");
+        }
+      });
+    
+  }
+
+  function EditarHotel() {
+    
+    //let form = $('#form_guardar')[0];
+    //let formData = new FormData(form)
+    let values = {
+      id : $("#id_edit").val(),
+      nit :  $("#nit_edit").val(),
+      nombre :  $("#nombre_edit").val(),
+      email :  $("#email_edit").val(),
+      telefono :  $("#telefono_edit").val(),
+      direccion :  $("#direccion_edit").val(),
+      id_pais :  $("#select_pais_edit").val(),
+      id_depto :  $("#select_deptos_edit").val(),
+      id_terminos :  $("#select_terminos_condiciones_edit").val(),
+      ciudad :  $("#ciudad_edit").val(),
+    }
+    $.ajax({
+    type : 'POST',
+    data: values,
+    url: 'editar_hotel.php',
+    beforeSend: function() {
+        $(".loader").css("display", "inline-block")
+    },
+    success: function(respuesta) {
+      $(".loader").css("display", "none")
+      console.log(respuesta)
+      let obj = JSON.parse(respuesta)
+      if (obj.success) {
+        $("#close_modal_edit_hotel").click()
+        traer_tabla_hotel()
+        alert(obj.message)
+      }else{
+        alert(obj.message)
+      }
+
+    },
+    error: function(e) {
+      $(".loader").css("display", "none")
+      console.log("No se ha podido obtener la información"+e);
+    }
+  });
+}
 
 </script>
 </body>
