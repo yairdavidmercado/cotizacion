@@ -204,7 +204,7 @@ session_start();
         <div id="btn_pdf">
 
         </div>
-        <h5 class="modal-title">Previsualización de cotización</h5>
+        <h5 class="modal-title">Previsualización de voucher</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">×</span>
         </button>
@@ -617,7 +617,7 @@ function GuardarVaucher() {
           let n_noches = noche == "N/A" ? 1 : parseInt(noche)
           let total = subtotal * parseInt(n_noches)
           let saldo = total-parseInt(deposito)
-          $("#btn_pdf").html(`<span onclick="imprimir_cotizacion('${id}')" style="text-align: right;font-size:28px;cursor:pointer" class="mr-4"><i class="fas fa-print"></i></span>`)
+          $("#btn_pdf").html(`<span onclick="imprimir_cotizacion('${id}')" style="text-align: right;font-size:28px;cursor:pointer;font-family: 'Helvetica', 'Arial', sans-serif;" class="mr-4"><i class="fas fa-print"></i></span>`)
               let fila = `<div class="row" style="background-color:#02317c;color:#fff">
                             <div class="col-sm-12" style="background-color:#1a2b48">
                               <h3 class="text-center">VOUCHER</h3>
@@ -647,7 +647,7 @@ function GuardarVaucher() {
                             </div>
                           </div>   
                           </div>
-                          <div class="row mt-3" style="font-size:12px">
+                          <div class="row mt-3" style="font-size:14px;font-family: 'Helvetica', 'Arial', sans-serif;">
                             <div class="col-sm-12">
                               <h6>Información del titular</h6>
                               <hr>
@@ -657,7 +657,7 @@ function GuardarVaucher() {
                                 <table width='100%' cellpadding='4' cellspacing='4' border='0'>
                                   <tr>
                                     <td><b>TITULAR RESERVA</b></td>
-                                    <td colspan="3">${nombre_titular}</td>
+                                    <td colspan="3" id="print_nombre_titular">${nombre_titular}</td>
                                     <td><b>EMAIL</b></td>
                                     <td>${email}</td>
                                   </tr>
@@ -669,7 +669,7 @@ function GuardarVaucher() {
                                   </tr>
                                   <tr>
                                     <td><b>FECHA DE ENTREGA</b></td>
-                                    <td>${fecha_entrada}</td>
+                                    <td id="print_fecha_ini">${fecha_entrada}</td>
                                     <td><b>Nº NOCHE</b></td>
                                     <td>${noche}</td>
                                     <td><b>INFANTE</b></td>
@@ -677,7 +677,7 @@ function GuardarVaucher() {
                                   </tr>
                                   <tr>
                                     <td><b>FECHA DE SALIDA</b></td>
-                                    <td>${fecha_salida}</td>
+                                    <td id="print_fecha_fin">${fecha_salida}</td>
                                     <td><b>N° PAX</b></td>
                                     <td>${total_pasajero}</td>
                                     <td><b>MOTIVO DE VIAJE</b></td>
@@ -685,9 +685,9 @@ function GuardarVaucher() {
                                   </tr>
                                   <tr>
                                     <td><b>DEPOSITO</b></td>
-                                    <td>${puntosDecimales(deposito)}</td>
+                                    <td><span style="color:green"><b>${puntosDecimales(deposito)}</b></span></td>
                                     <td><b>SALDO</b></td>
-                                    <td>${puntosDecimales(saldo)}</td>
+                                    <td><span style="color:red" ><b>${puntosDecimales(saldo)}</b></span></td>
                                   </tr>
                                 </table>
                               </div>
@@ -743,7 +743,7 @@ function GuardarVaucher() {
                             </div>   
                           </div>
                           <div class="row">
-                            <div class="col-lg-5 col-sm-5 ml-auto" style="font-size:12px" id="content_subtotal">
+                            <div class="col-lg-5 col-sm-5 ml-auto" style="font-size:14px;font-family: 'Helvetica', 'Arial', sans-serif;" id="content_subtotal">
                               <table class="table table-clear">
                                   <tbody>
                                       <tr>
@@ -768,11 +768,11 @@ function GuardarVaucher() {
                           <div class="row">
                             <div class="col-sm-12">
                               <div class="table-responsive-sm">
-                                <table class="table"  style="font-size:12px">
+                                <table class="table"  style="font-size:14px;font-family: 'Helvetica', 'Arial', sans-serif;">
                                   <tbody>
                                     <tr>
                                       <td ><b>Plan: </b></td>
-                                      <td>${nombre_plan}</td>
+                                      <td id="print_nombre_plan">${nombre_plan}</td>
                                       <td class="text-right"><b>Descripción: </b></td>
                                       <td class="text-right">${descripcion_plan}</td>
                                     </tr>
@@ -792,7 +792,7 @@ function GuardarVaucher() {
                           </div>
                           <div class="row" id="pageX" >
                             <div class="col-sm-12">
-                              <p style="font-size:12px;text-align:left; margin-top:200px" >${terminos}</p>
+                              <p style="font-size:12px;text-align:left; margin-top:200px;font-family: 'Helvetica', 'Arial', sans-serif;" >${terminos}</p>
                             </div>
                           </div>`
           $(".loader").css("display", "none")
@@ -825,8 +825,9 @@ function GuardarVaucher() {
   function imprimir_cotizacion(id) {
     $(".loader").css("display", "inline-block")
     const element = document.getElementById("print_cotizacion")
+    const namefile = $("#print_nombre_titular").html()+'_'+$("#print_fecha_ini").html()+'_'+$("#print_fecha_fin").html()+'_'+$("#print_nombre_plan").html()
     const opt = {
-      filename: 'Voucher'+id+'.pdf',
+      filename: namefile+'.pdf',
       margin: 2,
       image: {type: 'jpeg', quality: 1},
       jsPDF: {format: 'letter', orientation: 'portrait'}
