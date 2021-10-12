@@ -388,7 +388,7 @@ session_start();
                 </div>
                 <div class="col-md-3 mb-3" >
                   <label for="lastName">Primer Apellido</label>
-                  <input type="text" autocomplete="off" class="form-control "  maxLength="255" name="apellido1" id="apellido1" placeholder="" required>                    
+                  <input type="text" autocomplete="off" class="form-control "  maxLength="255" name="apellido1" id="apellido1" placeholder="" >                    
                 </div>
                 <div class="col-md-3 mb-3" >
                   <label for="lastName">Segundo apellido</label>
@@ -601,7 +601,7 @@ function detalle_tarifa() {
                                 </tr>
                                 <tr>
                                     <td class="center">2</td>
-                                    <td class="left">Adultos normal</td>
+                                    <td class="left">Adultos sencilla</td>
                                     <td class="center">${inputadult_s}</td>
                                     <td style="text-align: right;">$${puntosDecimales(adult_s)}</td>
                                     <td style="text-align: right;">$${puntosDecimales(totaladult_s)}</td>
@@ -1191,7 +1191,7 @@ function GuardarCotizacion() {
                                   <tr>
                                     <td><b>FECHA DE SALIDA</b></td>
                                     <td>${fecha_salida}</td>
-                                    <td><b>N° PAX</b></td>
+                                    <td><b>N° PERSONAS</b></td>
                                     <td>${total_pasajero}</td>
                                     <td><b>MOTIVO DE VIAJE</b></td>
                                     <td>${nombre_motivo}</td>

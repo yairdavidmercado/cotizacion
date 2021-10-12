@@ -678,7 +678,7 @@ function GuardarVaucher() {
                                   <tr>
                                     <td><b>FECHA DE SALIDA</b></td>
                                     <td id="print_fecha_fin">${fecha_salida}</td>
-                                    <td><b>N° PAX</b></td>
+                                    <td><b>N° PERSONAS</b></td>
                                     <td>${total_pasajero}</td>
                                     <td><b>MOTIVO DE VIAJE</b></td>
                                     <td>${nombre_motivo}</td>
@@ -718,7 +718,7 @@ function GuardarVaucher() {
                                     </tr>
                                     <tr>
                                         <td class="center">2</td>
-                                        <td class="left">Adultos normal</td>
+                                        <td class="left">Adultos sencilla</td>
                                         <td class="center">${n_adult_s}</td>
                                         <td style="text-align: right;">$${puntosDecimales(tarifa_adult_s)}</td>
                                         <td style="text-align: right;">$${puntosDecimales(totaladult_s)}</td>

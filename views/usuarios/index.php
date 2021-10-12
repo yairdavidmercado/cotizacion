@@ -200,6 +200,7 @@
                 <tr>
                     <th></th>
                     <th></th>
+                    <th></th>
                     <th>Cédula</th>
                     <th>Nombre</th>
                     <th>País</th>
@@ -808,6 +809,7 @@ function GuardarUsuario() {
 				  "columns": [
           { "data": "id"},
           { "data": "id"},
+          { "data": "id"},
           { "data": "cedula"},
 					{ "data": "nombre1"},
 					{ "data": "pais"},
@@ -822,7 +824,7 @@ function GuardarUsuario() {
 				],
 				 "columnDefs": [
 					 {
-						"targets": 3,
+						"targets": 4,
 						"data":"",
 						 render: function ( data, type, row ) {
 							return  `${row.nombre1} ${row.nombre2} ${row.apellido1} ${row.apellido2}`;
@@ -840,6 +842,13 @@ function GuardarUsuario() {
 						"data":"",
 						 render: function ( data, type, row ) {
 							return  `<button class="btn btn-link" onclick="abrir_asociacion_hotel(${row.id})"><i class="fa fa-eye" aria-hidden="true"></i></button>`;
+						 }
+					},
+          {
+						"targets": 2,
+						"data":"",
+						 render: function ( data, type, row ) {
+							return  `<button class="btn btn-link" style="color:red" onclick="EliminarUsuario(${row.id})"><i class="fa fa-trash" aria-hidden="true"></i></button>`;
 						 }
 					}],
 				});
@@ -897,6 +906,43 @@ function GuardarUsuario() {
     });
       
   }
+
+
+  function EliminarUsuario(id) {
+    
+    let values = {
+      id :  id,
+      tabla : 'usuarios',
+      accion :  'ELIMINAR',
+    }
+    $.ajax({
+    type : 'POST',
+    data: values,
+    url: '../../php/eliminar.php',
+    beforeSend: function() {
+        $(".loader").css("display", "inline-block")
+    },
+    success: function(respuesta) {
+      $(".loader").css("display", "none")
+      console.log(respuesta)
+      let obj = JSON.parse(respuesta)
+      if (obj.success) {
+        alert(obj.message)
+        traer_tabla_usuarios()
+        $("#close_modal_edit_usuario").click()
+      
+      }else{
+        alert(obj.message)
+      }
+
+    },
+    error: function(e) {
+      $(".loader").css("display", "none")
+      console.log("No se ha podido obtener la información"+e);
+    }
+  });
+    
+}
 
 </script>
 </body>
