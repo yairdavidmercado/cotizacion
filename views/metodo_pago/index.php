@@ -142,6 +142,7 @@ session_start();
                     <th>Nombre</th>
                     <th>Creación</th>
                     <th></th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody id="body_table_cotizacion">
@@ -318,6 +319,7 @@ function GuardarMetodoPago() {
 				  "columns": [
 					{ "data": "nombre"},
           { "data": "fecha_crea"},
+          { "data": ""},
           { "data": ""}
 				],
 				 "columnDefs": [
@@ -326,6 +328,13 @@ function GuardarMetodoPago() {
 						"data":"",
 						 render: function ( data, type, row ) {
 							return  `<button class="btn btn-link" data-toggle="modal" data-target="#modal_metodo_pago" onclick="traer_metodo_pago(${row.id})"><i class="fa fa-edit" aria-hidden="true"></i></button>`;
+						 }
+					},
+          {
+						"targets": 3,
+						"data":"",
+						 render: function ( data, type, row ) {
+							return  `<button class="btn btn-link" style="color:red" onclick="EliminarMetodosPagos(${row.id})"><i class="fa fa-trash" aria-hidden="true"></i></button>`;
 						 }
 					}],
 				});
@@ -402,6 +411,42 @@ function GuardarMetodoPago() {
     
 }
 
+
+function EliminarMetodosPagos(id) {
+    
+    let values = {
+      id :  id,
+      tabla : 'metodo_pago',
+      accion :  'ELIMINAR',
+    }
+    $.ajax({
+    type : 'POST',
+    data: values,
+    url: '../../php/eliminar.php',
+    beforeSend: function() {
+        $(".loader").css("display", "inline-block")
+    },
+    success: function(respuesta) {
+      $(".loader").css("display", "none")
+      console.log(respuesta)
+      let obj = JSON.parse(respuesta)
+      if (obj.success) {
+        alert(obj.message)
+        traer_tabla_metodo_pago()
+        $("#close_modal_edit_usuario").click()
+      
+      }else{
+        alert(obj.message)
+      }
+
+    },
+    error: function(e) {
+      $(".loader").css("display", "none")
+      console.log("No se ha podido obtener la información"+e);
+    }
+  });
+    
+}
 </script>
 </body>
 </html>

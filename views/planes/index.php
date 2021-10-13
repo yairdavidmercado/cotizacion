@@ -181,6 +181,7 @@ session_start();
                       <th>Cantidad de productos</th>
                       <th>Creación</th>
                       <th></th>
+                      <th></th>
                   </tr>
               </thead>
               <tbody id="body_table_cotizacion">
@@ -232,6 +233,7 @@ session_start();
                               <th>Tipo</th>
                               <th>Tipo de guardado</th>
                               <th>Creación</th>
+                              <th></th>
                               <th></th>
                           </tr>
                       </thead>
@@ -676,6 +678,7 @@ function GuardarPlanes() {
         { "data": "descripcion"},
         { "data": "cantidad_productos"},
         { "data": "fecha_crea"},
+        { "data": ""},
         { "data": ""}
 
       ],
@@ -685,6 +688,13 @@ function GuardarPlanes() {
           "data":"",
           render: function ( data, type, row ) {
             return  `<button class="btn btn-link" data-toggle="modal" data-target="#modal_editar_planes" onclick="traer_planes_id(${row.id})"><i class="fa fa-edit" aria-hidden="true"></i></button>`;
+          }
+        },
+        {
+          "targets": 5,
+          "data":"",
+          render: function ( data, type, row ) {
+            return  `<button class="btn btn-link" style="color:red" onclick="EliminarPlanes(${row.id})"><i class="fa fa-trash" aria-hidden="true"></i></button>`;
           }
         }],
       });
@@ -719,6 +729,7 @@ function GuardarPlanes() {
 					{ "data": "tipo"},
           { "data": "tipo_guardado"},
           { "data": "fecha_crea"},
+          { "data": ""},
           { "data": ""}
 
 				],
@@ -728,6 +739,13 @@ function GuardarPlanes() {
 						"data":"",
 						 render: function ( data, type, row ) {
 							return  `<a class="btn btn-link" data-toggle="modal" data-target="#modal_editar_productos" onclick="traer_productos_id(${row.id})"><i class="fa fa-edit" aria-hidden="true"></i></a>`;
+						 }
+					},
+          {
+						"targets": 5,
+						"data":"",
+						 render: function ( data, type, row ) {
+							return  `<a class="btn btn-link" style="color:red" onclick="EliminarProductos(${row.id})"><i class="fa fa-trash" aria-hidden="true"></i></a>`;
 						 }
 					}],
 				});
@@ -978,6 +996,78 @@ function traer_productos_id(id) {
     });
     
   }
+
+  function EliminarPlanes(id) {
+    
+    let values = {
+      id :  id,
+      tabla : 'planes',
+      accion :  'ELIMINAR',
+    }
+    $.ajax({
+    type : 'POST',
+    data: values,
+    url: '../../php/eliminar.php',
+    beforeSend: function() {
+        $(".loader").css("display", "inline-block")
+    },
+    success: function(respuesta) {
+      $(".loader").css("display", "none")
+      console.log(respuesta)
+      let obj = JSON.parse(respuesta)
+      if (obj.success) {
+        alert(obj.message)
+        traer_tabla_planes()
+        $("#close_modal_edit_usuario").click()
+      
+      }else{
+        alert(obj.message)
+      }
+
+    },
+    error: function(e) {
+      $(".loader").css("display", "none")
+      console.log("No se ha podido obtener la información"+e);
+    }
+  });
+    
+}
+
+function EliminarProductos(id) {
+    
+    let values = {
+      id :  id,
+      tabla : 'productos',
+      accion :  'ELIMINAR',
+    }
+    $.ajax({
+    type : 'POST',
+    data: values,
+    url: '../../php/eliminar.php',
+    beforeSend: function() {
+        $(".loader").css("display", "inline-block")
+    },
+    success: function(respuesta) {
+      $(".loader").css("display", "none")
+      console.log(respuesta)
+      let obj = JSON.parse(respuesta)
+      if (obj.success) {
+        alert(obj.message)
+        traer_tabla_productos()
+        $("#close_modal_edit_usuario").click()
+      
+      }else{
+        alert(obj.message)
+      }
+
+    },
+    error: function(e) {
+      $(".loader").css("display", "none")
+      console.log("No se ha podido obtener la información"+e);
+    }
+  });
+    
+}
 
 </script>
 </body>

@@ -147,6 +147,7 @@ session_start();
                     <th>Descripción</th>
                     <th>Creación</th>
                     <th></th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody id="body_table_cotizacion">
@@ -329,6 +330,7 @@ function GuardarMotivos() {
 					{ "data": "nombre"},
 					{ "data": "descripcion"},
           { "data": "fecha_crea"},
+          { "data": ""},
           { "data": ""}
 				],
 				 "columnDefs": [
@@ -337,6 +339,13 @@ function GuardarMotivos() {
 						"data":"",
 						 render: function ( data, type, row ) {
 							return  `<button class="btn btn-link" data-toggle="modal" data-target="#modal_editar_motivos" onclick="traer_motivos(${row.id})"><i class="fa fa-edit" aria-hidden="true"></i></button>`;
+						 }
+					},
+          {
+						"targets": 4,
+						"data":"",
+						 render: function ( data, type, row ) {
+							return  `<button class="btn btn-link" style="color:red" onclick="EliminarMotivos(${row.id})"><i class="fa fa-trash" aria-hidden="true"></i></button>`;
 						 }
 					}],
 				});
@@ -405,6 +414,42 @@ function EditarMotivos() {
         $("#close_modal_editar_motivos").click()
         traer_tabla_motivos()
         alert(obj.message)
+      }else{
+        alert(obj.message)
+      }
+
+    },
+    error: function(e) {
+      $(".loader").css("display", "none")
+      console.log("No se ha podido obtener la información"+e);
+    }
+  });
+    
+}
+
+function EliminarMotivos(id) {
+    
+    let values = {
+      id :  id,
+      tabla : 'motivos',
+      accion :  'ELIMINAR',
+    }
+    $.ajax({
+    type : 'POST',
+    data: values,
+    url: '../../php/eliminar.php',
+    beforeSend: function() {
+        $(".loader").css("display", "inline-block")
+    },
+    success: function(respuesta) {
+      $(".loader").css("display", "none")
+      console.log(respuesta)
+      let obj = JSON.parse(respuesta)
+      if (obj.success) {
+        alert(obj.message)
+        traer_tabla_motivos()
+        $("#close_modal_edit_usuario").click()
+      
       }else{
         alert(obj.message)
       }

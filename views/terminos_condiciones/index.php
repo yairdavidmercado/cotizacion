@@ -147,6 +147,7 @@ session_start();
                     <th>Descripción</th>
                     <th>Creación</th>
                     <th></th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody id="body_table_cotizacion">
@@ -368,6 +369,7 @@ function Editarterminos_condiciones() {
 					{ "data": "titulo"},
 					{ "data": "descripcion"},
           { "data": "fecha_crea"},
+          { "data": ""},
           { "data": ""}
 				],
 				 "columnDefs": [
@@ -376,6 +378,13 @@ function Editarterminos_condiciones() {
 						"data":"",
 						 render: function ( data, type, row ) {
 							return  `<button class="btn btn-link" data-toggle="modal" data-target="#modal_editar_terminos" onclick="traer_terminos(${row.id})"><i class="fa fa-eye" aria-hidden="true"></i></button>`;
+						 }
+					},
+          {
+						"targets": 4,
+						"data":"",
+						 render: function ( data, type, row ) {
+							return  `<button class="btn btn-link" style="color:red" onclick="EliminarTerminos(${row.id})"><i class="fa fa-trash" aria-hidden="true"></i></button>`;
 						 }
 					}],
 				});
@@ -417,6 +426,42 @@ function Editarterminos_condiciones() {
       });
     
   }
+
+  function EliminarTerminos(id) {
+    
+    let values = {
+      id :  id,
+      tabla : 'terminos_condiciones',
+      accion :  'ELIMINAR',
+    }
+    $.ajax({
+    type : 'POST',
+    data: values,
+    url: '../../php/eliminar.php',
+    beforeSend: function() {
+        $(".loader").css("display", "inline-block")
+    },
+    success: function(respuesta) {
+      $(".loader").css("display", "none")
+      console.log(respuesta)
+      let obj = JSON.parse(respuesta)
+      if (obj.success) {
+        alert(obj.message)
+        traer_tabla_terminos_condiciones()
+        $("#close_modal_edit_usuario").click()
+      
+      }else{
+        alert(obj.message)
+      }
+
+    },
+    error: function(e) {
+      $(".loader").css("display", "none")
+      console.log("No se ha podido obtener la información"+e);
+    }
+  });
+    
+}
 
 </script>
 </body>
