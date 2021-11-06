@@ -558,6 +558,36 @@ if ($conn) {
 			//$response["success"] = true;
 			echo json_encode($response);
 		}
+	}else if ($codigo == "traer_menu_acciones") {//titulares
+		$result = mysqli_query($conn, 	"SELECT app_accion.*, app_modulos.nombre AS modulo FROM usuarios 
+										INNER JOIN app_perfil ON usuarios.tipo = app_perfil.nombre
+										INNER JOIN app_permisos ON app_perfil.id = app_permisos.id_perfil 
+										INNER JOIN app_accion ON app_permisos.id_accion = app_accion.id 
+										INNER JOIN app_modulos ON app_accion.id_modulo = app_modulos.id 
+										WHERE usuarios.id = $id_autor AND app_modulos.nombre = '$parametro1'");
+		$data = array();										
+		if(mysqli_num_rows($result) > 0)
+		{	
+									$response["resultado"] = array();
+									while ($row = mysqli_fetch_array($result)) {
+									$datos = array();
+										
+									$datos['id'] = $row["id"];
+									$datos['nombre'] = $row["nombre"];
+										
+										
+									// push single product into final response array
+									array_push($response["resultado"], $datos);
+									}
+									$response["success"] = true;
+									echo json_encode($response);
+
+		}else{
+			$response["success"] = false;
+			$response["message"] = "No se encontraron registros";
+			// echo no users JSON
+			echo json_encode($response);
+		}
 	}
 }
 else{

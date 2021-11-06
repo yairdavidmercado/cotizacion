@@ -2,6 +2,37 @@
  if (!isset($_SESSION['id'])) {
     header ("Location:/cotizacion/index.php"); 
  }
+$menu_general = '';
+$menu_config = '';
+if ($_SESSION['menu_general']['success']) {
+    for ($i=0; $i < count($_SESSION['menu_general']['resultado']) ; $i++) { 
+        if ($_SESSION['menu_general']['resultado'][$i]['tipo'] == 'GENERAL') {
+            $nombre = $_SESSION['menu_general']['resultado'][$i]['nombre'];
+            $url = $_SESSION['menu_general']['resultado'][$i]['url'];
+            $menu_general .= '<li class="nav-item">
+                                    <a class="nav-link menu_principal" id="menu_'.$nombre.'" href="'.$url.'">'.$nombre.'</a>
+                                </li>';
+        }
+
+        if ($_SESSION['menu_general']['resultado'][$i]['tipo'] == 'CONFIG') {
+            $nombre = $_SESSION['menu_general']['resultado'][$i]['nombre'];
+            $menu_config .= '<a class="dropdown-item menu_principal" style="color:#000; pading: 6px;" id="menu_'.$i.'" href="'.$url.'">'.$nombre.'</a>
+            <div class="dropdown-divider"></div>';
+        }
+    }
+
+    if ($menu_config !== '') {
+        $menu_config = '<li class="nav-item dropdown">
+                            <a  class="nav-link  menu_principal dropdown-toggle " href="#" id="navbarDropdown1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Configuración
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown1">
+                                '.$menu_config.'
+                            </div>
+                        </li>';
+    }
+}
+
 ?>
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css">
 <nav class="navbar navbar-expand-lg fixed-top navbar-dark" style="background-color: #002744;">
@@ -13,37 +44,11 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
+                <li class="nav-item">
                     <a class="nav-link active" id="menu_inicio" href="/cotizacion/welcome.php">Inicio</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link active menu_principal" id="menu_cotizaciones" href="/cotizacion/cotizacion.php">Cotización</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link menu_principal" id="menu_vauche" href="/cotizacion/vauche.php">Voucher</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link menu_principal" id="menu_hoteles" href="/cotizacion/views/hoteles">Hoteles</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a  class="nav-link  menu_principal dropdown-toggle " href="#" id="navbarDropdown1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Configuración
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown1">
-                    <a class="dropdown-item menu_principal" style="color:#000; pading: 6px;" id="menu_planes" href="/cotizacion/views/planes">Planes</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item menu_principal" style="color:#000; pading: 6px;" id="menu_motivos" href="/cotizacion/views/motivos">Motivos</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item menu_principal" style="color:#000; pading: 6px;" id="menu_tarifas" href="/cotizacion/views/tarifas">Tarifas</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item menu_principal" style="color:#000; pading: 6px;" id="metodo_pago" href="/cotizacion/views/metodo_pago">Método de pago</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item menu_principal" style="color:#000; pading: 6px;" id="terminos_condiciones" href="/cotizacion/views/terminos_condiciones">Términos y condiciones</a>
-                    </div>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link menu_principal" id="menu_usuarios"  href="/cotizacion/views/usuarios">Usuarios</a>
-                </li>
+                <?php  echo $menu_general; ?>
+                <?php  echo $menu_config; ?>
             </ul>
             <form class="form-inline my-2 my-lg-0">
                 <ul class="navbar-nav mr-auto">

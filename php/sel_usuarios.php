@@ -37,6 +37,40 @@ if ($conn) {
 									}
 									$response["success"] = true;
 									echo json_encode($response);
+									//creando menu
+									$id_autor = $_SESSION["id"];
+									$result1 = mysqli_query($conn, 	"SELECT app_modulos.id, app_modulos.nombre, app_modulos.tipo, app_modulos.url, app_modulos.orden FROM usuarios 
+																	INNER JOIN app_perfil ON usuarios.tipo = app_perfil.nombre
+																	INNER JOIN app_permisos ON app_perfil.id = app_permisos.id_perfil 
+																	INNER JOIN app_accion ON app_permisos.id_accion = app_accion.id 
+																	INNER JOIN app_modulos ON app_accion.id_modulo = app_modulos.id 
+																	WHERE usuarios.id = $id_autor GROUP BY 1, 2, 3, 4, 5 ORDER BY 5 ASC ");
+									$data = array();										
+									if(mysqli_num_rows($result1) > 0)
+									{	
+																$response1["resultado"] = array();
+																while ($row = mysqli_fetch_array($result1)) {
+																$datos = array();
+																	
+																$datos['id'] = $row["id"];
+																$datos['nombre'] = $row["nombre"];
+																$datos['url'] = $row["url"];
+																$datos['tipo'] = $row["tipo"];
+																	
+																	
+																// push single product into final response array
+																array_push($response1["resultado"], $datos);
+																}
+																$response1["success"] = true;
+																$_SESSION['menu_general'] = $response1;
+																//echo json_encode($response1);
+
+									}else{
+										$response1["success"] = false;
+										$_SESSION['menu_general'] = $response1;
+										// echo no users JSON
+										//echo json_encode($response1);
+									}
 
 		}else{
 				$response["success"] = false;
