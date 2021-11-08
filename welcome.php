@@ -5,6 +5,14 @@ if (!isset($_SESSION['id'])) {
     header ("Location:index.php"); 
  }
 // manipulate session variables
+$hoteles = '';
+if ($_SESSION['menu_general']['success']) {
+  for ($i=0; $i < count($_SESSION['menu_general']['resultado']) ; $i++) { 
+      if ($_SESSION['menu_general']['resultado'][$i]['nombre'] == 'hoteles') {
+        $hoteles = '<p><button type="button" data-toggle="modal" data-target=".bd-example-modal-lg" class="btn btn-link my-2">Crear hoteles</button></p>';
+      }
+  }
+}
 ?>
 <!doctype html>
 <html lang="es">
@@ -68,6 +76,7 @@ if (!isset($_SESSION['id'])) {
     <div class="box">
         <div class="container mt-5">
             <div id="btn_crear_hotel">
+              <?php echo  $hoteles;?>
             </div>
             <div class="row" id="content_hoteles">
 
@@ -191,9 +200,10 @@ var id_usuario = "<?php echo $_SESSION['id'] ?>"
 var perfil = "<?php echo $_SESSION['perfil'] ?>"
 
 $(function() {
-    if (perfil == "ADMINISTRADOR") {
+
+    /* if (perfil == "ADMINISTRADOR" || perfil == "SUPERADMIN") {
         $("#btn_crear_hotel").html('<p><button type="button" data-toggle="modal" data-target=".bd-example-modal-lg" class="btn btn-link my-2">Crear hoteles</button></p>')
-    }
+    } */
     
     card_hotel(id_usuario)
     traer_paises()

@@ -8,7 +8,15 @@ session_start();
  if (!isset($_SESSION['id_hotel'])) {
     header ("Location:welcome.php"); 
   }
-// manipulate session variables
+
+  $usuarios = '';
+  if ($_SESSION['menu_general']['success']) {
+    for ($i=0; $i < count($_SESSION['menu_general']['resultado']) ; $i++) { 
+        if ($_SESSION['menu_general']['resultado'][$i]['nombre'] == 'usuarios') {
+          $usuarios = '<button type="button" class="btn btn-link btn-sm float-right" data-toggle="modal" data-target=".crear_titular_modal" >Crear titular</button>';
+        }
+    }
+  }
 ?>
 <!doctype html>
 <html lang="es">
@@ -127,7 +135,7 @@ session_start();
                     </select>
                   </div>
                   <div class="col-md-6 mb-3">
-                    <button type="button" class="btn btn-link btn-sm float-right" data-toggle="modal" data-target=".crear_titular_modal" >Crear titular</button>
+                    <?php echo $usuarios ?>
                   </div>
                   <div class="col-md-12 mb-3" id="content_info_titular" style="display:none">
                     <div class="multi-collapse collapse show"  >

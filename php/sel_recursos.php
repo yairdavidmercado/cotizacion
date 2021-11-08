@@ -588,6 +588,31 @@ if ($conn) {
 			// echo no users JSON
 			echo json_encode($response);
 		}
+	}else if ($codigo == "traer_perfiles") {//titulares
+		$result = mysqli_query($conn, 	"SELECT * FROM app_perfil WHERE activo = true");
+		$data = array();										
+		if(mysqli_num_rows($result) > 0)
+		{	
+									$response["resultado"] = array();
+									while ($row = mysqli_fetch_array($result)) {
+									$datos = array();
+										
+									$datos['id'] = $row["id"];
+									$datos['nombre'] = $row["nombre"];
+										
+										
+									// push single product into final response array
+									array_push($response["resultado"], $datos);
+									}
+									$response["success"] = true;
+									echo json_encode($response);
+
+		}else{
+			$response["success"] = false;
+			$response["message"] = "No se encontraron registros";
+			// echo no users JSON
+			echo json_encode($response);
+		}
 	}
 }
 else{

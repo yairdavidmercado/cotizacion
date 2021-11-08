@@ -4,6 +4,7 @@
  }
 $menu_general = '';
 $menu_config = '';
+$panel_control = '';
 if ($_SESSION['menu_general']['success']) {
     for ($i=0; $i < count($_SESSION['menu_general']['resultado']) ; $i++) { 
         if ($_SESSION['menu_general']['resultado'][$i]['tipo'] == 'GENERAL') {
@@ -16,8 +17,15 @@ if ($_SESSION['menu_general']['success']) {
 
         if ($_SESSION['menu_general']['resultado'][$i]['tipo'] == 'CONFIG') {
             $nombre = $_SESSION['menu_general']['resultado'][$i]['nombre'];
+            $url = $_SESSION['menu_general']['resultado'][$i]['url'];
             $menu_config .= '<a class="dropdown-item menu_principal" style="color:#000; pading: 6px;" id="menu_'.$i.'" href="'.$url.'">'.$nombre.'</a>
             <div class="dropdown-divider"></div>';
+        }
+
+        if ($_SESSION['menu_general']['resultado'][$i]['tipo'] == 'SESION') {
+            $nombre = $_SESSION['menu_general']['resultado'][$i]['nombre'];
+            $url = $_SESSION['menu_general']['resultado'][$i]['url'];
+            $panel_control = '<a class="dropdown-item" href="'.$url.'">'.$nombre.'</a>';
         }
     }
 
@@ -64,7 +72,7 @@ if ($_SESSION['menu_general']['success']) {
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                             <!-- <a class="dropdown-item" href="#">Action</a>
                             <a class="dropdown-item" href="#">Another action</a> -->
-                            <a class="dropdown-item" href="#"></a>
+                            <?php echo $panel_control; ?>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="/cotizacion/php/cerrar_sesion.php">Cerrar sesión</a>
                         </div>

@@ -409,6 +409,7 @@ $(function() {
   $("#menu_nombre_hotel").addClass("active");
   //traer_hotel()
   traer_paises()
+  traer_perfiles()
   $(".loader").css("display", "none")
 
 });
@@ -943,6 +944,39 @@ function GuardarUsuario() {
   });
     
 }
+
+function traer_perfiles() {
+      let values = { 
+            codigo: 'traer_perfiles',
+            parametro1: "",
+            parametro2: ""
+      };
+      $.ajax({
+        type : 'POST',
+        data: values,
+        url: '../../php/sel_recursos.php',
+        beforeSend: function() {
+            $(".loader").css("display", "inline-block")
+        },
+        success: function(respuesta) {
+          $(".loader").css("display", "none")
+          let obj = JSON.parse(respuesta)
+          let fila = ''
+          $.each(obj["resultado"], function( index, val ) {
+            fila += `<option value='${val.nombre}'>${val.nombre}</option>`
+          });
+
+          $("#tipo").html('<option value="">Seleccionar</option>'+fila)
+          $("#tipo_edit").html('<option value="">Seleccionar</option>'+fila)
+          
+        },
+        error: function() {
+          $(".loader").css("display", "none")
+          console.log("No se ha podido obtener la información");
+        }
+      });
+    
+  }
 
 </script>
 </body>
