@@ -11,7 +11,7 @@ $id_perfil = $_SESSION['perfil'];
 $id_hotel = isset($_SESSION['id_hotel']) ? $_SESSION['id_hotel']: "" ;
 //parametros de conexion a la base de datos del cliente
 $condicion = '';
-if ($id_perfil !== 'ADMINISTRADOR') {
+if ($id_perfil !== 'SUPERADMIN') {
 	$condicion = "AND id_autor = $id_autor";
 }
 $conn = mysqli_connect(DB_HOST,DB_USER, DB_PASS, DB_NAME); 
