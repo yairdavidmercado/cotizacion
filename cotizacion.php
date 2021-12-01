@@ -9,7 +9,7 @@ session_start();
     header ("Location:welcome.php"); 
   }
 
-  $usuarios = '';
+  $usuarios = '<button type="button" class="btn btn-link btn-sm float-right" data-toggle="modal" data-target=".crear_titular_modal" >Crear titular</button>';
   if ($_SESSION['menu_general']['success']) {
     for ($i=0; $i < count($_SESSION['menu_general']['resultado']) ; $i++) { 
         if ($_SESSION['menu_general']['resultado'][$i]['nombre'] == 'usuarios') {
@@ -180,7 +180,7 @@ session_start();
                     </div>
                     <div class="form-check-inline">
                       <label class="form-check-label">
-                        <input type="radio" name="tipo_viaje" onclick="traer_tarifas(1)" required value="1" class="form-check-input" value="">Por noche
+                        <input type="radio" name="tipo_viaje" onclick="traer_tarifas(1)" required value="1" class="form-check-input" value="">Noches
                       </label>
                     </div>
                   </div>
@@ -635,13 +635,13 @@ function detalle_tarifa() {
                                                                 <tbody>
                                                                     <tr>
                                                                         <td class="left">
-                                                                            <strong>Valor por noche</strong>
+                                                                            <strong>Valor tour/alquiler</strong>
                                                                         </td>
                                                                         <td style="text-align: right;" id="subtotal">$${puntosDecimales(subtotal)}</td>
                                                                     </tr>
                                                                     <tr>
                                                                         <td class="left">
-                                                                            <strong>Total por noches</strong>
+                                                                            <strong>Total tour/alquiler</strong>
                                                                         </td>
                                                                         <td style="text-align: right;">
                                                                             <strong>$${puntosDecimales(total)}</strong>
@@ -1137,12 +1137,14 @@ function GuardarCotizacion() {
 
           let subtotal = totalchild+totaladult_s+totaladult_d+totaladult_t_c
           let n_noches = noche == "N/A" ? 1 : parseInt(noche)
+          let noche_tour = noche == "N/A" ? 'tour/alquiler' :'noches'
+
           let total = subtotal * parseInt(n_noches)
           $("#btn_pdf").html(`<span onclick="imprimir_cotizacion('${id}')" style="text-align: right;font-size:28px;cursor:pointer" class="mr-4"><i class="fas fa-print"></i></span>`)
               let fila = `<div class="row" style="background-color:#02317c;color:#fff">
                             <div class="col-sm-12" style="background-color:#1a2b48">
                               <h3 class="text-center">COTIZACIÓN</h3>
-                              <p class="text-center">Cotizacion valida por 24 HRS</p>
+                              <p class="text-center">Cotización valida por 24 HRS</p>
                             </div>
                           <div class="col-sm-12">
                             <div class="table-responsive-sm">
@@ -1263,13 +1265,13 @@ function GuardarCotizacion() {
                                   <tbody>
                                       <tr>
                                           <td class="left">
-                                              <strong>Valor por noche</strong>
+                                              <strong>Valor ${noche_tour}</strong>
                                           </td>
                                           <td style="text-align: right;" id="subtotal">$${puntosDecimales(subtotal)}</td>
                                       </tr>
                                       <tr>
                                           <td class="left">
-                                              <strong>Total por noches</strong>
+                                              <strong>Total ${noche_tour}</strong>
                                           </td>
                                           <td style="text-align: right;">
                                               <strong>$${puntosDecimales(total)}</strong>

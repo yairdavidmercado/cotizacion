@@ -6,6 +6,7 @@ if (!isset($_SESSION['id'])) {
  }
 // manipulate session variables
 $hoteles = '';
+$hoteles = '<p><button type="button" data-toggle="modal" data-target=".bd-example-modal-lg" class="btn btn-link my-2">Crear hoteles</button></p>';
 if ($_SESSION['menu_general']['success']) {
   for ($i=0; $i < count($_SESSION['menu_general']['resultado']) ; $i++) { 
       if ($_SESSION['menu_general']['resultado'][$i]['nombre'] == 'hoteles') {

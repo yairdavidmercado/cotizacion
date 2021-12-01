@@ -615,6 +615,7 @@ function GuardarVaucher() {
 
           let subtotal = totalchild+totaladult_s+totaladult_d+totaladult_t_c
           let n_noches = noche == "N/A" ? 1 : parseInt(noche)
+          let noche_tour = noche == "N/A" ? 'tour/alquiler' :'noches'
           let total = subtotal * parseInt(n_noches)
           let saldo = total-parseInt(deposito)
           $("#btn_pdf").html(`<span onclick="imprimir_cotizacion('${id}')" style="text-align: right;font-size:28px;cursor:pointer;font-family: 'Helvetica', 'Arial', sans-serif;" class="mr-4"><i class="fas fa-print"></i></span>`)
@@ -748,13 +749,13 @@ function GuardarVaucher() {
                                   <tbody>
                                       <tr>
                                           <td class="left">
-                                              <strong>Valor por noche</strong>
+                                              <strong>Valor ${noche_tour}</strong>
                                           </td>
                                           <td style="text-align: right;" id="subtotal">$${puntosDecimales(subtotal)}</td>
                                       </tr>
                                       <tr>
                                           <td class="left">
-                                              <strong>Total por noches</strong>
+                                              <strong>Total ${noche_tour}</strong>
                                           </td>
                                           <td style="text-align: right;">
                                               <strong>$${puntosDecimales(total)}</strong>

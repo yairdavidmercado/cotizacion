@@ -1,13 +1,14 @@
 -- phpMyAdmin SQL Dump
--- version 5.1.0
+-- version 4.9.7
 -- https://www.phpmyadmin.net/
 --
--- Servidor: 127.0.0.1
--- Tiempo de generación: 24-08-2021 a las 02:32:41
--- Versión del servidor: 10.4.19-MariaDB
--- Versión de PHP: 7.4.19
+-- Servidor: localhost:3306
+-- Tiempo de generación: 27-11-2021 a las 14:22:20
+-- Versión del servidor: 5.7.23-23
+-- Versión de PHP: 7.3.32
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -18,8 +19,192 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de datos: `hotelesensanandres`
+-- Base de datos: `coticlic_calypso`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `app_accion`
+--
+
+CREATE TABLE `app_accion` (
+  `id` int(11) NOT NULL,
+  `accion` varchar(15) DEFAULT NULL,
+  `id_modulo` int(11) DEFAULT NULL,
+  `fecha_crea` datetime DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `app_accion`
+--
+
+INSERT INTO `app_accion` (`id`, `accion`, `id_modulo`, `fecha_crea`) VALUES
+(1, 'crear', 1, '2021-10-23 17:09:35'),
+(2, 'editar', 1, '2021-10-23 17:09:45'),
+(3, 'eliminar', 1, '2021-10-23 17:10:00'),
+(4, 'leer', 1, '2021-10-23 17:10:21'),
+(5, 'leer', 2, '2021-10-23 17:10:29'),
+(6, 'crear', 2, '2021-10-23 17:10:35'),
+(7, 'editar', 2, '2021-11-06 16:10:52'),
+(8, 'eliminar', 2, '2021-11-06 16:11:34'),
+(9, 'leer', 3, '2021-11-06 16:11:46'),
+(10, 'editar', 3, '2021-11-06 16:11:49'),
+(11, 'eliminar', 3, '2021-11-06 16:11:56'),
+(12, 'crear', 3, '2021-11-06 16:11:58'),
+(13, 'crear', 4, '2021-11-06 16:12:11'),
+(14, 'leer', 4, '2021-11-06 16:12:27'),
+(15, 'editar', 4, '2021-11-06 16:12:40'),
+(16, 'eliminar', 4, '2021-11-06 16:12:47'),
+(17, 'crear', 5, '2021-11-06 16:12:50'),
+(18, 'leer', 5, '2021-11-06 16:12:53'),
+(19, 'editar', 5, '2021-11-06 16:12:56'),
+(20, 'eliminar', 5, '2021-11-06 16:13:00'),
+(21, 'crear', 6, '2021-11-06 16:13:12'),
+(22, 'leer', 6, '2021-11-06 16:13:15'),
+(23, 'editar', 6, '2021-11-06 16:13:30'),
+(24, 'eliminar', 6, '2021-11-06 16:13:34'),
+(25, 'crear', 7, '2021-11-06 16:14:03'),
+(26, 'leer', 7, '2021-11-06 16:14:06'),
+(27, 'editar', 7, '2021-11-06 16:14:09'),
+(28, 'eliminar', 7, '2021-11-06 16:14:12'),
+(29, 'crear', 8, '2021-11-06 16:14:22'),
+(30, 'leer', 8, '2021-11-06 16:14:24'),
+(31, 'editar', 8, '2021-11-06 16:14:27'),
+(32, 'eliminar', 8, '2021-11-06 16:14:31'),
+(33, 'crear', 9, '2021-11-06 16:14:41'),
+(34, 'leer', 9, '2021-11-06 16:14:43'),
+(35, 'editar', 9, '2021-11-06 16:14:45'),
+(36, 'eliminar', 9, '2021-11-06 16:14:49'),
+(37, 'crear', 11, '2021-11-06 21:09:35');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `app_modulos`
+--
+
+CREATE TABLE `app_modulos` (
+  `id` int(11) NOT NULL,
+  `nombre` varchar(255) DEFAULT NULL,
+  `url` varchar(150) DEFAULT NULL,
+  `tipo` varchar(11) DEFAULT NULL,
+  `orden` int(2) DEFAULT NULL,
+  `fecha_crea` datetime DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `app_modulos`
+--
+
+INSERT INTO `app_modulos` (`id`, `nombre`, `url`, `tipo`, `orden`, `fecha_crea`) VALUES
+(1, 'usuarios', '/views/usuarios/', 'GENERAL', 9, '2021-10-23 17:08:58'),
+(2, 'hoteles', '/views/hoteles/', 'GENERAL', 3, '2021-10-23 17:09:08'),
+(3, 'cotizaciones', '/cotizacion.php', 'GENERAL', 1, '2021-10-23 17:10:59'),
+(4, 'voucher', '/vauche.php', 'GENERAL', 2, '2021-10-31 14:03:20'),
+(5, 'planes', '/views/planes/', 'CONFIG', 4, '2021-11-06 15:21:09'),
+(6, 'motivos', '/views/motivos/', 'CONFIG', 5, '2021-11-06 15:22:29'),
+(7, 'tarifas', '/views/tarifas/', 'CONFIG', 6, '2021-11-06 15:22:43'),
+(8, 'método de pago', '/views/metodo_pago/', 'CONFIG', 7, '2021-11-06 15:25:12'),
+(9, 'términos y condiciones', '/views/terminos_condiciones/', 'CONFIG', 8, '2021-11-06 15:25:23'),
+(11, 'panel de control', '/views/panel_control/', 'SESION', 10, '2021-11-06 21:06:57');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `app_perfil`
+--
+
+CREATE TABLE `app_perfil` (
+  `id` int(11) NOT NULL,
+  `nombre` varchar(20) DEFAULT NULL,
+  `id_autor` int(11) DEFAULT NULL,
+  `fecha_crea` datetime DEFAULT CURRENT_TIMESTAMP,
+  `activo` tinyint(1) DEFAULT '1'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `app_perfil`
+--
+
+INSERT INTO `app_perfil` (`id`, `nombre`, `id_autor`, `fecha_crea`, `activo`) VALUES
+(1, 'SUPERADMIN', NULL, '2021-10-23 17:30:38', 1),
+(2, 'ADMINISTRADOR', 1, '2021-10-23 17:31:07', 1),
+(3, 'TITULAR', NULL, '2021-11-06 19:07:50', 1),
+(4, 'OPERADOR', 1, '2021-11-07 09:16:22', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `app_permisos`
+--
+
+CREATE TABLE `app_permisos` (
+  `id` int(11) NOT NULL,
+  `id_accion` int(11) DEFAULT NULL,
+  `id_perfil` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `app_permisos`
+--
+
+INSERT INTO `app_permisos` (`id`, `id_accion`, `id_perfil`) VALUES
+(1, 1, 1),
+(2, 2, 1),
+(3, 3, 1),
+(4, 4, 1),
+(5, 5, 1),
+(6, 6, 1),
+(8, 1, 2),
+(9, 4, 2),
+(10, 5, 2),
+(14, 7, 1),
+(15, 8, 1),
+(16, 9, 1),
+(17, 10, 1),
+(18, 11, 1),
+(19, 12, 1),
+(20, 13, 1),
+(21, 14, 1),
+(22, 15, 1),
+(23, 16, 1),
+(24, 17, 1),
+(25, 18, 1),
+(26, 19, 1),
+(27, 20, 1),
+(28, 21, 1),
+(29, 22, 1),
+(30, 23, 1),
+(31, 24, 1),
+(32, 25, 1),
+(33, 26, 1),
+(34, 27, 1),
+(35, 28, 1),
+(36, 29, 1),
+(37, 30, 1),
+(38, 31, 1),
+(39, 32, 1),
+(40, 33, 1),
+(41, 34, 1),
+(42, 35, 1),
+(43, 36, 1),
+(46, 37, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `auditoria`
+--
+
+CREATE TABLE `auditoria` (
+  `id` int(11) NOT NULL,
+  `tabla` varchar(255) DEFAULT NULL,
+  `accion` varchar(255) DEFAULT NULL,
+  `id_modi` int(11) DEFAULT NULL,
+  `id_autor` int(11) DEFAULT NULL,
+  `fecha_crea` datetime DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -41,47 +226,16 @@ CREATE TABLE `cotizacion` (
   `id_plan` int(11) DEFAULT NULL,
   `id_motivo` int(11) DEFAULT NULL,
   `id_terminos` int(11) DEFAULT NULL,
+  `cod_res` varchar(11) DEFAULT NULL,
   `noche` varchar(11) DEFAULT NULL,
   `acomodo` varchar(255) DEFAULT NULL,
-  `fecha_expedicion` datetime DEFAULT current_timestamp(),
+  `fecha_expedicion` datetime DEFAULT CURRENT_TIMESTAMP,
   `fecha_entrada` date DEFAULT NULL,
   `fecha_salida` date DEFAULT NULL,
   `id_autor` int(11) DEFAULT NULL,
-  `fecha_crea` datetime DEFAULT current_timestamp(),
-  `activo` tinyint(1) DEFAULT 1
+  `fecha_crea` datetime DEFAULT CURRENT_TIMESTAMP,
+  `activo` tinyint(1) DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Volcado de datos para la tabla `cotizacion`
---
-
-INSERT INTO `cotizacion` (`id`, `cod_vendedor`, `n_infante`, `n_child`, `n_adult_s`, `n_adult_d`, `n_adult_t_c`, `id_hotel`, `id_titular`, `id_tarifa`, `id_plan`, `id_motivo`, `id_terminos`, `noche`, `acomodo`, `fecha_expedicion`, `fecha_entrada`, `fecha_salida`, `id_autor`, `fecha_crea`, `activo`) VALUES
-(1, '1', 0, 1, 1, 1, 1, 1, 2, 3, NULL, 1, NULL, '', '45', '2021-08-21 20:08:43', '2021-08-21', '2021-08-21', 1, '2021-08-21 20:08:43', 1),
-(2, '1', 0, 1, 1, 1, 1, 1, 2, 3, NULL, 1, NULL, 'N/A', '45', '2021-08-21 20:30:49', '2021-08-21', '2021-08-21', 1, '2021-08-21 20:30:49', 1),
-(3, '1', 0, 1, 1, 1, 1, 1, 2, 1, NULL, 1, NULL, '2', '45', '2021-08-21 20:31:41', '2021-08-21', '2021-08-23', 1, '2021-08-21 20:31:41', 1),
-(4, '0001', 0, 1, 1, 1, 1, 1, 2, 1, NULL, 1, NULL, '2', '45', '2021-08-21 20:38:18', '2021-08-21', '2021-08-23', 1, '2021-08-21 20:38:18', 1),
-(5, '0001', 0, 1, 1, 1, 1, 1, 2, 3, 1, 1, NULL, 'N/A', '12', '2021-08-21 21:53:02', '2021-08-21', '2021-08-21', 1, '2021-08-21 21:53:02', 1),
-(6, '0001', 0, 0, 1, 2, 1, 1, 2, 3, 1, 1, NULL, 'N/A', 'Buenas', '2021-08-22 10:40:50', '2021-08-22', '2021-08-22', 1, '2021-08-22 10:40:50', 1),
-(7, '0001', 1, 1, 1, 1, 1, 1, 2, 3, 1, 1, 1, 'N/A', 'XXXXX', '2021-08-22 14:27:58', '2021-08-22', '2021-08-22', 1, '2021-08-22 14:27:58', 1),
-(8, '0001', 0, 0, 0, 2, 2, 1, 2, 3, 1, 1, 1, 'N/A', 'XXXXX', '2021-08-22 14:28:15', '2021-08-22', '2021-08-22', 1, '2021-08-22 14:28:15', 1),
-(9, '0001', 1, 1, 2, 0, 1, 1, 2, 3, 1, 1, 1, 'N/A', 'Asd', '2021-08-22 14:43:52', '2021-08-23', '2021-08-23', 1, '2021-08-22 14:43:52', 1),
-(10, '0001', 1, 1, 1, 2, 1, 1, 2, 3, 2, 1, 1, 'N/A', 'Fhh', '2021-08-22 14:50:41', '2021-08-22', '2021-08-22', 1, '2021-08-22 14:50:41', 1),
-(11, '0001', 0, 0, 0, 8, 9, 1, 2, 1, 1, 1, 1, '4', ' 4 Habitaciones Dobles\n 3 Habitaciones Triples', '2021-08-22 20:09:50', '2021-08-22', '2021-08-26', 1, '2021-08-22 20:09:50', 1),
-(12, '0001', 0, 0, 0, 8, 9, 1, 2, 1, 1, 1, 1, '4', ' 4 Habitaciones Dobles\n 3 Habitaciones Triples', '2021-08-22 20:18:06', '2021-08-22', '2021-08-26', 1, '2021-08-22 20:18:06', 1),
-(13, '0001', 0, 0, 0, 8, 9, 1, 2, 1, 1, 1, 1, '5', 'asdadadsa asd ad ad asd\nasd sad\nadsa \naa dsa dd asdasdsadsadad asd\nas d\nasd ', '2021-08-22 20:23:41', '2021-08-22', '2021-08-27', 1, '2021-08-22 20:23:41', 1),
-(14, '0001', 0, 0, 0, 8, 9, 1, 2, 1, 1, 1, 1, '5', 'hfdgfgdsdfs \nsffsdfsffsf f\n fff sfsdfds', '2021-08-22 20:32:12', '2021-08-22', '2021-08-27', 1, '2021-08-22 20:32:12', 1),
-(15, '0001', 0, 0, 0, 8, 9, 1, 2, 1, 1, 1, 1, '6', 'sadadadada dad adad asdasd adasd asdas dsadas dasd adas das\n \nasd asd asdasd asd asdas dasd sadasd ad adsa d\nasdasd asd asd', '2021-08-22 20:37:16', '2021-08-22', '2021-08-28', 1, '2021-08-22 20:37:16', 1),
-(16, '0001', 0, 0, 0, 8, 9, 1, 2, 1, 1, 1, 1, '4', 'sadsD DAS DASD ADSDAD SAD ASDASD ASDASDA DAD ADSAD ASD\nASD ADSA DAD SASDA', '2021-08-22 20:40:04', '2021-08-22', '2021-08-26', 1, '2021-08-22 20:40:04', 1),
-(17, '0001', 0, 0, 0, 8, 9, 1, 2, 3, 1, 1, 1, 'N/A', 'SADASDADSADA AS DASD ASDADAD ADASAD ADA D SADSAD ADSAD ADASDSAD ASDASDASDASD ASD ASD ADASD SAD ASD ASDASD ASDAS DASD SADAS ASDSADASDAS ASDASDAS DSA', '2021-08-22 20:46:55', '2021-08-22', '2021-08-22', 1, '2021-08-22 20:46:55', 1),
-(18, '0001', 0, 0, 0, 0, 1, 1, 2, 3, 1, 1, 1, 'N/A', 'sasdasdsadad ad sadadsa dad', '2021-08-22 20:52:28', '2021-08-22', '2021-08-22', 1, '2021-08-22 20:52:28', 1),
-(19, '0001', 1, 1, 0, 0, 1, 1, 2, 3, 1, 1, 1, 'N/A', 'SADADS DASADA AD ADADA DASD ASDASD ASDSA DADA DAD ADAD ASDS AD SAD', '2021-08-22 20:54:44', '2021-08-22', '2021-08-22', 1, '2021-08-22 20:54:44', 1),
-(20, '0001', 0, 0, 0, 0, 4, 1, 2, 3, 1, 1, 1, 'N/A', 'gjgkjhkj j j jhj j jhkhkjhj kkjhkj', '2021-08-22 20:57:11', '2021-08-22', '2021-08-22', 1, '2021-08-22 20:57:11', 1),
-(21, '0001', 0, 0, 1, 1, 1, 1, 2, 3, 1, 1, 1, 'N/A', 'ghgghkjh', '2021-08-22 20:58:46', '2021-08-22', '2021-08-22', 1, '2021-08-22 20:58:46', 1),
-(22, '0001', 9, 5, 6, 4, 2, 1, 2, 1, 1, 1, 1, '2', 'jkhkjhjkhj ggjhhghj', '2021-08-22 21:00:06', '2021-08-22', '2021-08-24', 1, '2021-08-22 21:00:06', 1),
-(23, '0001', 1, 0, 0, 2, 0, 1, 2, 3, 1, 1, 1, 'N/A', 'Dfgddf', '2021-08-22 21:05:00', '2021-08-22', '2021-08-22', 1, '2021-08-22 21:05:00', 1),
-(24, '0001', 0, 1, 1, 3, 7, 1, 2, 3, 1, 1, 1, 'N/A', 'dadadsadasdsa\nsasdadsdssda', '2021-08-22 22:30:59', '2021-08-22', '2021-08-22', 1, '2021-08-22 22:30:59', 1),
-(25, '0001', 0, 0, 0, 0, 1, 1, 2, 2, 2, 1, 1, '6', 'Sfgfs', '2021-08-22 22:39:14', '2021-08-22', '2021-08-28', 1, '2021-08-22 22:39:14', 1),
-(26, '0001', 1, 0, 0, 8, 9, 1, 2, 2, 1, 1, 1, '1', 'Xxxxxxx', '2021-08-22 22:45:44', '2021-08-22', '2021-08-23', 1, '2021-08-22 22:45:44', 1);
 
 -- --------------------------------------------------------
 
@@ -2116,18 +2270,31 @@ CREATE TABLE `hoteles` (
   `id_terminos` int(11) DEFAULT NULL,
   `ciudad` varchar(255) DEFAULT NULL,
   `avatar` varchar(255) DEFAULT NULL,
-  `fecha_crea` datetime DEFAULT current_timestamp(),
-  `activo` tinyint(1) DEFAULT 1
+  `fecha_crea` datetime DEFAULT CURRENT_TIMESTAMP,
+  `id_autor` int(11) DEFAULT NULL,
+  `activo` tinyint(1) DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Volcado de datos para la tabla `hoteles`
 --
 
-INSERT INTO `hoteles` (`id`, `nit`, `nombre`, `email`, `telefono`, `direccion`, `id_pais`, `id_depto`, `id_terminos`, `ciudad`, `avatar`, `fecha_crea`, `activo`) VALUES
-(1, '900223342', 'Hotel El Dorado, su casa en San Andrés', 'eldorado@gmail.com', '30556777', 'Cll -3 esquin', 82, 855, 1, 'san andrés', 'assets/img/default.jpg', '2021-08-08 15:53:23', 1),
-(2, '975443356', 'Hotel La fragata, En coveñas', 'lafragata@gmail.com', '21123', 'Cra 12 # gfd', 83, 856, 2, 'Coveñas', 'assets/img/default.jpg', '2021-08-20 23:41:26', 1),
-(3, '1231233', 'Hotel El Ploblado, Coveñas Sucre', 'poblado@gmail.com', '2221313', 'Cra 323 No. 23 -45', 84, 888, 3, 'Sucre', 'assets/img/default.jpg', '2021-08-21 08:28:26', 1);
+INSERT INTO `hoteles` (`id`, `nit`, `nombre`, `email`, `telefono`, `direccion`, `id_pais`, `id_depto`, `id_terminos`, `ciudad`, `avatar`, `fecha_crea`, `id_autor`, `activo`) VALUES
+(1, '0', 'BIENVENIDO', 'Inicio@gmail.com', '3245676767', 'Mz R l 9', 82, 1702, 1, 'Monteria', 'assets/img/default.jpg', '2021-11-27 13:40:51', 1, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `metodo_pago`
+--
+
+CREATE TABLE `metodo_pago` (
+  `id` int(11) NOT NULL,
+  `nombre` varchar(100) DEFAULT NULL,
+  `id_autor` int(11) DEFAULT NULL,
+  `fecha_crea` datetime DEFAULT CURRENT_TIMESTAMP,
+  `activo` tinyint(1) DEFAULT '1'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -2138,18 +2305,11 @@ INSERT INTO `hoteles` (`id`, `nit`, `nombre`, `email`, `telefono`, `direccion`, 
 CREATE TABLE `motivos` (
   `id` int(11) NOT NULL,
   `nombre` varchar(255) DEFAULT NULL,
-  `descripcion` text DEFAULT NULL,
+  `descripcion` text,
   `id_autor` int(11) DEFAULT NULL,
-  `fecha_crea` datetime DEFAULT current_timestamp(),
-  `activo` tinyint(1) DEFAULT 1
+  `fecha_crea` datetime DEFAULT CURRENT_TIMESTAMP,
+  `activo` tinyint(1) DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Volcado de datos para la tabla `motivos`
---
-
-INSERT INTO `motivos` (`id`, `nombre`, `descripcion`, `id_autor`, `fecha_crea`, `activo`) VALUES
-(1, 'ANIVERSARIO', 'Llega esta fecha tan especial para mi y quiero irme de viaje', 1, '2021-08-10 22:10:04', 1);
 
 -- --------------------------------------------------------
 
@@ -2393,8 +2553,8 @@ CREATE TABLE `permiso_hotel` (
   `id_usuario` int(11) DEFAULT NULL,
   `id_hotel` int(11) DEFAULT NULL,
   `id_autor` int(11) DEFAULT NULL,
-  `fecha_crea` timestamp NOT NULL DEFAULT current_timestamp(),
-  `activo` tinyint(1) DEFAULT 1
+  `fecha_crea` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `activo` tinyint(1) DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -2402,9 +2562,7 @@ CREATE TABLE `permiso_hotel` (
 --
 
 INSERT INTO `permiso_hotel` (`consec`, `id_usuario`, `id_hotel`, `id_autor`, `fecha_crea`, `activo`) VALUES
-(1, 1, 1, 1, '2021-08-21 04:39:56', 1),
-(2, 1, 2, 1, '2021-08-21 13:57:52', 1),
-(3, 1, 3, 1, '2021-08-21 13:58:02', 1);
+(1, 1, 1, 1, '2021-11-27 18:40:51', 1);
 
 -- --------------------------------------------------------
 
@@ -2418,17 +2576,9 @@ CREATE TABLE `planes` (
   `descripcion` varchar(255) DEFAULT NULL,
   `id_hotel` int(11) DEFAULT NULL,
   `id_autor` int(11) DEFAULT NULL,
-  `fecha_crea` datetime DEFAULT current_timestamp(),
-  `activo` tinyint(1) DEFAULT 1
+  `fecha_crea` datetime DEFAULT CURRENT_TIMESTAMP,
+  `activo` tinyint(1) DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Volcado de datos para la tabla `planes`
---
-
-INSERT INTO `planes` (`id`, `nombre`, `descripcion`, `id_hotel`, `id_autor`, `fecha_crea`, `activo`) VALUES
-(1, 'FULL ', 'Tipo buffet internacional, Nacional y regional.', 1, 1, '2021-08-21 13:42:04', 1),
-(2, 'SIMPLE', 'Tipo nacional', 1, 1, '2021-08-21 13:42:26', 1);
 
 -- --------------------------------------------------------
 
@@ -2442,23 +2592,9 @@ CREATE TABLE `productos` (
   `tipo` varchar(255) DEFAULT NULL,
   `id_hotel` int(11) DEFAULT NULL,
   `id_autor` int(11) DEFAULT NULL,
-  `fecha_crea` datetime DEFAULT current_timestamp(),
-  `activo` tinyint(1) DEFAULT 1
+  `fecha_crea` datetime DEFAULT CURRENT_TIMESTAMP,
+  `activo` tinyint(1) DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Volcado de datos para la tabla `productos`
---
-
-INSERT INTO `productos` (`id`, `nombre`, `tipo`, `id_hotel`, `id_autor`, `fecha_crea`, `activo`) VALUES
-(1, 'Desayuno', 'CONSUMO', 0, 1, '2021-08-21 13:48:57', 1),
-(2, 'Almuerzo', 'CONSUMO', 0, 1, '2021-08-21 13:49:47', 1),
-(3, 'Cena', 'CONSUMO', 0, 1, '2021-08-21 13:52:39', 1),
-(4, 'Snack: 10:00 AM – 2:00 AM', 'SERVICIOS', 1, 1, '2021-08-21 13:52:59', 1),
-(5, 'Bar Abierto: 10:00 AM – 2:00 AM', 'SERVICIOS', 1, 1, '2021-08-21 13:53:18', 1),
-(6, 'Shows Nocturno', 'SERVICIOS', 1, 1, '2021-08-21 13:53:33', 1),
-(7, 'Camisetas playeras', 'SERVICIOS', 1, 1, '2021-08-21 13:53:43', 1),
-(8, 'Cocktails de Bienvenida', 'SERVICIOS', 1, 1, '2021-08-21 13:54:26', 1);
 
 -- --------------------------------------------------------
 
@@ -2473,22 +2609,14 @@ CREATE TABLE `tarifas` (
   `adult_s` decimal(20,0) DEFAULT NULL,
   `adult_d` decimal(20,0) DEFAULT NULL,
   `adult_t_c` decimal(20,0) DEFAULT NULL,
+  `id_plan` int(11) DEFAULT NULL,
   `id_hotel` int(11) DEFAULT NULL,
   `id_autor` int(11) DEFAULT NULL,
-  `descripcion` text DEFAULT NULL,
-  `fecha_crea` datetime DEFAULT current_timestamp(),
-  `activo` tinyint(1) DEFAULT 1,
+  `descripcion` text,
+  `fecha_crea` datetime DEFAULT CURRENT_TIMESTAMP,
+  `activo` tinyint(1) DEFAULT '1',
   `noches` tinyint(1) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Volcado de datos para la tabla `tarifas`
---
-
-INSERT INTO `tarifas` (`id`, `nombre`, `child`, `adult_s`, `adult_d`, `adult_t_c`, `id_hotel`, `id_autor`, `descripcion`, `fecha_crea`, `activo`, `noches`) VALUES
-(1, 'TEMPORADA ALTA', '220000', '220000', '290000', '270000', 1, 1, 'Una experiencia inolvidable', '2021-08-10 19:57:08', 1, 1),
-(2, 'TEMPORADA BAJA', '120000', '125000', '190000', '170000', 1, 1, 'Ven y diviertete junto a tu familia', '2021-08-10 19:58:30', 1, 1),
-(3, 'PASADIA', '50000', '100000', '130000', '110000', 1, 1, 'animate solo un dia', '2021-08-10 22:14:24', 1, 0);
 
 -- --------------------------------------------------------
 
@@ -2499,11 +2627,11 @@ INSERT INTO `tarifas` (`id`, `nombre`, `child`, `adult_s`, `adult_d`, `adult_t_c
 CREATE TABLE `terminos_condiciones` (
   `id` int(11) NOT NULL,
   `titulo` varchar(100) DEFAULT NULL,
-  `descripcion` text DEFAULT NULL,
+  `descripcion` text,
   `id_hotel` int(11) DEFAULT NULL,
   `id_autor` int(11) DEFAULT NULL,
-  `fecha_crea` timestamp NOT NULL DEFAULT current_timestamp(),
-  `activo` tinyint(1) DEFAULT 1
+  `fecha_crea` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `activo` tinyint(1) DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -2511,7 +2639,7 @@ CREATE TABLE `terminos_condiciones` (
 --
 
 INSERT INTO `terminos_condiciones` (`id`, `titulo`, `descripcion`, `id_hotel`, `id_autor`, `fecha_crea`, `activo`) VALUES
-(1, 'TERMINOS Y CONDICIONES', 'TÉRMINOS Y CONDICIONES\r\n 1. NÚMERO DE OCUPANTES: La Habitación salvo acuerdo expreso, sólo podrá ser utilizado por el número de personas indicado en la\r\nconfirmación de la reserva. Este no podrá exceder del número asignado y previsto para cada habitación\r\n2. REQUISITOS DE IDENTIFICACIÓN: El contratante deberá enviarnos todos (incluyendo niños) los nombres de las personas que se\r\nalojaran en nuestros hoteles con su respectivo documento de Identidad vigente que puede ser Cédula de Ciudadanía\r\nColombiana, Cédula de Extranjería o Pasaporte vigentes\r\n3. PRECIOS: Los precios de las Habitaciones dependen del número de personas. La estancia mínima es de 3 noches, exceptuando fechas\r\nespeciales en que esa estancia mínima se puede incrementar. VALORES SUJETOS A TEMPORADA.\r\n4. FORMA DE PAGO: Para realizar su reserva se exigirá el 100% del total, deberá ser pagado en su totalidad en efectivo o con tarjeta de\r\ncrédito. Tenga en cuenta que, en caso de confirmarle disponibilidad, para garantizar su reserva, deberá efectuar el pago inmediato en\r\nefectivo o consignando en nuestra Cuenta Bancaria; TODOS LOS GASTOS GENERADOS POR TRANSFERENCIAS BANCARIAS SERÁN\r\nASUMIDOS POR EL CONTRATANTE.\r\n5. CHECK IN: A PARTIR DE LAS 3 P.M. O ANTES DEPENDIENDO DE LA DISPONIBILIDAD DE LA HABTACION\r\n6. CHECK OUT: DEBERÁ REALIZARSE ANTES DE LA 1:00 P.M. DE LO CONTRARIO SE GENERARÁ UNA NOCHE MÁS CON COSTO ADICIONAL.\r\nSOLICITAMOS A NUESTROS HUÉSPEDES HACER ENTREGA LA HABITACION EN LAS MISMAS CONDICIONES EN QUE FUE RECIBIDO Y\r\nRECOMENDAMOS EL BUEN USO DE TODOS LOS IMPLEMENTOS QUE EN ELLA ENCUENTRE.\r\n7. DAÑOS: Deberán ser informados y pagados antes de abandonar el inmueble.\r\n8. CANCELACIÓN DE RESERVAS: Para CANCELAR una reserva aplica una penalización la cual será equivalente al valor de una noche de\r\nestancia en el inmueble; para cualquier tipo de cancelación se solicita avisar con un mínimo de 7 días, el resto del depósito quedara\r\npara una próxima reserva. Si cancela su reserva en menos del tiempo establecido deberá pagara un recargo adicional. 9. CAMBIO DE FECHA EN SU RESERVA: Todas nuestras habitaciones están sujeto a disponibilidad; Puede que la habitación que usted haya\r\nreservado anteriormente no esté disponible para la nueva fecha, de ser así; será cambiado para una habitación con las mismas\r\ncondiciones del requerido anteriormente. El cambio de fecha en la reserva podría acarrear un recargo, dependiendo de la temporada.\r\n10. ESTADÍAS LARGAS: Tarifas preferenciales con descuento cuando su estadía sea superior a los 15 días o el mes.\r\n11. NORMAS DE CONVIVENCIA: Solicitamos respetar y acatar las normas de convivencia del hotel, para preservar el buen ambiente que\r\nusted y todos los demás residentes se merecen\r\n12. De acuerdo A lo dispuesto en el artículo 17 de la ley 679 de 2001 y la resolución 3840 de 2009; Se rechaza todas las formas de\r\nexplotación, pornografía, violencia, turismo sexual y demás formas del abuso a menores de edad.\r\n13. EL TITULAR DE LA RESERVA DE INFORMAR A TODOS SUS ACOMPAÑANTES SOBRE LOS TÉRMINOS ANTERIORMENTE MENCIONADOS.\r\n14. El hecho de haber realizado una reserva implica la aceptación de los términos condiciones del servicio', 1, 1, '2021-08-22 17:23:27', 1);
+(1, 'titulo', 'x', NULL, NULL, '2021-11-27 18:40:09', 1);
 
 -- --------------------------------------------------------
 
@@ -2524,23 +2652,9 @@ CREATE TABLE `tipo_plan` (
   `id_plan` int(11) DEFAULT NULL,
   `id_producto` int(11) DEFAULT NULL,
   `id_autor` int(11) DEFAULT NULL,
-  `fecha_crea` datetime DEFAULT current_timestamp(),
-  `activo` tinyint(1) DEFAULT 1
+  `fecha_crea` datetime DEFAULT CURRENT_TIMESTAMP,
+  `activo` tinyint(1) DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Volcado de datos para la tabla `tipo_plan`
---
-
-INSERT INTO `tipo_plan` (`id`, `id_plan`, `id_producto`, `id_autor`, `fecha_crea`, `activo`) VALUES
-(1, 1, 1, 1, '2021-08-21 14:05:28', 1),
-(2, 1, 2, 1, '2021-08-21 14:05:35', 1),
-(3, 1, 3, 1, '2021-08-21 14:05:39', 1),
-(4, 1, 4, 1, '2021-08-21 14:05:45', 1),
-(5, 1, 5, 1, '2021-08-21 14:05:49', 1),
-(6, 1, 6, 1, '2021-08-21 14:05:53', 1),
-(7, 1, 7, 1, '2021-08-21 14:05:57', 1),
-(8, 1, 8, 1, '2021-08-21 14:06:02', 1);
 
 -- --------------------------------------------------------
 
@@ -2561,13 +2675,13 @@ CREATE TABLE `usuarios` (
   `id_pais` int(11) DEFAULT NULL,
   `id_depto` int(11) DEFAULT NULL,
   `ciudad` varchar(255) DEFAULT NULL,
-  `direccion` varchar(15) DEFAULT NULL,
+  `direccion` varchar(100) DEFAULT NULL,
   `telefono` varchar(15) DEFAULT NULL,
   `email` varchar(100) DEFAULT NULL,
   `avatar` varchar(255) DEFAULT NULL,
   `id_autor` int(11) DEFAULT NULL,
-  `fecha_crea` datetime DEFAULT current_timestamp(),
-  `activo` tinyint(1) DEFAULT 1
+  `fecha_crea` datetime DEFAULT CURRENT_TIMESTAMP,
+  `activo` tinyint(1) DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -2575,12 +2689,60 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`id`, `codigo`, `cedula`, `nombre1`, `nombre2`, `apellido1`, `apellido2`, `pass`, `tipo`, `id_pais`, `id_depto`, `ciudad`, `direccion`, `telefono`, `email`, `avatar`, `id_autor`, `fecha_crea`, `activo`) VALUES
-(1, '0001', 1067902678, 'Jair', 'David', 'Mercado', 'Cordero', '375a6441b1e0fe57c3e151c79f195123', 'ADMINISTRADOR', 82, 1707, 'MONTERIA', 'MZ R LT 9', '3225850313', 'yairdavidmercado@gmail.com', '../upload/jair.jpg', 1, '2021-08-08 09:36:08', 1),
-(2, '0', 1067456432, 'Yandris', 'Vannesa', 'Berna', 'Perez', '202cb962ac59075b964b07152d234b70', 'TITULAR', 82, 1707, 'MONTERIA', 'CRA 13 # 4-45', '3124567755', 'yandris@gmail.com', '../upload/yandris.jpg', 1, '2021-08-21 12:53:48', 1);
+(1, '1', 1, 'SUPER', ' ', 'ADMINISTRADOR', ' ', '71d0eabc0eb0d7d402d1a267770fcc2d', 'SUPERADMIN', 1, 1, 'San Andrés', '1', '1', '1', '1', 1, '2021-11-27 13:23:23', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `vaucher`
+--
+
+CREATE TABLE `vaucher` (
+  `id` int(11) NOT NULL,
+  `id_cotizacion` int(11) DEFAULT NULL,
+  `codigo` varchar(11) DEFAULT NULL,
+  `deposito` decimal(20,0) DEFAULT NULL,
+  `id_metodo_pago` int(11) DEFAULT NULL,
+  `id_hotel` int(11) DEFAULT NULL,
+  `id_autor` int(11) DEFAULT NULL,
+  `fecha_crea` datetime DEFAULT CURRENT_TIMESTAMP,
+  `activo` tinyint(1) DEFAULT '1',
+  `reserva` varchar(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Índices para tablas volcadas
 --
+
+--
+-- Indices de la tabla `app_accion`
+--
+ALTER TABLE `app_accion`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indices de la tabla `app_modulos`
+--
+ALTER TABLE `app_modulos`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indices de la tabla `app_perfil`
+--
+ALTER TABLE `app_perfil`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indices de la tabla `app_permisos`
+--
+ALTER TABLE `app_permisos`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indices de la tabla `auditoria`
+--
+ALTER TABLE `auditoria`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indices de la tabla `cotizacion`
@@ -2599,6 +2761,12 @@ ALTER TABLE `estado`
 -- Indices de la tabla `hoteles`
 --
 ALTER TABLE `hoteles`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indices de la tabla `metodo_pago`
+--
+ALTER TABLE `metodo_pago`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -2653,19 +2821,53 @@ ALTER TABLE `tipo_plan`
 -- Indices de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `codigo` (`codigo`),
-  ADD UNIQUE KEY `cedula` (`cedula`);
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indices de la tabla `vaucher`
+--
+ALTER TABLE `vaucher`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
 --
 
 --
+-- AUTO_INCREMENT de la tabla `app_accion`
+--
+ALTER TABLE `app_accion`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
+
+--
+-- AUTO_INCREMENT de la tabla `app_modulos`
+--
+ALTER TABLE `app_modulos`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
+--
+-- AUTO_INCREMENT de la tabla `app_perfil`
+--
+ALTER TABLE `app_perfil`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT de la tabla `app_permisos`
+--
+ALTER TABLE `app_permisos`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
+
+--
+-- AUTO_INCREMENT de la tabla `auditoria`
+--
+ALTER TABLE `auditoria`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de la tabla `cotizacion`
 --
 ALTER TABLE `cotizacion`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `estado`
@@ -2677,13 +2879,19 @@ ALTER TABLE `estado`
 -- AUTO_INCREMENT de la tabla `hoteles`
 --
 ALTER TABLE `hoteles`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT de la tabla `metodo_pago`
+--
+ALTER TABLE `metodo_pago`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `motivos`
 --
 ALTER TABLE `motivos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `pais`
@@ -2695,25 +2903,25 @@ ALTER TABLE `pais`
 -- AUTO_INCREMENT de la tabla `permiso_hotel`
 --
 ALTER TABLE `permiso_hotel`
-  MODIFY `consec` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `consec` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `planes`
 --
 ALTER TABLE `planes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `productos`
 --
 ALTER TABLE `productos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `tarifas`
 --
 ALTER TABLE `tarifas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `terminos_condiciones`
@@ -2725,13 +2933,19 @@ ALTER TABLE `terminos_condiciones`
 -- AUTO_INCREMENT de la tabla `tipo_plan`
 --
 ALTER TABLE `tipo_plan`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT de la tabla `vaucher`
+--
+ALTER TABLE `vaucher`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

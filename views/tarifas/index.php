@@ -130,11 +130,11 @@ session_start();
                     <input type="text" autocomplete="off" class="form-control" onkeypress="return isNumber(event)" name="child" id="child" placeholder="" required>                   
                   </div>
                   <div class="col-md-3 mb-3">
-                    <label for="lastName">Adultos normal</label>
+                    <label for="lastName">Adultos individual</label>
                     <input type="text" autocomplete="off" class="form-control" onkeypress="return isNumber(event)" name="adult_s" id="adult_s" placeholder="" required>                   
                   </div>
                   <div class="col-md-3 mb-3">
-                    <label for="lastName">Adultos dole</label>
+                    <label for="lastName">Adultos doble</label>
                     <input type="text" autocomplete="off" class="form-control" onkeypress="return isNumber(event)" name="adult_d" id="adult_d" placeholder="" required>                   
                   </div>
                   <div class="col-md-3 mb-3">
