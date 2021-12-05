@@ -116,6 +116,7 @@ session_start();
         <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
           <br>
           <br>
+          <button type="button" class="btn btn-success btn-sm float-right" onclick="mostrar_modal_exportar_excel()">Exportar Excel</button>
           <div class="responsive">
             <table id="tabla_vaucher" class="table table-striped table-bordered" style="width:100%">
               <thead>
@@ -216,6 +217,53 @@ session_start();
   </div>
 </div>
 
+<button type="button" id="modal_export_excel" class="btn btn-primary" style="display:none" data-toggle="modal" data-target=".modal_export_excel">Large modal</button>
+
+<div class="modal fade modal_export_excel" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div id="btn_pdf">
+
+        </div>
+        <h5 class="modal-title">Consulta por rango de fecha</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form role="form" onsubmit="event.preventDefault(); return ExportarInformeExcel();" id="form_guardar" class="needs-validation">
+          <div class="row">
+            <div class="col-md-4">
+              <label for="firstName">Tipo de fecha</label>
+              <select style="width:100%" name="tipo_excel" required id="tipo_excel" class="form-control form-control-sm tipo_excels">
+                  <option value="">Seleccionar</option>
+                  <option value="1">Por fecha de expedición</option>
+                  <option value="2">Por fecha de entrada</option>
+                  <option value="3">Por fecha de salida</option>
+              </select>
+            </div>
+            <div class="col-md-4" >
+              <label for="lastName">Fecha inicio</label>
+              <input type="text" autocomplete="off" class="form-control form-control-sm " name="fecha_ini_excel" id="fecha_ini_excel" placeholder="" required>                    
+            </div>
+            <div class="col-md-4">
+              <label for="lastName">Fecha final</label>
+              <input type="text" autocomplete="off" class="form-control form-control-sm" name="fecha_fin_excel" id="fecha_fin_excel" placeholder="" required>                 
+            </div>
+          </div>
+          <br>
+          <div class="row">
+            <div class="col-md-12">
+              <button class="btn btn-primary btn-sm float-right" type="submit" >Exportar</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script src="assets/js/jquery.slim.min.js" crossorigin="anonymous"></script>
 <script>window.jQuery || document.write('<script src="assets/js/jquery.slim.min.js"><\/script>')</script>
 <script src="assets/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
@@ -254,21 +302,20 @@ $(function() {
   $(".loader").css("display", "none")
 
   var today = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
-  $('#startDate').datepicker({
+  $('#fecha_ini_excel').datepicker({
       uiLibrary: 'bootstrap4',
       iconsLibrary: 'fontawesome',
-      minDate: today,
       format: "yyyy-mm-dd",
       maxDate: function () {
           return $('#endDate').val();
       }
   });
-  $('#endDate').datepicker({
+  $('#fecha_fin_excel').datepicker({
       uiLibrary: 'bootstrap4',
       iconsLibrary: 'fontawesome',
       format: "yyyy-mm-dd",
       minDate: function () {
-          return $('#startDate').val();
+          return $('#fecha_ini_excel').val();
       }
   });
 
@@ -508,6 +555,16 @@ function GuardarVaucher() {
         }
       });
     
+  }
+  function ExportarInformeExcel(){
+    var tipo = $("#tipo_excel").val()
+    var fechaini = $("#fecha_ini_excel").val()
+    var fechafin = $("#fecha_fin_excel").val()
+    window.location.href = 'php/reports/reporte_excel.php?tipo='+tipo+'&fechaini='+fechaini+'&fechafin='+fechafin;
+  }
+
+  function mostrar_modal_exportar_excel(){
+    $("#modal_export_excel").click()
   }
 
   function crear_vaucher(id, id_reserva){
