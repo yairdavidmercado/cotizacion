@@ -498,7 +498,7 @@ $(function() {
   $('#startDate').datepicker({
       uiLibrary: 'bootstrap4',
       iconsLibrary: 'fontawesome',
-      minDate: today,
+      /* minDate: today, */
       format: "yyyy-mm-dd",
       language: 'es',
       maxDate: function () {
