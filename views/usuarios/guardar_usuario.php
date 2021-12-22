@@ -1,6 +1,5 @@
 <?php
     session_start();
-    include '../../php/conexion.php';
 
     $codigo = $_POST["codigo"] == "" ? "0": $_POST["codigo"] ;
     $cedula =  $_POST["cedula"] == "" ? "0": $_POST["cedula"] ;
@@ -18,7 +17,13 @@
     $email = $_POST["email"];
     $avatar = $_POST["avatar"];
     $id_autor = $_SESSION['id'];
-         
+    $id_db = $_SESSION['id_db'];
+
+    if ($tipo == 'TITULAR') {
+        include '../../php/conexion.php';
+    }else {
+        include '../../php/conectCompany.php';
+    }
     $response = [];
     $con = mysqli_connect(DB_HOST,DB_USER, DB_PASS, DB_NAME);
 
@@ -65,7 +70,8 @@
                                                             direccion, 
                                                             telefono, 
                                                             email, 
-                                                            avatar, 
+                                                            avatar,
+                                                            id_empresa, 
                                                             id_autor )
                                                         VALUES ('$codigo', 
                                                                 $cedula, 
@@ -82,6 +88,7 @@
                                                                 '$telefono', 
                                                                 '$email', 
                                                                 '$avatar',
+                                                                $id_db,
                                                                 $id_autor);");
 
 

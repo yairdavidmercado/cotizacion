@@ -107,12 +107,12 @@ if (isset($_SESSION['id'])) {
       <label for="inputPassword" class="sr-only">Contraseña</label>
       <input type="password" id="password" class="form-control" placeholder="Contraseña" required>
       <button class="btn btn-lg btn-primary btn-block" style="color:#fff" type="submit"><b>Iniciar sesión</b></button>
-      <a class="btn btn-link" style="color:#0069D9" onclick="abrir_modal_empresas()"><b>Seleccionar otra empresa</b></a>
+      <!-- <a class="btn btn-link" style="color:#0069D9" onclick="abrir_modal_empresas()"><b>Seleccionar otra empresa</b></a> -->
       <!-- <p class=" float-left"><a href="/cotizacion/recover.php">¿Olvidaste tu contraseña?</a> </p>
       <p class="text-right"><a href="/cotizacion/registrate.php">Registrate</a> </p> -->
     </form>
 
-    <button type="button" id="btn_modal_empresas" style="display:none" class="btn btn-primary"  data-toggle="modal" data-target="#modal_empresas">Large modal</button>
+    <!-- <button type="button" id="btn_modal_empresas" style="display:none" class="btn btn-primary"  data-toggle="modal" data-target="#modal_empresas">Large modal</button>
 
     <div class="modal fade modal_empresas" id="modal_empresas" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-xs">
@@ -129,7 +129,7 @@ if (isset($_SESSION['id'])) {
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
 
     <script src="assets/js/jquery.slim.min.js" crossorigin="anonymous"></script>
     <script src="assets/js/ajax/jquery.min.js"></script>
@@ -140,7 +140,7 @@ if (isset($_SESSION['id'])) {
 var dbname = "<?php echo isset($_SESSION['dbname']) ? $_SESSION['dbname'] : '0'  ?>";
 $(function() {
   $(".loader").css("display", "none")
-  mostrar_empresas(dbname)
+  //mostrar_empresas(dbname)
 });
   
   function validar_sesion() {
@@ -175,7 +175,7 @@ $(function() {
     
   }
 
-  function mostrar_empresas() {
+ /*  function mostrar_empresas() {
     
     $("#btn_modal_empresas").click()
 
@@ -219,8 +219,8 @@ $(function() {
         }
       });
   }
-
-  function loginEmpresa(dbname, name){
+ */
+  /* function loginEmpresa(dbname, name){
     $("#btn_modal_empresas").click()
       var values = {
         codigo: 'loginCompany', 
@@ -250,7 +250,7 @@ $(function() {
         }
       });
   }
-
+ */
   function abrir_modal_empresas() {
     $("#btn_modal_empresas").click()
     mostrar_empresas()

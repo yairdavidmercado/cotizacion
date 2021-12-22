@@ -193,32 +193,70 @@
         </div>
         <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
           <br>
-          <br>
-        <div class="responsive">
-          <table id="tabla_usuarios" class="table table-striped table-bordered" style="width:100%">
-            <thead>
-                <tr>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th>Cédula</th>
-                    <th>Nombre</th>
-                    <th>País</th>
-                    <th>Depto</th>
-                    <th>Ciudad</th>
-                    <th>Dirección</th>
-                    <th>Teléfono</th>
-                    <th>Email</th>
-                    <th>Perfil</th>
-                    <th>Creación</th>
-                </tr>
-            </thead>
-            <tbody id="body_table_cotizacion">
-                
-            </tbody>
-          </table>
-        </div>
-        
+          <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link active" id="subhome-tab" data-toggle="tab" href="#subhome" role="tab" aria-controls="subhome" aria-selected="true">Titulares</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" onclick="show_traer_tabla_usuarios()" id="sub_profile-tab" data-toggle="tab" href="#sub_profile" role="tab" aria-controls="sub_profile" aria-selected="false">Funcionarios</a>
+            </li>
+          </ul>
+          <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="subhome" role="tabpanel" aria-labelledby="subhome-tab">
+            <br>
+              <div class="responsive">
+                <table id="tabla_usuarios" class="table table-striped table-bordered" style="width:100%">
+                  <thead>
+                      <tr>
+                          <th></th>
+                          <th></th>
+                          <th></th>
+                          <th>Cédula</th>
+                          <th>Nombre</th>
+                          <th>País</th>
+                          <th>Depto</th>
+                          <th>Ciudad</th>
+                          <th>Dirección</th>
+                          <th>Teléfono</th>
+                          <th>Email</th>
+                          <th>Perfil</th>
+                          <th>Creación</th>
+                      </tr>
+                  </thead>
+                  <tbody id="body_table_cotizacion">
+                      
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="tab-pane fade" id="sub_profile" role="tabpanel" aria-labelledby="sub_profile-tab">
+            <br>
+              <div class="responsive">
+                <table id="tabla_usuarios_company" class="table table-striped table-bordered" style="width:100%">
+                  <thead>
+                      <tr>
+                          <th></th>
+                          <th></th>
+                          <th></th>
+                          <th>Cédula</th>
+                          <th>Nombre</th>
+                          <th>País</th>
+                          <th>Depto</th>
+                          <th>Ciudad</th>
+                          <th>Dirección</th>
+                          <th>Teléfono</th>
+                          <th>Email</th>
+                          <th>Perfil</th>
+                          <th>Creación</th>
+                      </tr>
+                  </thead>
+                  <tbody id="body_table_cotizacion_company">
+                      
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
 
         </div>
       </div>
@@ -445,7 +483,7 @@ function GuardarUsuario() {
     },
     success: function(respuesta) {
       $(".loader").css("display", "none")
-      console.log(respuesta)
+     // console.log(respuesta)
       let obj = JSON.parse(respuesta)
       if (obj.success) {
         alert(obj.message)
@@ -458,7 +496,7 @@ function GuardarUsuario() {
     },
     error: function(e) {
       $(".loader").css("display", "none")
-      console.log("No se ha podido obtener la información"+e);
+     // console.log("No se ha podido obtener la información"+e);
     }
   });
     
@@ -492,7 +530,7 @@ function GuardarUsuario() {
         },
         error: function() {
           $(".loader").css("display", "none")
-          console.log("No se ha podido obtener la información");
+         // console.log("No se ha podido obtener la información");
         }
       });
 
@@ -535,7 +573,7 @@ function GuardarUsuario() {
         },
         error: function() {
           $(".loader").css("display", "none")
-          console.log("No se ha podido obtener la información");
+         // console.log("No se ha podido obtener la información");
         }
       });
 
@@ -584,7 +622,7 @@ function GuardarUsuario() {
       },
       error: function() {
         $(".loader").css("display", "none")
-        console.log("No se ha podido obtener la información");
+       // console.log("No se ha podido obtener la información");
       }
     });
 
@@ -623,7 +661,7 @@ function GuardarUsuario() {
       },
       error: function() {
         $(".loader").css("display", "none")
-        console.log("No se ha podido obtener la información");
+       // console.log("No se ha podido obtener la información");
       }
     });
 
@@ -645,7 +683,7 @@ function GuardarUsuario() {
     },
     success: function(respuesta) {
       $(".loader").css("display", "none")
-      console.log(respuesta)
+     // console.log(respuesta)
       let obj = JSON.parse(respuesta)
       if (obj.success) {
         hoteles_por_asociar(id_usuario)
@@ -659,7 +697,7 @@ function GuardarUsuario() {
     },
     error: function(e) {
       $(".loader").css("display", "none")
-      console.log("No se ha podido obtener la información"+e);
+     // console.log("No se ha podido obtener la información"+e);
     }
   });
     
@@ -739,6 +777,7 @@ function GuardarUsuario() {
   function show_traer_tabla_usuarios(){
     setTimeout(() => {
       traer_tabla_usuarios()
+      traer_tabla_usuarios_company()
     }, 100);
   }
 
@@ -782,9 +821,54 @@ function GuardarUsuario() {
         },
         error: function() {
           $(".loader").css("display", "none")
-          console.log("No se ha podido obtener la información");
+         // console.log("No se ha podido obtener la información");
         }
       });
+  }
+
+  function traer_usuario_id_company(id) {
+
+    let values = { 
+          codigo: 'traer_usuarios_id',
+          parametro1: id,
+          parametro2: ""
+    };
+    $.ajax({
+      type : 'POST',
+      data: values,
+      url: 'usuaCompany.php',
+      beforeSend: function() {
+          $(".loader").css("display", "inline-block")
+      },
+      success: function(respuesta) {
+        $(".loader").css("display", "none")
+        let obj = JSON.parse(respuesta)
+        let fila = ''
+        $.each(obj["resultado"], function( index, val ) {
+          $("#id_edit").val(val.id)
+          $("#codigo_edit").val(val.codigo).change()
+          $("#cedula_edit").val(val.cedula).change()
+          $("#nombre1_edit").val(val.nombre1).change()
+          $("#nombre2_edit").val(val.nombre2).change()
+          $("#apellido1_edit").val(val.apellido1).change()
+          $("#apellido2_edit").val(val.apellido2).change()
+          $("#tipo_edit").val(val.tipo).change()
+          $("#select_pais_edit").val(val.pais).change()
+          setTimeout(() => {
+            $("#select_deptos_edit").val(val.depto).change()
+          }, 300);
+          $("#ciudad_edit").val(val.ciudad).change()
+          $("#direccion_edit").val(val.direccion).change()
+          $("#telefono_edit").val(val.telefono).change()
+          $("#email_edit").val(val.email).change()
+        });
+        
+      },
+      error: function() {
+        $(".loader").css("display", "none")
+      // console.log("No se ha podido obtener la información");
+      }
+    });
   }
 
   function traer_tabla_usuarios(){
@@ -802,7 +886,7 @@ function GuardarUsuario() {
             parametro2: "",
           },
 					"dataSrc": function (data) {	
-            console.log(data)
+           // console.log(data)
 						return data.data
 					}
 
@@ -860,6 +944,79 @@ function GuardarUsuario() {
 
   }
 
+  function traer_tabla_usuarios_company(){
+
+if ( ! $.fn.DataTable.isDataTable('#tabla_usuarios_company')) {
+    dtable2 = $("#tabla_usuarios_company").DataTable({
+      "scrollY": true,
+      "ajax": {
+      "url": "usuaCompany.php",
+      "type": "POST",
+      "deferRender": false,
+      "data":{
+        codigo:'trael_usuarios',
+        parametro1: "",
+        parametro2: "",
+      },
+      "dataSrc": function (data) {	
+       // console.log(data)
+        return data.data
+      }
+
+      },
+      "columns": [
+      { "data": "id"},
+      { "data": "id"},
+      { "data": "id"},
+      { "data": "cedula"},
+      { "data": "nombre1"},
+      { "data": "pais"},
+      { "data": "depto"},
+      { "data": "ciudad"},
+      { "data": "direccion"},
+      { "data": "telefono"},
+      { "data": "email"},
+      { "data": "tipo"},
+      { "data": "fecha_crea"},
+
+    ],
+     "columnDefs": [
+       {
+        "targets": 4,
+        "data":"",
+         render: function ( data, type, row ) {
+          return  `${row.nombre1} ${row.nombre2} ${row.apellido1} ${row.apellido2}`;
+         }
+      },
+      {
+        "targets": 0,
+        "data":"",
+         render: function ( data, type, row ) {
+          return  `<button class="btn btn-link"  data-toggle="modal" data-target="#modal_editar_usuario" onclick="traer_usuario_id_company(${row.id})"><i class="fa fa-edit" aria-hidden="true"></i></button>`;
+         }
+      },
+      {
+        "targets": 1,
+        "data":"",
+         render: function ( data, type, row ) {
+          return  `<button class="btn btn-link" onclick="abrir_asociacion_hotel(${row.id})"><i class="fa fa-eye" aria-hidden="true"></i></button>`;
+         }
+      },
+      {
+        "targets": 2,
+        "data":"",
+         render: function ( data, type, row ) {
+          return  `<button class="btn btn-link" style="color:red" onclick="EliminarUsuario(${row.id})"><i class="fa fa-trash" aria-hidden="true"></i></button>`;
+         }
+      }],
+    });
+  }else{
+     dtable2.destroy();
+     traer_tabla_usuarios_company();
+  }
+
+}
+
   function EditarUsuario() {
     
       let values = {
@@ -888,11 +1045,12 @@ function GuardarUsuario() {
       },
       success: function(respuesta) {
         $(".loader").css("display", "none")
-        console.log(respuesta)
+       // console.log(respuesta)
         let obj = JSON.parse(respuesta)
         if (obj.success) {
           alert(obj.message)
           traer_tabla_usuarios()
+          traer_tabla_usuarios_company()
           $("#close_modal_edit_usuario").click()
         
         }else{
@@ -902,7 +1060,7 @@ function GuardarUsuario() {
       },
       error: function(e) {
         $(".loader").css("display", "none")
-        console.log("No se ha podido obtener la información"+e);
+       // console.log("No se ha podido obtener la información"+e);
       }
     });
       
@@ -925,11 +1083,12 @@ function GuardarUsuario() {
     },
     success: function(respuesta) {
       $(".loader").css("display", "none")
-      console.log(respuesta)
+     // console.log(respuesta)
       let obj = JSON.parse(respuesta)
       if (obj.success) {
         alert(obj.message)
         traer_tabla_usuarios()
+        traer_tabla_usuarios_company()
         $("#close_modal_edit_usuario").click()
       
       }else{
@@ -939,7 +1098,7 @@ function GuardarUsuario() {
     },
     error: function(e) {
       $(".loader").css("display", "none")
-      console.log("No se ha podido obtener la información"+e);
+     // console.log("No se ha podido obtener la información"+e);
     }
   });
     
@@ -972,7 +1131,7 @@ function traer_perfiles() {
         },
         error: function() {
           $(".loader").css("display", "none")
-          console.log("No se ha podido obtener la información");
+         // console.log("No se ha podido obtener la información");
         }
       });
     

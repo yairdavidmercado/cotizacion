@@ -1,10 +1,11 @@
 <?php 
 SESSION_START();
- include '../../php/conexion.php';  
+ include '../../php/conectCompany.php';  
 
 $codigo = $_POST["codigo"];
 $parametro1 = $_POST["parametro1"];
 $parametro2 = $_POST["parametro2"];                
+$id_db = $_SESSION['id_db'];
 //parametros de conexion a la base de datos del cliente
 
 $conn = mysqli_connect(DB_HOST,DB_USER, DB_PASS, DB_NAME); 
@@ -17,7 +18,7 @@ if ($conn) {
 		$result = mysqli_query($conn, 	"SELECT *, 
 										(SELECT paisnombre FROM pais WHERE pais.id = id_pais) as pais, 
 										(SELECT estadonombre FROM estado WHERE estado.id = id_depto) as depto 
-										FROM usuarios WHERE activo = true AND tipo = 'TITULAR';");
+										FROM usuarios WHERE activo = true AND tipo <> 'TITULAR' AND id_empresa = $id_db;");
 		$data = array();										
 		if(mysqli_num_rows($result) > 0)
 		{	

@@ -1,6 +1,5 @@
 <?php
     session_start();
-    include '../../php/conexion.php';
 
     $id = $_POST["id"] == "" ? "0": $_POST["id"] ;
     $codigo = $_POST["codigo"] == "" ? "0": $_POST["codigo"] ;
@@ -18,7 +17,12 @@
     $email = $_POST["email"];
     $avatar = $_POST["avatar"];
     $id_autor = $_SESSION['id'];
-         
+    
+    if ($tipo == 'TITULAR') {
+        include '../../php/conexion.php';
+    }else {
+        include '../../php/conectCompany.php';
+    }
     $response = [];
     $con = mysqli_connect(DB_HOST,DB_USER, DB_PASS, DB_NAME);
 

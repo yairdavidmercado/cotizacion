@@ -1,6 +1,6 @@
 <?php 
 session_start();
- include 'conexion.php';  
+ 
 
 $codigo = $_POST["codigo"];
 $parametro1 = $_POST["parametro1"];
@@ -13,6 +13,12 @@ $id_hotel = isset($_SESSION['id_hotel']) ? $_SESSION['id_hotel']: "" ;
 $condicion = '';
 if ($id_perfil !== 'SUPERADMIN') {
 	$condicion = "AND id_autor = $id_autor";
+}
+
+if ($codigo == 'traer_perfiles') {
+	include 'conectCompany.php';  
+}else{
+	include 'conexion.php';  
 }
 $conn = mysqli_connect(DB_HOST,DB_USER, DB_PASS, DB_NAME); 
 if (!$conn) {
@@ -60,10 +66,10 @@ if ($conn) {
 										(SELECT estadonombre FROM estado WHERE estado.id = hoteles.id_depto) AS depto
 										FROM permiso_hotel 
 										INNER JOIN hoteles ON permiso_hotel.id_hotel = hoteles.id 
-										INNER JOIN usuarios ON permiso_hotel.id_usuario = usuarios.id 
-										WHERE usuarios.id = $parametro1 
+										INNER JOIN ".DB_NAME_GLOBAL.".usuarios ON permiso_hotel.id_usuario = ".DB_NAME_GLOBAL.".usuarios.id 
+										WHERE ".DB_NAME_GLOBAL.".usuarios.id = $parametro1 
 										AND hoteles.activo = 1 
-										AND usuarios.activo = 1
+										AND ".DB_NAME_GLOBAL.".usuarios.activo = 1
 										AND permiso_hotel.activo = 1 ORDER BY id DESC");
 		if(mysqli_num_rows($result) > 0)
 		{	

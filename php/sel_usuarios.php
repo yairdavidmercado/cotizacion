@@ -1,6 +1,6 @@
 <?php 
 SESSION_START();
- include 'conexion.php';  
+ include 'conectCompany.php';  
 
 
 $codigo = $_POST["codigo"];
@@ -16,7 +16,10 @@ if (!$conn) {
 
 if ($conn) {
 	if ($codigo == "login") {
-		$result = mysqli_query($conn, 	"SELECT * FROM usuarios WHERE ( codigo = '$parametro1' OR cedula = '$parametro1') AND pass =  MD5('$parametro2');");
+		$result = mysqli_query($conn, 	"SELECT *, 
+										(SELECT dbname FROM empresas WHERE empresas.id = usuarios.id_empresa) as dbname,
+										(SELECT id FROM empresas WHERE empresas.id = usuarios.id_empresa) as id_db  
+										FROM usuarios WHERE ( codigo = '$parametro1') AND pass =  MD5('$parametro2');");
 		if(mysqli_num_rows($result) > 0)
 		{	
 									$response["resultado"] = array();
@@ -31,6 +34,8 @@ if ($conn) {
 										$_SESSION["perfil"] 		= $row["tipo"];
 										$_SESSION["codigo"] 		= $row["codigo"];
 										$_SESSION["cedula"] 		= $row["cedula"];
+										$_SESSION["dbname"] 		= $row["dbname"];
+										$_SESSION["id_db"] 			= $row["id_db"];
 										
 										// push single product into final response array
 										//array_push($response["resultado"], $datos);
