@@ -4,6 +4,7 @@
 
     $id = $_POST["id"] == "" ? "0": $_POST["id"] ;
     $nombre = $_POST["nombre"];
+    $id_terminos = $_POST["id_terminos"];
     $descripcion = $_POST["descripcion"]; 
     $ids = $_POST["ids"];
     $id_autor = $_SESSION['id'];
@@ -18,7 +19,8 @@
 
     try{
 
-        $result = mysqli_query($con, "UPDATE planes SET   nombre = '$nombre', 
+        $result = mysqli_query($con, "UPDATE planes SET   nombre = '$nombre',
+                                                            id_terminos = $id_terminos, 
                                                             descripcion = '$descripcion',
                                                             id_autor = $id_autor 
                                                             WHERE id = $id;");

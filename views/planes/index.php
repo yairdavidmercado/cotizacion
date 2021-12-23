@@ -132,6 +132,12 @@ session_start();
                         <input type="text" autocomplete="off" class="form-control " name="nombre_planes" id="nombre_planes" placeholder="" required>                    
                       </div>
                       <div class="col-md-12 mb-3">
+                        <label for="firstName">Términos y condiciones</label>
+                        <select style="width:100%" name="select_terminos_condiciones" required id="select_terminos_condiciones" class="form-control form-control-sm terminos_condiciones">
+                          <option value="">Seleccionar</option>
+                        </select>
+                      </div>
+                      <div class="col-md-12 mb-3">
                         <label for="lastName">Descripción</label>
                         <textarea style="height:300px"  autocomplete="off" class="form-control" id="descripcion_planes" required></textarea>
                       
@@ -283,6 +289,12 @@ session_start();
                   <input type="text" autocomplete="off" class="form-control " name="nombre_planes_edit" id="nombre_planes_edit" placeholder="" required>                    
                 </div>
                 <div class="col-md-12 mb-3">
+                  <label for="firstName">Términos y condiciones</label>
+                  <select style="width:100%" name="select_terminos_condiciones_edit" required id="select_terminos_condiciones_edit" class="form-control form-control-sm terminos_condiciones">
+                    <option value="">Seleccionar</option>
+                  </select>
+                </div>
+                <div class="col-md-12 mb-3">
                   <label for="lastName">Descripción</label>
                   <textarea style="height:300px"  autocomplete="off" class="form-control" id="descripcion_planes_edit" required></textarea>
                 
@@ -386,7 +398,6 @@ session_start();
 <script>
 var id_hotel = "<?php echo $_SESSION['id_hotel'] ?>";
 var nombre_hotel = "<?php echo $_SESSION['nombre_hotel'] ?>";
-var id_terminos = "<?php echo $_SESSION['id_terminos'] ?>";
 var direccion_hotel = "<?php echo $_SESSION['direccion_hotel'] ?>";
 var telefono_hotel = "<?php echo $_SESSION['telefono_hotel'] ?>";
 var pais_hotel = "<?php echo $_SESSION['pais_hotel'] ?>";
@@ -405,6 +416,7 @@ $(function() {
   //traer_hotel()
   traer_tabla_productos()
   traer_check_productos()
+  traer_terminos()
   $(".loader").css("display", "none")
 
 });
@@ -431,6 +443,7 @@ function GuardarPlanes() {
     //let formData = new FormData(form)
     let values = {
         nombre :  $("#nombre_planes").val(),
+        id_terminos: $("#select_terminos_condiciones").val(),
         descripcion :  $("#descripcion_planes").val(),
         ids: ids_productos,
         id_hotel : id_hotel,
@@ -639,6 +652,8 @@ function GuardarPlanes() {
   function limpiar_formulario_planes(){
     
     $("#nombre_planes").val("").change()
+    $("#select_terminos_condiciones").val("").change()
+    $("#select_terminos_condiciones_edit").val("").change()
     $("#descripcion_planes").val("").change()
     uncheckAll()
     var items = document.getElementsByName('all');
@@ -805,6 +820,7 @@ function GuardarPlanes() {
             $("#id_planes_edit").val(val.id).change()
             $("#nombre_planes_edit").val(val.nombre).change()
             $("#descripcion_planes_edit").val(val.descripcion).change()
+            $("#select_terminos_condiciones_edit").val(val.id_terminos).change()
           })
           $.each(obj["info_productos"], function( index, val ) {
             if (val.checked == 1) {
@@ -877,6 +893,7 @@ function GuardarPlanes() {
     let values = {
         id :  $("#id_planes_edit").val(),
         nombre :  $("#nombre_planes_edit").val(),
+        id_terminos: $("#select_terminos_condiciones_edit").val(),
         descripcion :  $("#descripcion_planes_edit").val(),
         ids: ids_productos,
         id_hotel : id_hotel,
@@ -1067,6 +1084,42 @@ function EliminarProductos(id) {
     }
   });
     
+}
+
+function traer_terminos() {
+  let values = { 
+        codigo: 'traer_terminos',
+        parametro1: "",
+        parametro2: ""
+  };
+  $.ajax({
+    type : 'POST',
+    data: values,
+    url: '../../php/sel_recursos.php',
+    beforeSend: function() {
+        $(".loader").css("display", "inline-block")
+    },
+    success: function(respuesta) {
+      $(".loader").css("display", "none")
+      let obj = JSON.parse(respuesta)
+      let fila = ''
+      fila += ''
+      $.each(obj["resultado"], function( index, val ) {
+        fila += `<option value='${val.id}'>${val.titulo}</option>`
+      });
+
+      $("#select_terminos_condiciones").html('<option value="">Seleccionar</option>'+fila)
+      $("#select_terminos_condiciones_edit").html('<option value="">Seleccionar</option>'+fila)
+      
+    },
+    error: function() {
+      $(".loader").css("display", "none")
+      console.log("No se ha podido obtener la información");
+    }
+  });
+
+  $("#select_terminos_condiciones").select2();
+
 }
 
 </script>

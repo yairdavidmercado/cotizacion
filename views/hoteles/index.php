@@ -154,7 +154,7 @@ session_start();
                     <label for="lastName">Dirección</label>
                     <input type="text" autocomplete="off" class="form-control " name="direccion" id="direccion" placeholder="" required>                    
                   </div>
-                  <div class="col-md-6 mb-3">
+                  <div class="col-md-6 mb-3" style='display:none'>
                     <label for="firstName">Términos y condiciones</label>
                     <select style="width:100%" name="select_terminos_condiciones" required id="select_terminos_condiciones" class="form-control form-control-sm terminos_condiciones">
                       <option value="">Seleccionar</option>
@@ -281,7 +281,7 @@ session_start();
               <label for="lastName">Dirección</label>
               <input type="text" autocomplete="off" class="form-control " name="direccion_edit" id="direccion_edit" placeholder="" required>                    
             </div>
-            <div class="col-md-6 mb-3">
+            <div class="col-md-6 mb-3"  style='display:none'>
               <label for="firstName">Términos y condiciones</label>
               <select style="width:100%" name="select_terminos_condiciones_edit" required id="select_terminos_condiciones_edit" class="form-control form-control-sm terminos_condiciones">
                 <option value="">Seleccionar</option>
@@ -318,7 +318,6 @@ session_start();
 <script>
 var id_hotel = "<?php echo $_SESSION['id_hotel'] ?>";
 var nombre_hotel = "<?php echo $_SESSION['nombre_hotel'] ?>";
-var id_terminos = "<?php echo $_SESSION['id_terminos'] ?>";
 var direccion_hotel = "<?php echo $_SESSION['direccion_hotel'] ?>";
 var telefono_hotel = "<?php echo $_SESSION['telefono_hotel'] ?>";
 var pais_hotel = "<?php echo $_SESSION['pais_hotel'] ?>";
@@ -336,7 +335,7 @@ $(function() {
   $("#menu_nombre_hotel").addClass("active");
   //traer_hotel()
   traer_paises()
-  traer_terminos()
+  //traer_terminos()
   $(".loader").css("display", "none")
 
 });
@@ -354,7 +353,7 @@ function GuardarHotel() {
         direccion :  $("#direccion").val(),
         id_pais :  $("#select_pais").val(),
         id_depto :  $("#select_deptos").val(),
-        id_terminos :  $("#select_terminos_condiciones").val(),
+        id_terminos :  0,
         ciudad :  $("#ciudad").val(),
         avatar : "assets/img/default.jpg"
     }
@@ -464,41 +463,6 @@ function GuardarHotel() {
     
   }
 
-  function traer_terminos() {
-      let values = { 
-            codigo: 'traer_terminos',
-            parametro1: "",
-            parametro2: ""
-      };
-      $.ajax({
-        type : 'POST',
-        data: values,
-        url: '../../php/sel_recursos.php',
-        beforeSend: function() {
-            $(".loader").css("display", "inline-block")
-        },
-        success: function(respuesta) {
-          $(".loader").css("display", "none")
-          let obj = JSON.parse(respuesta)
-          let fila = ''
-          fila += ''
-          $.each(obj["resultado"], function( index, val ) {
-            fila += `<option value='${val.id}'>${val.titulo}</option>`
-          });
-
-          $("#select_terminos_condiciones").html('<option value="">Seleccionar</option>'+fila)
-          $("#select_terminos_condiciones_edit").html('<option value="">Seleccionar</option>'+fila)
-          
-        },
-        error: function() {
-          $(".loader").css("display", "none")
-          console.log("No se ha podido obtener la información");
-        }
-      });
-
-      $("#select_terminos_condiciones").select2();
-    
-  }
 
   function isNumber(evt) {
       evt = (evt) ? evt : window.event;
@@ -547,7 +511,6 @@ function GuardarHotel() {
     $("#direccion").val("").change()
     $("#select_pais").val("").change()
     $("#select_deptos").val("").change()
-    $("#select_terminos_condiciones").val("").change()
     $("#ciudad").val("").change()
   }
 
@@ -657,7 +620,6 @@ function GuardarHotel() {
             }, 500);
             $("#ciudad_edit").val(val.ciudad).change()
             $("#direccion_edit").val(val.direccion).change()
-            $("#select_terminos_condiciones_edit").val(val.id_terminos).change()
           });
           
         },
@@ -682,7 +644,7 @@ function GuardarHotel() {
       direccion :  $("#direccion_edit").val(),
       id_pais :  $("#select_pais_edit").val(),
       id_depto :  $("#select_deptos_edit").val(),
-      id_terminos :  $("#select_terminos_condiciones_edit").val(),
+      id_terminos :  0,
       ciudad :  $("#ciudad_edit").val(),
     }
     $.ajax({

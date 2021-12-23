@@ -200,6 +200,7 @@ if ($conn) {
 										
 										$datos["id"] 			= $row["id"];
 										$datos["nombre"]		= $row["nombre"];
+										$datos["id_terminos"]	= $row["id_terminos"];
 										$datos["descripcion"]	= $row["descripcion"];
 										
 										// push single product into final response array

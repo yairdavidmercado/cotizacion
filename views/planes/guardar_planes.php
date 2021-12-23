@@ -3,6 +3,7 @@
    include '../../php/conexion.php';
 
     $nombre = $_POST["nombre"];
+    $id_terminos = $_POST["id_terminos"];
     $descripcion = $_POST["descripcion"]; 
     $id_hotel = $_POST["id_hotel"];
     $ids = $_POST["ids"];
@@ -20,10 +21,12 @@
              $result = mysqli_query($con, "INSERT INTO planes (nombre, 
                                                                     descripcion, 
                                                                     id_hotel,
+                                                                    id_terminos,
                                                                     id_autor )
                                                             VALUES ('$nombre', 
                                                                     '$descripcion', 
                                                                     $id_hotel,
+                                                                    $id_terminos,
                                                                     $id_autor);");
 
                 //var_dump($result);

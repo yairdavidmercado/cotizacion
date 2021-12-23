@@ -473,7 +473,7 @@ session_start();
 <script>
 var id_hotel = "<?php echo $_SESSION['id_hotel'] ?>";
 var nombre_hotel = "<?php echo $_SESSION['nombre_hotel'] ?>";
-var id_terminos = "<?php echo $_SESSION['id_terminos'] ?>";
+
 var direccion_hotel = "<?php echo $_SESSION['direccion_hotel'] ?>";
 var telefono_hotel = "<?php echo $_SESSION['telefono_hotel'] ?>";
 var pais_hotel = "<?php echo $_SESSION['pais_hotel'] ?>";
@@ -813,7 +813,7 @@ function GuardarCotizacion() {
       n_adult_s :  $("#adult_s").val(),
       n_adult_d :  $("#adult_d").val(),
       n_adult_t_c :  $("#adult_t_c").val(),
-      id_terminos :  id_terminos,
+      id_terminos :  $("#id_planes option:selected").data('id_terminos'),
       id_hotel :  id_hotel,
       id_titular :  $("#id_usuario").val(),
       id_tarifa :  $("#id_tarifa").val(),
@@ -977,7 +977,7 @@ function GuardarCotizacion() {
           let obj = JSON.parse(respuesta)
           let fila = ''
           $.each(obj["resultado"], function( index, val ) {
-            fila += `<option value='${val.id}' descripcion='${val.descripcion}'>${val.nombre}</option>`
+            fila += `<option value='${val.id}' data-id_terminos='${val.id_terminos}' descripcion='${val.descripcion}'>${val.nombre}</option>`
           });
 
           $("#id_planes").html('<option value="">Seleccionar</option>'+fila)
