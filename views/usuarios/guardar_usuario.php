@@ -17,12 +17,16 @@
     $email = $_POST["email"];
     $avatar = $_POST["avatar"];
     $id_autor = $_SESSION['id'];
-    $id_db = $_SESSION['id_db'];
-
+    $id_db = ','.$_SESSION['id_db'];
+    $var_campo = '';
     if ($tipo == 'TITULAR') {
         include '../../php/conexion.php';
+        $var_campo = '';
+        $id_db = '';
+        
     }else {
         include '../../php/conectCompany.php';
+        $var_campo = ',id_empresa';
     }
     $response = [];
     $con = mysqli_connect(DB_HOST,DB_USER, DB_PASS, DB_NAME);
@@ -71,8 +75,8 @@
                                                             telefono, 
                                                             email, 
                                                             avatar,
-                                                            id_empresa, 
-                                                            id_autor )
+                                                            id_autor
+                                                            $var_campo )
                                                         VALUES ('$codigo', 
                                                                 $cedula, 
                                                                 '$nombre1', 
@@ -88,8 +92,8 @@
                                                                 '$telefono', 
                                                                 '$email', 
                                                                 '$avatar',
-                                                                $id_db,
-                                                                $id_autor);");
+                                                                $id_autor
+                                                                $id_db);");
 
 
             //var_dump($result);
