@@ -101,9 +101,8 @@ if (isset($_SESSION['id'])) {
     <form onsubmit="validar_sesion(); return false;" methods="POST" class="form-signin">
       <div class="mb-3"><img src="assets/img/logos.png" width="200px" alt="" srcset=""></div>
       <h4  style="color:#fff" id="name_empresa"></h4>
-      <label  style="color:#fff">Iniciar sesión</label>
-      <label for="inputEmail" class="sr-only">Codigo / identificación</label>
-      <input type="text" id="usuario" class="form-control" placeholder="Codigo / identificación" required autofocus>
+      <label for="inputEmail" class="sr-only">correo electronico</label>
+      <input type="text" id="usuario" class="form-control" placeholder="correo electronico" required autofocus>
       <label for="inputPassword" class="sr-only">Contraseña</label>
       <input type="password" id="password" class="form-control" placeholder="Contraseña" required>
       <button class="btn btn-lg btn-primary btn-block" style="color:#fff" type="submit"><b>Iniciar sesión</b></button>

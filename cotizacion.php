@@ -498,7 +498,7 @@ $(function() {
   $('#startDate').datepicker({
       uiLibrary: 'bootstrap4',
       iconsLibrary: 'fontawesome',
-      /* minDate: today, */
+      minDate: today,
       format: "yyyy-mm-dd",
       language: 'es',
       maxDate: function () {
@@ -908,7 +908,7 @@ function GuardarCotizacion() {
           let fila = ''
           fila += ''
           $.each(obj["resultado"], function( index, val ) {
-            fila += `<option value='${val.id}' nombre='${val.nombre1} ${val.apellido1} ${val.apellido2}' pais='${val.pais}' depto='${val.depto}' telefono='${val.telefono}' ciudad='${val.ciudad}' email='${val.email}' cedula='${val.cedula}'>${val.cedula} - ${val.nombre1} ${val.apellido1} ${val.apellido2}</option>`
+            fila += `<option value='${val.id}' nombre='${val.nombre1} ${val.apellido1} ${val.apellido2}' pais='${val.pais}' depto='${val.depto}' telefono='${val.telefono}' ciudad='${val.ciudad}' email='${val.email}' cedula='${val.cedula}'>${val.cedula} - ${val.nombre1} ${val.nombre2} ${val.apellido1} ${val.apellido2}</option>`
           });
 
           $("#id_usuario").html('<option value="">Seleccionar</option>'+fila)
