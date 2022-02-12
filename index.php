@@ -96,9 +96,16 @@ if (isset($_SESSION['id'])) {
       }
     </style>
   </head>
-  <body style="background-color: #002744;" class="text-center">
+  <body style="background-color: #002744;" >
+  <div style="position:fixed;margin-bottom:35%;margin-left:92%" onclick="verificacion()" data-toggle="tooltip" data-placement="top" title="Empresas verificadas">
+    <img src="assets/img/verificado.png" width="40px"/>        
+      <!-- <div style="text-align:center">
+        <span style="color:#fff;font-size:9px">Empresas Verificadas</span>
+      </div> -->
+    
+  </div>
   <div class="loader"></div>
-    <form onsubmit="validar_sesion(); return false;" methods="POST" class="form-signin">
+    <form onsubmit="validar_sesion(); return false;" methods="POST" class="form-signin text-center">
       <div class="mb-3"><img src="assets/img/logos.png" width="200px" alt="" srcset=""></div>
       <h4  style="color:#fff" id="name_empresa"></h4>
       <label for="inputEmail" class="sr-only">correo electronico</label>
@@ -139,6 +146,7 @@ if (isset($_SESSION['id'])) {
 var dbname = "<?php echo isset($_SESSION['dbname']) ? $_SESSION['dbname'] : '0'  ?>";
 $(function() {
   $(".loader").css("display", "none")
+  $('[data-toggle="tooltip"]').tooltip()
   //mostrar_empresas(dbname)
 });
   
@@ -172,6 +180,10 @@ $(function() {
     }
   });
     
+  }
+
+  function verificacion(){
+    window.open('empresas.php', '_blank');
   }
 
  /*  function mostrar_empresas() {
