@@ -49,7 +49,7 @@ if ($conn) {
         $response["message"] = "La base de datos seleccinada es: ".$_SESSION["dbname"];
         echo json_encode($response);
     }else if ($codigo == "card_empresas") {//activos
-		$result = mysqli_query($conn, 	"SELECT empresas.* FROM empresas WHERE empresas.activo = 1 ORDER BY id DESC");
+		$result = mysqli_query($conn, 	"SELECT empresas.* FROM empresas WHERE empresas.activo = 1 AND empresas.tipo = 'EMPRESA' ORDER BY id DESC");
 		if(mysqli_num_rows($result) > 0)
 		{	
 									$response["resultado"] = array();
