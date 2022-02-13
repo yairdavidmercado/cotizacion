@@ -16,7 +16,7 @@
     <link href="assets/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
   <style>
       body{
-            background: #eee;
+            background: #fff;
         }
         span{
             font-size:15px;
@@ -57,119 +57,18 @@
   <body class="container bg-light">
     <div class="loader"></div>
     <div class="box">
+        <!-- <img src="assets/img/logos.png" class="float-right" width="200px" alt="" srcset=""> -->
+        <h2>Empresas certificadas <img src="assets/img/verificado.png" width="40px"/></h2>
         <div class="container mt-5">
-            <div id="btn_crear_hotel">
-              
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                <input type="text" class="form-control" id="searhInput" placeholder="Buscar"/>
             </div>
-            <div class="row" id="content_hoteles">
+            <div class="row" id="content_empresas">
 
             </div>	
         </div>
     </div>
 
-    <!-- <div class="modal fade" id="modal" tabindex="-2" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
-        <div class="modal-dialog" >
-          
-        </div>
-      </div> -->
-
-
-    <div class="modal fade bd-example-modal-lg" id="modal_crear_hotel" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-          <div class="modal-content" id="crop_img" style="display:none">
-            <div class="modal-header">
-              <h5 class="modal-title" id="modalLabel">Recortar imágen</h5>
-              <button type="button" class="close" id="close_modal_crop" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <div class="img-container">
-                <img id="image" width="500px" src="https://avatars0.githubusercontent.com/u/3456749">
-              </div>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-              <button type="button" class="btn btn-primary" id="crop">Recortar</button>
-            </div>
-          </div>
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Crear hotel</h5>
-                    <button type="button" class="close" id="close_modal_hotel" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                <div class="card mt-3">
-                    <div class="card-body">
-                        <form role="form" onsubmit="event.preventDefault(); return GuardarHotel();" id="form_guardar" class="needs-validation">   
-                            <div class="row" style="marging-left:50px">
-                              <label class="label" data-toggle="tooltip" title="Change your avatar">
-                                <img class="rounded" id="avatar" src="assets/img/default.jpg" width="100px" style="border-radius: 20%" alt="avatar">
-                                <input type="file" class="sr-only" id="input" name="image" accept="image/*">
-                              </label>
-                            </div>
-                            <div class="row">
-                            <div class="col-md-3 mb-3" >
-                                <label for="lastName">NIT</label>
-                                <input type="text" autocomplete="off" onkeypress="return isNumber(event)" class="form-control " name="nit" id="nit" placeholder="" required>                    
-                            </div>
-                            <div class="col-md-9 mb-3" >
-                                <label for="lastName">Razón social</label>
-                                <input type="text" autocomplete="off" class="form-control " name="nombre" id="nombre" placeholder="" required>                    
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="lastName">Email</label>
-                                <input type="text" autocomplete="off" class="form-control" name="email" id="email" placeholder="" required>                   
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="lastName">Teléfono</label>
-                                <input type="text" autocomplete="off" onkeypress="return isNumber(event)" class="form-control " name="telefono" id="telefono" placeholder="" required>                    
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <label for="firstName">Pais</label>
-                                <select style="width:100%" name="select_pais" onchange="traer_deptos(this.value)" required id="select_pais" class="form-control form-control-sm paises">
-                                <option value="">Seleccionar</option>
-                                </select>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <label for="firstName">Departamentos</label>
-                                <select style="width:100%" name="select_deptos" required id="select_deptos" class="form-control form-control-sm deptos">
-                                <option value="">Seleccionar</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="lastName">Ciudad</label>
-                                <input type="text" autocomplete="off" class="form-control " name="ciudad" id="ciudad" placeholder="" required>                    
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="lastName">Dirección</label>
-                                <input type="text" autocomplete="off" class="form-control " name="direccion" id="direccion" placeholder="" required>                    
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="firstName">Términos y condiciones</label>
-                                <select style="width:100%" name="select_terminos_condiciones" required id="select_terminos_condiciones" class="form-control form-control-sm terminos_condiciones">
-                                <option value="">Seleccionar</option>
-                                </select>
-                            </div>
-                            <div class="col-md-12 mb-3 d-flex justify-content-center">
-                                <button type="submit" class="btn btn-success mr-2">Guardar hotel</button>
-                                <!-- <div class="btn btn-warning text-white">Cancelar</div> -->
-                            </div>
-                            </div>
-                            <div class="row">
-                            
-                            </div>
-                            
-                        </form>
-                    </div>
-                </div>
-                </div>
-            </div>
-        </div>
-      </div>
-    </div>
     <script src="assets/js/jquery.slim.min.js" crossorigin="anonymous"></script>
     <script>window.jQuery || document.write('<script src="assets/js/jquery.slim.min.js"><\/script>')</script>
     <script src="assets/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
@@ -180,6 +79,30 @@
     <script src="assets/js/cropper.min.js" ></script>
 <script>
 var id_usuario = "1"
+let dataEmpresas = []
+
+const btnSearch = document.getElementById("searhInput")
+btnSearch.addEventListener('keyup', (e) => {
+    const inputString = e.target.value.trim()
+    console.log(inputString)
+    const filterEmpresas = dataEmpresas.filter((empresas) => {
+        return (
+            empresas.nombre.toUpperCase().includes(inputString.toUpperCase()) || empresas.descripcion.toUpperCase().includes(inputString.toUpperCase())
+        ) 
+    })
+    verEmpresas(filterEmpresas)
+    console.log(filterEmpresas)
+
+})
+
+function accent_fold (s) {
+  if (!s) { return ''; }
+  var ret = '';
+  for (var i = 0; i < s.length; i++) {
+    ret += dataEmpresas[s.charAt(i)] || s.charAt(i);
+  }
+  return ret;
+};
 
 $(function() {
     card_empresas()
@@ -203,78 +126,9 @@ function card_empresas() {
           let obj = JSON.parse(respuesta)
           let fila = ''
           if (obj.success) {
-            if (obj["resultado"].length > 0) {
-              if (obj["resultado"].length == 1) {
-                  $.each(obj["resultado"], function( index, val ) {
-                      fila += `<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
-                              </div>
-                              <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
-                  
-                                  <div class="box-part text-center">
-                                      
-                                    <img src="${val.avatar}" width="100px">
-                                      
-                                      <div class="title">
-                                          <button class="btn btn-link"><h4>${val.nombre}</h4></button>
-                                      </div>
-
-                                      <div class="text">
-                                          <span>${val.descrpcion}</span>
-
-                                      </div>
-                                      
-                                  </div>
-                              </div>
-                              <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
-                              </div>`
-                  });
-              }else if (obj["resultado"].length == 2) {
-                  $.each(obj["resultado"], function( index, val ) {
-                      fila += `<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
-                  
-                                  <div class="box-part text-center">
-                                      
-                                      <img src="${val.avatar}" width="100px">
-                                      
-                                      <div class="title">
-                                          <button  class="btn btn-link"><h4>${val.nombre}</h4></button>
-                                      </div>
-                                      <div class="text">
-                                          <span>${val.descripcion}</span>
-                                      </div>
-                                      
-                                  </div>
-                              </div>`
-                  });
-                  fila = `<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
-                              </div>
-                              ${fila}
-                              <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
-                              </div>`
-              }else if (obj["resultado"].length > 2) {
-                  $.each(obj["resultado"], function( index, val ) {
-                      fila += `<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
-                  
-                                  <div class="box-part text-center">
-                                      
-                                      <img src="${val.avatar}" width="100px">
-                                      
-                                      <div class="title">
-                                          <button class="btn btn-link"><h4>${val.nombre}</h4></button>
-                                      </div>
-                                      <div class="text">
-                                          <span>${val.descripcion}</span>
-                                      </div>
-                                      
-                                  </div>
-                              </div>`
-                  });
-              }
-            }
+            dataEmpresas = obj["resultado"]
+            verEmpresas(obj["resultado"])
           }
-
-          $("#content_hoteles").html(fila)
-          
         },
         error: function() {
           $(".loader").css("display", "none")
@@ -282,6 +136,79 @@ function card_empresas() {
         }
       });
     
+  }
+
+  function verEmpresas(obj){
+    let fila = ''
+    if (obj.length > 0) {
+        if (obj.length == 1) {
+            $.each(obj, function( index, val ) {
+                fila += `<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+            
+                            <div class="box-part text-center">
+                                
+                            <img src="${val.avatar}" width="100px">
+                                
+                                <div class="title">
+                                    <button class="btn btn-link"><h4>${val.nombre}</h4></button>
+                                </div>
+
+                                <div class="text">
+                                    <span>${val.descripcion}</span>
+
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                        </div>`
+            });
+        }else if (obj.length == 2) {
+            $.each(obj, function( index, val ) {
+                fila += `<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+            
+                            <div class="box-part text-center">
+                                
+                                <img src="${val.avatar}" width="100px">
+                                
+                                <div class="title">
+                                    <button  class="btn btn-link"><h4>${val.nombre}</h4></button>
+                                </div>
+                                <div class="text">
+                                    <span>${val.descripcion}</span>
+                                </div>
+                                
+                            </div>
+                        </div>`
+            });
+            fila = `<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
+                        </div>
+                        ${fila}
+                        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
+                        </div>`
+        }else if (obj.length > 2) {
+            $.each(obj, function( index, val ) {
+                fila += `<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+            
+                            <div class="box-part text-center">
+                                
+                                <img src="${val.avatar}" width="100px">
+                                
+                                <div class="title">
+                                    <button class="btn btn-link"><h4>${val.nombre}</h4></button>
+                                </div>
+                                <div class="text">
+                                    <span>${val.descripcion}</span>
+                                </div>
+                                
+                            </div>
+                        </div>`
+            });
+        }
+    }
+    $("#content_empresas").html(fila)
   }
 
 
