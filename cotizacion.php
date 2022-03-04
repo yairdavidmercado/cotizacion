@@ -171,16 +171,21 @@ session_start();
                 </div>
                 <div class="row">
                   <div class="col-md-3 mb-3">
-                    <label><span style="font-size:12px">Tipo de hospedaje</span></label>
+                    <label><span >Tipo de servicio</span></label>
                     <br>
                     <div class="form-check-inline">
-                      <label class="form-check-label">
+                      <label class="form-check-label" style='font-size:12px'>
                         <input type="radio" name="tipo_viaje" onclick="traer_tarifas(0)" required value="0" class="form-check-input" value="">Pasadía
                       </label>
                     </div>
                     <div class="form-check-inline">
-                      <label class="form-check-label">
+                      <label class="form-check-label" style='font-size:12px'>
                         <input type="radio" name="tipo_viaje" onclick="traer_tarifas(1)" required value="1" class="form-check-input" value="">Noches
+                      </label>
+                    </div>
+                    <div class="form-check-inline">
+                      <label class="form-check-label" style='font-size:12px'>
+                        <input type="radio" name="tipo_viaje" onclick="traer_tarifas(2)" required value="2" class="form-check-input" value="">Alquiler
                       </label>
                     </div>
                   </div>
@@ -208,7 +213,7 @@ session_start();
                     <input type="text" autocomplete="off" value="0" disabled onkeypress="return isNumber(event)" class="form-control " name="child" id="child" placeholder="" required>                    
                   </div>
                   <div class="col-md-3 mb-3">
-                    <label for="lastName">No. Adultos normal</label>
+                    <label for="lastName">No. Adultos individual</label>
                     <input type="text" autocomplete="off" value="0" disabled onkeypress="return isNumber(event)" class="form-control" name="adult_s" id="adult_s" placeholder="" required>                    
                   </div>
                   
@@ -221,6 +226,42 @@ session_start();
                     <input type="text" autocomplete="off" value="0" disabled onkeypress="return isNumber(event)" class="form-control" name="adult_t_c" id="adult_t_c" placeholder="" required>                    
                   </div>
                   <div class="col-md-12 mb-3" id="content_info_tarifa" style="display:none" >
+                    <div class="container-fluid">
+                      <div id="ui-view" data-select2-id="ui-view">
+                          <div>
+                              <div class="card">
+                                  <div class="card-body">
+                                    <div class="row mb-4" id="detalle_tarifa">
+                                      
+                                    </div>
+                                    <div class="table-responsive-sm">
+                                      <table class="table ">
+                                        <thead>
+                                            <tr>
+                                                <th class="center">#</th>
+                                                <th>Item</th>
+                                                <th class="center">Cantidad</th>
+                                                <th style="text-align: right;">Valor unitario</th>
+                                                <th style="text-align: right;">Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tbody_tarifa">
+                                            
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                    <div class="row">
+                                      <div class="col-lg-5 col-sm-5 ml-auto" id="content_subtotal">
+                                          
+                                      </div>
+                                    </div>
+                                </div>
+                              </div>
+                          </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-12 mb-3" id="content_info_tarifa_alquiler" style="display:none" >
                     <div class="container-fluid">
                       <div id="ui-view" data-select2-id="ui-view">
                           <div>
@@ -522,12 +563,23 @@ $(function() {
 
 function detalle_tarifa() {
   setInterval(() => {
+
     var id_tarifa = $('#id_tarifa option:selected')
     var child = ""
     var adult_s = ""
     var adult_d = ""
     var adult_t_c = ""
     var noches = ""
+
+    if($('input:radio[name=tipo_viaje]:checked').val() == 2){
+      console.log(id_tarifa.attr("id"))
+      if (id_tarifa.attr("id") !== undefined) {
+        $('#content_info_tarifa').hide()
+        $('#content_info_tarifa_alquiler').show()
+        return false
+      }
+
+    }
 
     if (id_tarifa.attr("id") !== "") {
       child = id_tarifa.attr("child")
@@ -589,6 +641,7 @@ function detalle_tarifa() {
       var total_pasajero = parseInt( inputchild )+parseInt( inputadult_s )+parseInt( inputadult_d )+parseInt( inputadult_t_c)
       var infante = children == "0" ? "No": "Si"
       var n_noches = noches == "0" ? "N/A": noches
+      
       $("#detalle_tarifa").html(`<div class="col-sm-4">
                                       <h6 class="mb-3">No. noches: <strong id="cantidad_noches">${n_noches}</strong></h6>
                                   </div>

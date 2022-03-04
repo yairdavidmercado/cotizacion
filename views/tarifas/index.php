@@ -148,16 +148,21 @@ session_start();
                     </select>
                   </div>
                   <div class="col-md-6 mb-3">
-                    <label><span>Tipo de hospedaje</span></label>
+                    <label><span>Tipo de servicio</span></label>
                     <br>
                     <div class="form-check-inline">
                       <label class="form-check-label">
-                        <input type="radio" name="tipo_hospedaje" required value="0" class="form-check-input" value="">Pasadía
+                        <input type="radio" name="tipo_hospedaje" required value="0" class="form-check-input" >Pasadía
                       </label>
                     </div>
                     <div class="form-check-inline">
                       <label class="form-check-label">
-                        <input type="radio" name="tipo_hospedaje" required value="1" class="form-check-input" value="">Por noche
+                        <input type="radio" name="tipo_hospedaje" required value="1" class="form-check-input" >Por noche
+                      </label>
+                    </div>
+                    <div class="form-check-inline">
+                      <label class="form-check-label">
+                        <input type="radio" name="tipo_hospedaje" required value="2" class="form-check-input" >Alquiler
                       </label>
                     </div>
                   </div>
@@ -242,11 +247,11 @@ session_start();
               <input type="text" autocomplete="off" class="form-control" onkeypress="return isNumber(event)" name="child_edit" id="child_edit" placeholder="" required>                   
             </div>
             <div class="col-md-6 mb-3">
-              <label for="lastName">Adultos normal</label>
+              <label for="lastName">Adultos individual</label>
               <input type="text" autocomplete="off" class="form-control" onkeypress="return isNumber(event)" name="adult_s_edit" id="adult_s_edit" placeholder="" required>                   
             </div>
             <div class="col-md-6 mb-3">
-              <label for="lastName">Adultos dole</label>
+              <label for="lastName">Adultos doble</label>
               <input type="text" autocomplete="off" class="form-control" onkeypress="return isNumber(event)" name="adult_d_edit" id="adult_d_edit" placeholder="" required>                   
             </div>
             <div class="col-md-6 mb-3">
@@ -260,16 +265,21 @@ session_start();
               </select>
             </div>
             <div class="col-md-6 mb-3">
-              <label><span>Tipo de hospedaje</span></label>
+              <label><span>Tipo de servicio</span></label>
               <br>
               <div class="form-check-inline">
                 <label class="form-check-label">
-                  <input type="radio" name="tipo_hospedaje_edit" id="tipo_hospedaje_edit0" required value="0" class="form-check-input" value="">Pasadía
+                  <input type="radio" name="tipo_hospedaje_edit" id="tipo_hospedaje_edit0" required value="0" class="form-check-input">Pasadía
                 </label>
               </div>
               <div class="form-check-inline">
                 <label class="form-check-label">
-                  <input type="radio" name="tipo_hospedaje_edit"  id="tipo_hospedaje_edit1" required value="1" class="form-check-input" value="">Por noche
+                  <input type="radio" name="tipo_hospedaje_edit"  id="tipo_hospedaje_edit1" required value="1" class="form-check-input">Por noche
+                </label>
+              </div>
+              <div class="form-check-inline">
+                <label class="form-check-label">
+                  <input type="radio" name="tipo_hospedaje_edit"  id="tipo_hospedaje_edit2" required value="2" class="form-check-input">Alquiler
                 </label>
               </div>
             </div>
