@@ -123,30 +123,6 @@ session_start();
                     <label for="lastName">Titulo</label>
                     <input type="text" autocomplete="off" class="form-control " name="nombre" id="nombre" placeholder="" required>                    
                   </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-3 mb-3">
-                    <label for="lastName">Niños</label>
-                    <input type="text" autocomplete="off" class="form-control" onkeypress="return isNumber(event)" name="child" id="child" placeholder="" required>                   
-                  </div>
-                  <div class="col-md-3 mb-3">
-                    <label for="lastName">Adultos individual</label>
-                    <input type="text" autocomplete="off" class="form-control" onkeypress="return isNumber(event)" name="adult_s" id="adult_s" placeholder="" required>                   
-                  </div>
-                  <div class="col-md-3 mb-3">
-                    <label for="lastName">Adultos doble</label>
-                    <input type="text" autocomplete="off" class="form-control" onkeypress="return isNumber(event)" name="adult_d" id="adult_d" placeholder="" required>                   
-                  </div>
-                  <div class="col-md-3 mb-3">
-                    <label for="lastName">Adultos triple/cuadruple</label>
-                    <input type="text" autocomplete="off" class="form-control" onkeypress="return isNumber(event)" name="adult_t_c" id="adult_t_c" placeholder="" required>                   
-                  </div>
-                  <div class="col-md-6 mb-3">
-                    <label for="firstName">Planes</label>
-                    <select style="width:100%" name="select_plan" required id="select_plan" class="form-control form-control-sm terminos_condiciones">
-                      <option value="">Seleccionar</option>
-                    </select>
-                  </div>
                   <div class="col-md-6 mb-3">
                     <label><span>Tipo de servicio</span></label>
                     <br>
@@ -165,6 +141,30 @@ session_start();
                         <input type="radio" name="tipo_hospedaje" required value="2" class="form-check-input" >Alquiler
                       </label>
                     </div>
+                  </div>
+                </div>
+                <div class="row iniciartarifas">
+                  <div class="col-md-3 mb-3 inputsecundario">
+                    <label for="lastName">Niños</label>
+                    <input type="text" autocomplete="off" class="form-control" onkeypress="return isNumber(event)" name="child" id="child" placeholder="" required>                   
+                  </div>
+                  <div class="col-md-3 mb-3 inputsecundario">
+                    <label for="lastName">Adultos individual</label>
+                    <input type="text" autocomplete="off" class="form-control" onkeypress="return isNumber(event)" name="adult_s" id="adult_s" placeholder="" required>                   
+                  </div>
+                  <div class="col-md-3 mb-3 inputsecundario">
+                    <label for="lastName">Adultos doble</label>
+                    <input type="text" autocomplete="off" class="form-control" onkeypress="return isNumber(event)" name="adult_d" id="adult_d" placeholder="" required>                   
+                  </div>
+                  <div class="col-md-3 mb-3 inputsecundario">
+                    <label for="lastName">Adultos triple/cuadruple</label>
+                    <input type="text" autocomplete="off" class="form-control" onkeypress="return isNumber(event)" name="adult_t_c" id="adult_t_c" placeholder="" required>                   
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="firstName">Planes</label>
+                    <select style="width:100%" name="select_plan" required id="select_plan" class="form-control form-control-sm terminos_condiciones">
+                      <option value="">Seleccionar</option>
+                    </select>
                   </div>
                   <div class="col-md-12 mb-3" >
                     <label for="lastName">Descripción</label>

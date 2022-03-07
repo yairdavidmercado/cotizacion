@@ -572,7 +572,7 @@ function detalle_tarifa() {
     var noches = ""
 
     if($('input:radio[name=tipo_viaje]:checked').val() == 2){
-      console.log(id_tarifa.attr("id"))
+
       if (id_tarifa.attr("id") !== undefined) {
         $('#content_info_tarifa').hide()
         $('#content_info_tarifa_alquiler').show()
