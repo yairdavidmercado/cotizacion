@@ -6,11 +6,11 @@ if (!isset($_SESSION['id'])) {
  }
 // manipulate session variables
 $hoteles = '';
-$hoteles = '<p><button type="button" data-toggle="modal" data-target=".bd-example-modal-lg" class="btn btn-link my-2">Crear hoteles</button></p>';
+$hoteles = '<p><button type="button" data-toggle="modal" data-target=".bd-example-modal-lg" class="btn btn-link my-2">Crear Agencia / hoteles</button></p>';
 if ($_SESSION['menu_general']['success']) {
   for ($i=0; $i < count($_SESSION['menu_general']['resultado']) ; $i++) { 
       if ($_SESSION['menu_general']['resultado'][$i]['nombre'] == 'hoteles') {
-        $hoteles = '<p><button type="button" data-toggle="modal" data-target=".bd-example-modal-lg" class="btn btn-link my-2">Crear hoteles</button></p>';
+        $hoteles = '<p><button type="button" data-toggle="modal" data-target=".bd-example-modal-lg" class="btn btn-link my-2">Crear Agencia / hoteles</button></p>';
       }
   }
 }
@@ -113,7 +113,7 @@ if ($_SESSION['menu_general']['success']) {
           </div>
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Crear hotel</h5>
+                    <h5 class="modal-title">Crear Agencias / Hotel</h5>
                     <button type="button" class="close" id="close_modal_hotel" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">×</span>
                     </button>
@@ -203,7 +203,7 @@ var perfil = "<?php echo $_SESSION['perfil'] ?>"
 $(function() {
 
     /* if (perfil == "ADMINISTRADOR" || perfil == "SUPERADMIN") {
-        $("#btn_crear_hotel").html('<p><button type="button" data-toggle="modal" data-target=".bd-example-modal-lg" class="btn btn-link my-2">Crear hoteles</button></p>')
+        $("#btn_crear_hotel").html('<p><button type="button" data-toggle="modal" data-target=".bd-example-modal-lg" class="btn btn-link my-2">Crear Agencia / hoteles</button></p>')
     } */
     
     card_hotel(id_usuario)

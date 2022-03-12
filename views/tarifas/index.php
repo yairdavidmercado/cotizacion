@@ -128,51 +128,40 @@ session_start();
                     <br>
                     <div class="form-check-inline">
                       <label class="form-check-label">
-                        <input type="radio" name="tipo_hospedaje" required value="0" class="form-check-input" >Pasadía
+                        <input type="radio" name="tipo_hospedaje" onclick='mostrarOpciones(0, [])'  required value="0" class="form-check-input" >Pasadía
                       </label>
                     </div>
                     <div class="form-check-inline">
                       <label class="form-check-label">
-                        <input type="radio" name="tipo_hospedaje" required value="1" class="form-check-input" >Por noche
+                        <input type="radio" name="tipo_hospedaje" onclick='mostrarOpciones(1, [])' required value="1" class="form-check-input" >Por noche
                       </label>
                     </div>
                     <div class="form-check-inline">
                       <label class="form-check-label">
-                        <input type="radio" name="tipo_hospedaje" required value="2" class="form-check-input" >Alquiler
+                        <input type="radio" name="tipo_hospedaje" onclick='mostrarOpciones(2, [])' required value="2" class="form-check-input" >Alquiler
                       </label>
                     </div>
                   </div>
                 </div>
-                <div class="row iniciartarifas">
-                  <div class="col-md-3 mb-3 inputsecundario">
-                    <label for="lastName">Niños</label>
-                    <input type="text" autocomplete="off" class="form-control" onkeypress="return isNumber(event)" name="child" id="child" placeholder="" required>                   
-                  </div>
-                  <div class="col-md-3 mb-3 inputsecundario">
-                    <label for="lastName">Adultos individual</label>
-                    <input type="text" autocomplete="off" class="form-control" onkeypress="return isNumber(event)" name="adult_s" id="adult_s" placeholder="" required>                   
-                  </div>
-                  <div class="col-md-3 mb-3 inputsecundario">
-                    <label for="lastName">Adultos doble</label>
-                    <input type="text" autocomplete="off" class="form-control" onkeypress="return isNumber(event)" name="adult_d" id="adult_d" placeholder="" required>                   
-                  </div>
-                  <div class="col-md-3 mb-3 inputsecundario">
-                    <label for="lastName">Adultos triple/cuadruple</label>
-                    <input type="text" autocomplete="off" class="form-control" onkeypress="return isNumber(event)" name="adult_t_c" id="adult_t_c" placeholder="" required>                   
-                  </div>
-                  <div class="col-md-6 mb-3">
-                    <label for="firstName">Planes</label>
-                    <select style="width:100%" name="select_plan" required id="select_plan" class="form-control form-control-sm terminos_condiciones">
-                      <option value="">Seleccionar</option>
-                    </select>
-                  </div>
-                  <div class="col-md-12 mb-3" >
-                    <label for="lastName">Descripción</label>
-                    <textarea class="form-control" id="descripcion"></textarea>
-                  </div>
-                  <div class="col-md-12 mb-3 d-flex justify-content-center">
-                    <button type="submit" class="btn btn-success mr-2">Guardar</button>
-                    <!-- <div class="btn btn-warning text-white">Cancelar</div> -->
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                      <label for="firstName">Planes</label>
+                      <select style="width:100%" name="select_plan" required id="select_plan" class="form-control form-control-sm terminos_condiciones">
+                        <option value="">Seleccionar</option>
+                      </select>
+                    </div>
+                </div>
+                <div class="row " id='iniciartarifas'>
+                  
+                </div>
+                <div class="row">
+                    <div class="col-md-12 mb-3" >
+                      <label for="lastName">Descripción</label>
+                      <textarea class="form-control" id="descripcion"></textarea>
+                    </div>
+                    <div class="col-md-12 mb-3 d-flex justify-content-center">
+                      <button type="submit" class="btn btn-success mr-2">Guardar</button>
+                      <!-- <div class="btn btn-warning text-white">Cancelar</div> -->
                   </div>
                 </div>
                 <div class="row">
@@ -240,49 +229,38 @@ session_start();
               <input type="hidden" autocomplete="off" id="id_edit">
               <input type="text" autocomplete="off" class="form-control " name="nombre_edit" id="nombre_edit" placeholder="" required>                    
             </div>
+            <div class="col-md-6 mb-3">
+              <label><span>Tipo de servicio</span></label>
+              <br>
+              <div class="form-check-inline">
+                <label class="form-check-label">
+                  <input type="radio" name="tipo_hospedaje_edit" onclick='mostrarOpciones(0, [], 1)' id="tipo_hospedaje_edit0" required value="0" class="form-check-input">Pasadía
+                </label>
+              </div>
+              <div class="form-check-inline">
+                <label class="form-check-label">
+                  <input type="radio" name="tipo_hospedaje_edit" onclick='mostrarOpciones(1, [], 1)' id="tipo_hospedaje_edit1" required value="1" class="form-check-input">Por noche
+                </label>
+              </div>
+              <div class="form-check-inline">
+                <label class="form-check-label">
+                  <input type="radio" name="tipo_hospedaje_edit" onclick='mostrarOpciones(2, [], 1)' id="tipo_hospedaje_edit2" required value="2" class="form-check-input">Alquiler
+                </label>
+              </div>
+            </div>
           </div>
           <div class="row">
-            <div class="col-md-6 mb-3">
-              <label for="lastName">Niños</label>
-              <input type="text" autocomplete="off" class="form-control" onkeypress="return isNumber(event)" name="child_edit" id="child_edit" placeholder="" required>                   
-            </div>
-            <div class="col-md-6 mb-3">
-              <label for="lastName">Adultos individual</label>
-              <input type="text" autocomplete="off" class="form-control" onkeypress="return isNumber(event)" name="adult_s_edit" id="adult_s_edit" placeholder="" required>                   
-            </div>
-            <div class="col-md-6 mb-3">
-              <label for="lastName">Adultos doble</label>
-              <input type="text" autocomplete="off" class="form-control" onkeypress="return isNumber(event)" name="adult_d_edit" id="adult_d_edit" placeholder="" required>                   
-            </div>
-            <div class="col-md-6 mb-3">
-              <label for="lastName">Adultos triple/cuadruple</label>
-              <input type="text" autocomplete="off" class="form-control" onkeypress="return isNumber(event)" name="adult_t_c_edit" id="adult_t_c_edit" placeholder="" required>                   
-            </div>
             <div class="col-md-6 mb-3">
               <label for="firstName">Planes</label>
               <select style="width:100%" name="select_plan_edit" required id="select_plan_edit" class="form-control form-control-sm terminos_condiciones">
                 <option value="">Seleccionar</option>
               </select>
             </div>
-            <div class="col-md-6 mb-3">
-              <label><span>Tipo de servicio</span></label>
-              <br>
-              <div class="form-check-inline">
-                <label class="form-check-label">
-                  <input type="radio" name="tipo_hospedaje_edit" id="tipo_hospedaje_edit0" required value="0" class="form-check-input">Pasadía
-                </label>
-              </div>
-              <div class="form-check-inline">
-                <label class="form-check-label">
-                  <input type="radio" name="tipo_hospedaje_edit"  id="tipo_hospedaje_edit1" required value="1" class="form-check-input">Por noche
-                </label>
-              </div>
-              <div class="form-check-inline">
-                <label class="form-check-label">
-                  <input type="radio" name="tipo_hospedaje_edit"  id="tipo_hospedaje_edit2" required value="2" class="form-check-input">Alquiler
-                </label>
-              </div>
-            </div>
+          </div>
+          <div class="row" id='iniciartarifas_edit'>
+            
+          </div>
+          <div class="row">
             <div class="col-md-12 mb-3" >
               <label for="lastName">Descripción</label>
               <textarea class="form-control" id="descripcion_edit"></textarea>
@@ -340,6 +318,58 @@ $(function() {
 
 });
 
+function mostrarOpciones(id, params, edit) {
+  let campo1 = ''
+  let campo2 = ''
+  let campo3 = ''
+  let campo4 = ''
+
+  let edicion = ''
+  if (edit == '1') {
+    edicion = '_edit'
+  }
+  if (params.length > 0) {
+    campo1 = params[0].campo1
+    campo2 = params[0].campo2
+    campo3 = params[0].campo3
+    campo4 = params[0].campo4
+  }
+
+  if (id == '0') {
+    $(`#iniciartarifas${edicion}`).html(`<div class="col-md-3 mb-3 inputsecundario">
+                    <label for="lastName">Niños (3-11 Años)</label>
+                    <input type="text" autocomplete="off" value='${campo1}' class="form-control" onkeypress="return isNumber(event)" name="child" id="child" placeholder="" required>                   
+                  </div>
+                  <div class="col-md-3 mb-3 inputsecundario">
+                    <label for="lastName">Adultos </label>
+                    <input type="text" autocomplete="off" class="form-control" value='${campo2}' onkeypress="return isNumber(event)" name="adult_s${edicion}" id="adult_s${edicion}" placeholder="" required>                   
+                  </div>`)
+  } else if (id == '1') {
+    $(`#iniciartarifas${edicion}`).html(`<div class="col-md-3 mb-3 inputsecundario">
+                                  <label for="lastName">Niños</label>
+                                  <input type="text" autocomplete="off" value='${campo1}' class="form-control" onkeypress="return isNumber(event)" name="child${edicion}" id="child${edicion}" placeholder="" required>                   
+                                </div>
+                                <div class="col-md-3 mb-3 inputsecundario">
+                                  <label for="lastName">Adultos individual</label>
+                                  <input type="text" autocomplete="off" class="form-control" value='${campo2}' onkeypress="return isNumber(event)" name="adult_s${edicion}" id="adult_s${edicion}" placeholder="" required>                   
+                                </div>
+                                <div class="col-md-3 mb-3 inputsecundario">
+                                  <label for="lastName">Adultos doble</label>
+                                  <input type="text" autocomplete="off" class="form-control" value='${campo3}' onkeypress="return isNumber(event)" name="adult_d${edicion}" id="adult_d${edicion}" placeholder="" required>                   
+                                </div>
+                                <div class="col-md-3 mb-3 inputsecundario">
+                                  <label for="lastName">Adultos triple/cuadruple</label>
+                                  <input type="text" autocomplete="off" class="form-control" value='${campo4}' onkeypress="return isNumber(event)" name="adult_t_c${edicion}" id="adult_t_c${edicion}" placeholder="" required>                   
+                                </div>`)
+  } else if (id == '2') {
+    $(`#iniciartarifas${edicion}`).html(`<div class="col-md-3 mb-3 inputsecundario">
+                                  <label for="lastName">Valor Alquiler</label>
+                                  <input type="text" autocomplete="off" value='${campo2}' class="form-control" onkeypress="return isNumber(event)" name="adult_s${edicion}" id="adult_s${edicion}" placeholder="" required>                   
+                                </div>`)
+  }
+  
+}
+
 
 function GuardarTarifas() {
     
@@ -347,10 +377,10 @@ function GuardarTarifas() {
     //let formData = new FormData(form)
     let values = {
       nombre : $("#nombre").val(),
-      child : $("#child").val(),
-      adult_s : $("#adult_s").val(),
-      adult_d : $("#adult_d").val(),
-      adult_t_c : $("#adult_t_c").val(),
+      child : $("#child").val() ? $("#child").val() : '0',
+      adult_s : $("#adult_s").val() ? $("#adult_s").val() : '0',
+      adult_d : $("#adult_d").val() ? $("#adult_d").val() : '0',
+      adult_t_c : $("#adult_t_c").val() ? $("#adult_t_c").val() : '0',
       id_plan : $("#select_plan").val(),
       id_hotel : id_hotel,
       descripcion : $("#descripcion").val(),
@@ -539,12 +569,23 @@ function GuardarTarifas() {
             $("#id_plan_edit").val(val.id_plan)
             $("#descripcion_edit").val(val.descripcion)
             $("#select_plan_edit").val(val.nombre_plan).change()
-            if (val.noches == 1) {
-              $("#tipo_hospedaje_edit1").prop('checked',true);
-              $("#tipo_hospedaje_edit0").prop('checked',false);
-            }else if (val.noches == 0) {
-              $("#tipo_hospedaje_edit1").prop('checked',false);
-              $("#tipo_hospedaje_edit0").prop('checked',true);
+            var values = [{campo1: val.child, campo2: val.adult_s, campo3: val.adult_d, campo4: val.adult_t_c}]
+            if (val.noches == 0) {
+              mostrarOpciones(val.noches, values, 1)
+              $("#tipo_hospedaje_edit1").prop('checked',false).prop('disabled',true);
+              $("#tipo_hospedaje_edit2").prop('checked',false).prop('disabled',true);
+              $("#tipo_hospedaje_edit0").prop('checked',true).prop('disabled',false);              
+            }else if (val.noches == 1) {
+              mostrarOpciones(val.noches, values, 1)
+              $("#tipo_hospedaje_edit1").prop('checked',true).prop('disabled',false);
+              $("#tipo_hospedaje_edit2").prop('checked',false).prop('disabled',true);
+              $("#tipo_hospedaje_edit0").prop('checked',false).prop('disabled',true);
+
+            }else if (val.noches == 2) {
+              mostrarOpciones(val.noches, values, 1)
+              $("#tipo_hospedaje_edit1").prop('checked',false).prop('disabled',true);
+              $("#tipo_hospedaje_edit2").prop('checked',true).prop('disabled',false);
+              $("#tipo_hospedaje_edit0").prop('checked',false).prop('disabled',true);
             }
           });
           
@@ -561,13 +602,14 @@ function GuardarTarifas() {
     
     //let form = $('#form_guardar')[0];
     //let formData = new FormData(form)
+    console.log($("#adult_s_edit").val())
     let values = {
       id : $("#id_edit").val(),
       nombre : $("#nombre_edit").val(),
-      child : $("#child_edit").val(),
-      adult_s : $("#adult_s_edit").val(),
-      adult_d : $("#adult_d_edit").val(),
-      adult_t_c : $("#adult_t_c_edit").val(),
+      child : $("#child_edit").val() ? $("#child_edit").val() : '0',
+      adult_s : $("#adult_s_edit").val() ? $("#adult_s_edit").val() : '0',
+      adult_d : $("#adult_d_edit").val() ? $("#adult_d_edit").val() : '0',
+      adult_t_c : $("#adult_t_c_edit").val() ? $("#adult_t_c_edit").val() : '0',
       id_plan : $("#select_plan_edit").val(),
       id_hotel : id_hotel,
       descripcion : $("#descripcion_edit").val(),

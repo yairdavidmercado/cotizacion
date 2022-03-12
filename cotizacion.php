@@ -204,64 +204,12 @@ session_start();
                     <input type="text" autocomplete="off" disabled class="form-control" name="endDate" id="endDate" placeholder="" required>
                     <input type="hidden" value="0" name="count_noches" id="count_noches">                    
                   </div>
-                  <div class="col-md-1 mb-3">
-                    <label for="lastName">Infante</label>
-                    <input type="text" autocomplete="off" value="0" disabled onkeypress="return isNumber(event)" class="form-control " name="infante" id="infante" placeholder="" required>                    
-                  </div>
-                  <div class="col-md-2 mb-3">
-                    <label for="lastName">No. Niños</label>
-                    <input type="text" autocomplete="off" value="0" disabled onkeypress="return isNumber(event)" class="form-control " name="child" id="child" placeholder="" required>                    
-                  </div>
-                  <div class="col-md-3 mb-3">
-                    <label for="lastName">No. Adultos individual</label>
-                    <input type="text" autocomplete="off" value="0" disabled onkeypress="return isNumber(event)" class="form-control" name="adult_s" id="adult_s" placeholder="" required>                    
-                  </div>
+                </div>
+                <div class="row" id="iniciartarifas">
                   
-                  <div class="col-md-3 mb-3">
-                    <label for="lastName">No. Adultos doble</label>
-                    <input type="text" autocomplete="off" value="0" disabled onkeypress="return isNumber(event)" class="form-control " name="adult_d" id="adult_d" placeholder="" required>                    
-                  </div>
-                  <div class="col-md-3 mb-3">
-                    <label for="lastName">No. Adultos Tri /Cua</label>
-                    <input type="text" autocomplete="off" value="0" disabled onkeypress="return isNumber(event)" class="form-control" name="adult_t_c" id="adult_t_c" placeholder="" required>                    
-                  </div>
+                </div>
+                <div class="row">
                   <div class="col-md-12 mb-3" id="content_info_tarifa" style="display:none" >
-                    <div class="container-fluid">
-                      <div id="ui-view" data-select2-id="ui-view">
-                          <div>
-                              <div class="card">
-                                  <div class="card-body">
-                                    <div class="row mb-4" id="detalle_tarifa">
-                                      
-                                    </div>
-                                    <div class="table-responsive-sm">
-                                      <table class="table ">
-                                        <thead>
-                                            <tr>
-                                                <th class="center">#</th>
-                                                <th>Item</th>
-                                                <th class="center">Cantidad</th>
-                                                <th style="text-align: right;">Valor unitario</th>
-                                                <th style="text-align: right;">Total</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="tbody_tarifa">
-                                            
-                                        </tbody>
-                                      </table>
-                                    </div>
-                                    <div class="row">
-                                      <div class="col-lg-5 col-sm-5 ml-auto" id="content_subtotal">
-                                          
-                                      </div>
-                                    </div>
-                                </div>
-                              </div>
-                          </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-md-12 mb-3" id="content_info_tarifa_alquiler" style="display:none" >
                     <div class="container-fluid">
                       <div id="ui-view" data-select2-id="ui-view">
                           <div>
@@ -561,6 +509,55 @@ $(function() {
 
 });
 
+function mostrarOpciones(id) {
+
+  if (id == '0') {
+    $(`#iniciartarifas`).html(`<div class="col-md-1 mb-3">
+                    <label for="lastName">Infante</label>
+                    <input type="text" autocomplete="off" value="0" onkeypress="return isNumber(event)" class="form-control " name="infante" id="infante" placeholder="" required>                    
+                  </div>
+                  <div class="col-md-2 mb-3 inputsecundario">
+                    <label for="lastName">Niños (3-11 Años)</label>
+                    <input type="text" autocomplete="off" value='' class="form-control" onkeypress="return isNumber(event)" name="child" id="child" placeholder="" required>                   
+                  </div>
+                  <div class="col-md-3 mb-3 inputsecundario">
+                    <label for="lastName">Adultos </label>
+                    <input type="text" autocomplete="off" class="form-control" value='' onkeypress="return isNumber(event)" name="adult_s" id="adult_s" placeholder="" required>                   
+                  </div>`)
+  } else if (id == '1') {
+    $(`#iniciartarifas`).html(`<div class="col-md-1 mb-3">
+                                  <label for="lastName">Infante</label>
+                                  <input type="text" autocomplete="off" value="0" onkeypress="return isNumber(event)" class="form-control " name="infante" id="infante" placeholder="" required>                    
+                                </div>
+                                <div class="col-md-2 mb-3 inputsecundario">
+                                  <label for="lastName">Niños</label>
+                                  <input type="text" autocomplete="off" value='' class="form-control" onkeypress="return isNumber(event)" name="child" id="child" placeholder="" required>                   
+                                </div>
+                                <div class="col-md-3 mb-3 inputsecundario">
+                                  <label for="lastName">Adultos individual</label>
+                                  <input type="text" autocomplete="off" class="form-control" value='' onkeypress="return isNumber(event)" name="adult_s" id="adult_s" placeholder="" required>                   
+                                </div>
+                                <div class="col-md-3 mb-3 inputsecundario">
+                                  <label for="lastName">Adultos doble</label>
+                                  <input type="text" autocomplete="off" class="form-control" value='' onkeypress="return isNumber(event)" name="adult_d" id="adult_d" placeholder="" required>                   
+                                </div>
+                                <div class="col-md-3 mb-3 inputsecundario">
+                                  <label for="lastName">Adultos triple/cuadruple</label>
+                                  <input type="text" autocomplete="off" class="form-control" value='' onkeypress="return isNumber(event)" name="adult_t_c" id="adult_t_c" placeholder="" required>                   
+                                </div>`)
+  } else if (id == '2') {
+    $(`#iniciartarifas`).html(`<div style="display:none" class="col-md-1 mb-3">
+                                  <label for="lastName">Infante</label>
+                                  <input type="text" autocomplete="off" value="0" onkeypress="return isNumber(event)" class="form-control " name="infante" id="infante" placeholder="" required>                    
+                                </div>
+                                <div class="col-md-6 mb-3 inputsecundario">
+                                  <label for="lastName">N° Alquiler</label>
+                                  <input type="text" autocomplete="off" value='' class="form-control" onkeypress="return isNumber(event)" name="adult_s" id="adult_s" placeholder="" required>                   
+                                </div>`)
+  }
+  
+}
+
 function detalle_tarifa() {
   setInterval(() => {
 
@@ -571,15 +568,6 @@ function detalle_tarifa() {
     var adult_t_c = ""
     var noches = ""
 
-    if($('input:radio[name=tipo_viaje]:checked').val() == 2){
-
-      if (id_tarifa.attr("id") !== undefined) {
-        $('#content_info_tarifa').hide()
-        $('#content_info_tarifa_alquiler').show()
-        return false
-      }
-
-    }
 
     if (id_tarifa.attr("id") !== "") {
       child = id_tarifa.attr("child")
@@ -626,7 +614,26 @@ function detalle_tarifa() {
       var inputadult_s = $("#adult_s").val()
       var inputadult_d = $("#adult_d").val()
       var inputadult_t_c = $("#adult_t_c").val()
+      var tipo_viaje = $("input[type='radio'][name='tipo_viaje']:checked").val();
+      if (tipo_viaje == '0') {
+        inputadult_d = 0
+        inputadult_t_c = 0
+      }
 
+      if (tipo_viaje == '2') {
+        children = 0
+        inputchild = 0
+        inputadult_d = 0
+        inputadult_t_c = 0
+      }
+
+      /* console.log(
+        children,
+      inputchild,
+      inputadult_s,
+      inputadult_d,
+      inputadult_t_c
+      ) */
       var totalchild = parseInt( inputchild )* parseInt( child )
       var totaladult_s = parseInt( inputadult_s )* parseInt( adult_s )
       var totaladult_d = parseInt( inputadult_d )* parseInt( adult_d )
@@ -653,7 +660,46 @@ function detalle_tarifa() {
                                   </div>`)
 
       $("#content_info_tarifa").show()
-      $("#tbody_tarifa").html(`<tr>
+      if (tipo_viaje == '0') {
+
+        $("#tbody_tarifa").html(`<tr>
+                                    <td class="center">1</td>
+                                    <td class="left">Niños (3-11 Años)</td>
+                                    <td class="center">${inputchild}</td>
+                                    <td style="text-align: right;">$${puntosDecimales(child)}</td>
+                                    <td style="text-align: right;">$${puntosDecimales(totalchild)}</td>
+                                </tr>
+                                <tr>
+                                    <td class="center">2</td>
+                                    <td class="left">Adultos</td>
+                                    <td class="center">${inputadult_s}</td>
+                                    <td style="text-align: right;">$${puntosDecimales(adult_s)}</td>
+                                    <td style="text-align: right;">$${puntosDecimales(totaladult_s)}</td>
+                                </tr>`)
+                                noches = validar_noches == "0" ? "1": noches
+                                var subtotal = totalchild+totaladult_s+totaladult_d+totaladult_t_c
+                                var total = subtotal * parseInt(noches)
+                                $("#content_subtotal").html(`<table class="table table-clear">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td class="left">
+                                                                            <strong>Valor tour</strong>
+                                                                        </td>
+                                                                        <td style="text-align: right;" id="subtotal">$${puntosDecimales(subtotal)}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="left">
+                                                                            <strong>Total tour</strong>
+                                                                        </td>
+                                                                        <td style="text-align: right;">
+                                                                            <strong>$${puntosDecimales(total)}</strong>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>`)
+        
+      } else if (tipo_viaje == '1') {
+        $("#tbody_tarifa").html(`<tr>
                                     <td class="center">1</td>
                                     <td class="left">Niños</td>
                                     <td class="center">${inputchild}</td>
@@ -688,13 +734,13 @@ function detalle_tarifa() {
                                                                 <tbody>
                                                                     <tr>
                                                                         <td class="left">
-                                                                            <strong>Valor tour/alquiler</strong>
+                                                                            <strong>Valor noche</strong>
                                                                         </td>
                                                                         <td style="text-align: right;" id="subtotal">$${puntosDecimales(subtotal)}</td>
                                                                     </tr>
                                                                     <tr>
                                                                         <td class="left">
-                                                                            <strong>Total tour/alquiler</strong>
+                                                                            <strong>Total noche</strong>
                                                                         </td>
                                                                         <td style="text-align: right;">
                                                                             <strong>$${puntosDecimales(total)}</strong>
@@ -702,6 +748,38 @@ function detalle_tarifa() {
                                                                     </tr>
                                                                 </tbody>
                                                             </table>`)
+      }  else if (tipo_viaje == '2') { 
+
+        $("#tbody_tarifa").html(`<tr>
+                                    <td class="center">1</td>
+                                    <td class="left">N° Alquiler</td>
+                                    <td class="center">${inputadult_s}</td>
+                                    <td style="text-align: right;">$${puntosDecimales(adult_s)}</td>
+                                    <td style="text-align: right;">$${puntosDecimales(totaladult_s)}</td>
+                                </tr>`)
+                                noches = n_noches == "N/A" ? "1": n_noches
+                                console.log(noches)
+                                var subtotal = totalchild+totaladult_s+totaladult_d+totaladult_t_c
+                                var total = subtotal * parseInt(noches)
+                                $("#content_subtotal").html(`<table class="table table-clear">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td class="left">
+                                                                            <strong>Valor Alquiler</strong>
+                                                                        </td>
+                                                                        <td style="text-align: right;" id="subtotal">$${puntosDecimales(subtotal)}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="left">
+                                                                            <strong>Total Alquiler</strong>
+                                                                        </td>
+                                                                        <td style="text-align: right;">
+                                                                            <strong>$${puntosDecimales(total)}</strong>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>`)
+      }
       
     }
   }, 100);
@@ -1380,6 +1458,7 @@ function GuardarCotizacion() {
 
 
   function traer_tarifas(tipo) {
+    $(`#iniciartarifas`).html("")
     var tipo_plan = $("#id_planes").val()
     if (tipo_plan == "") {
       alert("por favor selecciona el tipo de plan")
@@ -1427,11 +1506,13 @@ function GuardarCotizacion() {
             $("#startDate").val("").prop('disabled',true);
             $("#endDate").val("").prop('disabled',true);
 
-            alert("Usted no tiene tarifas parametrizadas para este tipo de viaje")
+            alert("Usted no tiene tarifas parametrizadas para este tipo de servicio")
             return false
             
-          } 
+          }
+          mostrarOpciones(tipo)
           $.each(obj["resultado"], function( index, val ) {
+            console.log(val.noches)
             fila += `<option value='${val.id}' id='${val.id}' nombre='${val.nombre}' child='${val.child}' adult_s='${val.adult_s}' adult_d='${val.adult_d}' noches='${val.noches}' adult_t_c='${val.adult_t_c}' noches='${val.noches}'>${val.nombre}</option>`
           });
 
