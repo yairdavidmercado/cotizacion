@@ -1,0 +1,1 @@
+[18-Dec-2022 02:34:50 America/Bogota] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home1/coticlic/public_html/views/metodo_pago/index.php:13) in /home1/coticlic/public_html/menu.php on line 3

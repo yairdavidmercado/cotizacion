@@ -1,0 +1,6 @@
+[26-Oct-2022 15:23:09 America/Bogota] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home1/coticlic/public_html/views/hoteles/index.php:12) in /home1/coticlic/public_html/menu.php on line 3
+[11-Nov-2022 20:46:12 America/Bogota] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home1/coticlic/public_html/views/hoteles/index.php:12) in /home1/coticlic/public_html/menu.php on line 3
+[11-Nov-2022 21:54:33 America/Bogota] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home1/coticlic/public_html/views/hoteles/index.php:12) in /home1/coticlic/public_html/menu.php on line 3
+[06-Feb-2023 14:57:07 America/Bogota] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home1/coticlic/public_html/views/hoteles/index.php:12) in /home1/coticlic/public_html/menu.php on line 3
+[07-Jul-2025 05:32:27 America/Bogota] PHP Warning:  mysqli_num_rows() expects parameter 1 to be mysqli_result, bool given in /home1/coticlic/public_html/views/hoteles/guardar_hotel.php on line 29
+[07-Jul-2025 05:32:27 America/Bogota] PHP Warning:  mysqli_query(): Empty query in /home1/coticlic/public_html/views/hoteles/guardar_hotel.php on line 69

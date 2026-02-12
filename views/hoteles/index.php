@@ -281,12 +281,6 @@ session_start();
               <label for="lastName">Dirección</label>
               <input type="text" autocomplete="off" class="form-control " name="direccion_edit" id="direccion_edit" placeholder="" required>                    
             </div>
-            <div class="col-md-6 mb-3"  style='display:none'>
-              <label for="firstName">Términos y condiciones</label>
-              <select style="width:100%" name="select_terminos_condiciones_edit" required id="select_terminos_condiciones_edit" class="form-control form-control-sm terminos_condiciones">
-                <option value="">Seleccionar</option>
-              </select>
-            </div>
             <div class="col-md-12 mb-3 d-flex justify-content-center">
               <button type="submit" class="btn btn-success mr-2">Guardar hotel</button>
               <!-- <div class="btn btn-warning text-white">Cancelar</div> -->

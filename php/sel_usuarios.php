@@ -11,7 +11,7 @@ $parametro2 = $_POST["parametro2"];
 
 $conn = mysqli_connect(DB_HOST,DB_USER, DB_PASS, DB_NAME); 
 if (!$conn) {
-	die('No pudo conectarse: ' . mysqli_error());
+	die('No pudo conectarse: ' . mysqli_connect_error());
 }
 
 if ($conn) {

@@ -253,7 +253,8 @@ if ($conn) {
 										(SELECT nombre FROM planes WHERE planes.id = cotizacion.id_plan) AS nombre_plan,
 										(SELECT descripcion FROM planes WHERE planes.id = cotizacion.id_plan) AS descripcion_plan,
 										(SELECT descripcion FROM terminos_condiciones WHERE terminos_condiciones.id = cotizacion.id_terminos) AS terminos,
-										(SELECT reserva FROM vaucher  WHERE vaucher.id_cotizacion = cotizacion.id AND vaucher.activo = true LIMIT 1 ) as n_reserva,
+										(SELECT reserva FROM vaucher WHERE vaucher.id_cotizacion = cotizacion.id AND vaucher.activo = true LIMIT 1 ) as n_reserva,
+										(SELECT noches FROM tarifas WHERE tarifas.id = cotizacion.id_tarifa LIMIT 1 ) as tipo_servicio,
 										(SELECT COUNT(vaucher.id) FROM vaucher  WHERE vaucher.id_cotizacion = cotizacion.id AND vaucher.activo = true) as total_vaucher,
 										(SELECT SUM(vaucher.deposito) FROM vaucher  WHERE vaucher.id_cotizacion = cotizacion.id AND vaucher.activo = true) as deposito,
 										(SELECT id FROM vaucher WHERE vaucher.id_cotizacion = cotizacion.id AND vaucher.activo = true order by id desc limit 1) as id_vaucher,
@@ -279,6 +280,7 @@ if ($conn) {
 										$datos['id_plan'] = $row["id_plan"];
 										$datos['id_motivo'] = $row["id_motivo"];
 										$datos['noche'] = $row["noche"];
+										$datos['tipo_servicio'] = $row["tipo_servicio"];
 										$datos['acomodo'] = nl2br($row["acomodo"]);
 										$datos['fecha_expedicion'] = $row["fecha_expedicion"];
 										$datos['fecha_entrada'] = $row["fecha_entrada"];

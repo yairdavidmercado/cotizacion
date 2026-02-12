@@ -611,6 +611,7 @@ function GuardarVaucher() {
           let n_child = obj["resultado"][0]["n_child"]
           let n_infante = obj["resultado"][0]["n_infante"]
           let noche = obj["resultado"][0]["noche"]
+          let tipo_servicio = obj["resultado"][0]["tipo_servicio"]
           let nombre_motivo = obj["resultado"][0]["nombre_motivo"]
           let terminos = obj["resultado"][0]["terminos"]
           let deposito = obj["resultado"][0]["deposito"] == null ? 0 : obj["resultado"][0]["deposito"]
@@ -675,6 +676,69 @@ function GuardarVaucher() {
           let noche_tour = noche == "N/A" ? 'tour/alquiler' :'noches'
           let total = subtotal * parseInt(n_noches)
           let saldo = total-parseInt(deposito)
+
+
+          let content_fila = ''
+          if (tipo_servicio == '0') {
+            content_fila = `<tbody id="tbody_tarifa_modal">
+                              <tr>
+                                  <td class="center">1</td>
+                                  <td class="left">Niños (3-11 Años)</td>
+                                  <td class="center">${n_child}</td>
+                                  <td style="text-align: right;">$${puntosDecimales(tarifa_child)}</td>
+                                  <td style="text-align: right;">$${puntosDecimales(totalchild)}</td>
+                              </tr>
+                              <tr>
+                                  <td class="center">2</td>
+                                  <td class="left">Adultos</td>
+                                  <td class="center">${n_adult_s}</td>
+                                  <td style="text-align: right;">$${puntosDecimales(tarifa_adult_s)}</td>
+                                  <td style="text-align: right;">$${puntosDecimales(totaladult_s)}</td>
+                              </tr>
+                            </tbody>`
+          }else if (tipo_servicio == '1') {
+            content_fila = `<tbody id="tbody_tarifa_modal">
+                              <tr>
+                                  <td class="center">1</td>
+                                  <td class="left">Niños</td>
+                                  <td class="center">${n_child}</td>
+                                  <td style="text-align: right;">$${puntosDecimales(tarifa_child)}</td>
+                                  <td style="text-align: right;">$${puntosDecimales(totalchild)}</td>
+                              </tr>
+                              <tr>
+                                  <td class="center">2</td>
+                                  <td class="left">Adultos normal</td>
+                                  <td class="center">${n_adult_s}</td>
+                                  <td style="text-align: right;">$${puntosDecimales(tarifa_adult_s)}</td>
+                                  <td style="text-align: right;">$${puntosDecimales(totaladult_s)}</td>
+                              </tr>
+                              <tr>
+                                  <td class="center">3</td>
+                                  <td class="left">Adultos dobles</td>
+                                  <td class="center">${n_adult_d}</td>
+                                  <td style="text-align: right;">$${puntosDecimales( tarifa_adult_d)}</td>
+                                  <td style="text-align: right;">$${puntosDecimales(totaladult_d)}</td>
+                              </tr>
+                              <tr>
+                                  <td class="center">4</td>
+                                  <td class="left">Adultos triple / Cuadruple</td>
+                                  <td class="center">${n_adult_t_c}</td>
+                                  <td style="text-align: right;">$${puntosDecimales(tarifa_adult_t_c)}</td>
+                                  <td style="text-align: right;">$${puntosDecimales(totaladult_t_c)}</td>
+                              </tr>
+                            </tbody>`
+          }else if (tipo_servicio == '2') {
+            content_fila = `<tbody id="tbody_tarifa_modal">
+                              <tr>
+                                  <td class="center">1</td>
+                                  <td class="left">N° Alquiler</td>
+                                  <td class="center">${n_adult_s}</td>
+                                  <td style="text-align: right;">$${puntosDecimales(tarifa_adult_s)}</td>
+                                  <td style="text-align: right;">$${puntosDecimales(totaladult_s)}</td>
+                              </tr>
+                            </tbody>`
+          }
+
           $("#btn_pdf").html(`<span onclick="imprimir_cotizacion('${id}')" style="text-align: right;font-size:28px;cursor:pointer;font-family: 'Helvetica', 'Arial', sans-serif;" class="mr-4"><i class="fas fa-print"></i></span>`)
               let fila = `<div class="row" style="background-color:#02317c;color:#fff">
                             <div class="col-sm-12" style="background-color:#1a2b48">
@@ -766,36 +830,7 @@ function GuardarVaucher() {
                                       </tr>
                                   </thead>
 
-                                  <tbody id="tbody_tarifa_modal">
-                                    <tr>
-                                        <td class="center">1</td>
-                                        <td class="left">Niños</td>
-                                        <td class="center">${n_child}</td>
-                                        <td style="text-align: right;">$${puntosDecimales(tarifa_child)}</td>
-                                        <td style="text-align: right;">$${puntosDecimales(totalchild)}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="center">2</td>
-                                        <td class="left">Adultos sencilla</td>
-                                        <td class="center">${n_adult_s}</td>
-                                        <td style="text-align: right;">$${puntosDecimales(tarifa_adult_s)}</td>
-                                        <td style="text-align: right;">$${puntosDecimales(totaladult_s)}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="center">3</td>
-                                        <td class="left">Adultos dobles</td>
-                                        <td class="center">${n_adult_d}</td>
-                                        <td style="text-align: right;">$${puntosDecimales( tarifa_adult_d)}</td>
-                                        <td style="text-align: right;">$${puntosDecimales(totaladult_d)}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="center">4</td>
-                                        <td class="left">Adultos triple / Cuadruple</td>
-                                        <td class="center">${n_adult_t_c}</td>
-                                        <td style="text-align: right;">$${puntosDecimales(tarifa_adult_t_c)}</td>
-                                        <td style="text-align: right;">$${puntosDecimales(totaladult_t_c)}</td>
-                                    </tr>
-                                  </tbody>
+                                  ${content_fila}
                                 </table>
                               </div>
                             </div>   
