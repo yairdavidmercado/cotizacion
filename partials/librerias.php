@@ -32,3 +32,4 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="partials/SweetAlert.js"></script>
 <script src="assets/js/pdf-library/pdfmake.min.js"></script>
+<script src="assets/js/pdf-library/vfs_fonts.js"></script>

@@ -731,9 +731,9 @@ session_start();
               <div class="card-body">
                 
                 <div class="row">
-                  <div class="col-12 mb-3">
+                  <div class="col-md-12 mb-3">
                     <button type="button" class="btn btn-success btn-block" onclick="GuardarTodoCotizaciones()">
-                      Guardar cotización
+                      <i class="fas fa-save"></i> Guardar cotización
                     </button>
                   </div>
                 </div>
@@ -753,6 +753,9 @@ session_start();
               </li>
               <li class="nav-item">
                 <a class="nav-link" onclick="show_traer_tabla_cotizacion()" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Buscar</a>
+              </li>
+              <li class="nav-item ml-auto">
+                <a class="nav-link" onclick="previsualizarPDFBorrador()" title="Borrador" id="pdf" data-toggle="tab" href="#" role="tab" aria-controls="profile" aria-selected="false">Previsualizar PDF</a>
               </li>
             </ul>
             <div class="tab-content" id="myTabContent">
@@ -1813,7 +1816,45 @@ session_start();
           }
 
           let total = subtotal * parseInt(n_noches)
-          $("#btn_pdf").html(`<button onclick="imprimir_cotizacion('${id}')" class="btn btn-danger btn-sm" style="display: flex; align-items: center; gap: 8px;"><i class="fas fa-file-pdf"></i> Descargar PDF</button>`)
+          
+          // Guardar datos para generar PDF con pdfmake
+          window.cotizacionDataParaPDF = {
+            id: id,
+            nombre_hotel: nombre_hotel,
+            direccion_hotel: direccion_hotel,
+            pais_hotel: pais_hotel,
+            depto_hotel: depto_hotel,
+            telefono_hotel: telefono_hotel,
+            fecha_expedicion: fecha_expedicion,
+            nombre_titular: nombre_titular,
+            cedula: cedula,
+            email: email,
+            telefono: telefono,
+            nombre_plan: nombre_plan,
+            nombre_motivo: nombre_motivo,
+            fecha_entrada: fecha_entrada,
+            fecha_salida: fecha_salida,
+            tipo_servicio: tipo_servicio,
+            n_child: n_child,
+            n_adult_s: n_adult_s,
+            n_adult_d: n_adult_d,
+            n_adult_t_c: n_adult_t_c,
+            tarifa_child: tarifa_child,
+            tarifa_adult_s: tarifa_adult_s,
+            tarifa_adult_d: tarifa_adult_d,
+            tarifa_adult_t_c: tarifa_adult_t_c,
+            totalchild: totalchild,
+            totaladult_s: totaladult_s,
+            totaladult_d: totaladult_d,
+            totaladult_t_c: totaladult_t_c,
+            subtotal: subtotal,
+            noche_tour: noche_tour,
+            total: total,
+            acomodo: acomodo,
+            terminos: terminos
+          };
+          
+          $("#btn_pdf").html(`<button onclick="imprimir_cotizacion('${id}', false)" class="btn btn-danger btn-sm" style="display: flex; align-items: center; gap: 8px;"><i class="fas fa-file-pdf"></i> Descargar PDF</button>`)
               let fila = `
               <style>
                 .cotizacion-mockup {
@@ -2395,29 +2436,390 @@ session_start();
    return new Intl.NumberFormat("de-DE").format(value)
   }
 
-  function imprimir_cotizacion(id) {
+  // Función auxiliar para convertir imagen a base64
+  function convertImageToBase64(url, callback) {
+    if (!url || url === '') {
+      callback(null);
+      return;
+    }
+    
+    const img = new Image();
+    img.crossOrigin = 'Anonymous';
+    img.onload = function() {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0);
+      const dataURL = canvas.toDataURL('image/png');
+      callback(dataURL);
+    };
+    img.onerror = function() {
+      console.error('Error al cargar la imagen del logo');
+      callback(null);
+    };
+    img.src = url;
+  }
+
+  function imprimir_cotizacion(id, esBorrador = false) {
     $(".loader").css("display", "inline-block")
-    const element = document.getElementById("print_cotizacion")
-    const opt = {
-      filename: 'Cotizacion'+id+'.pdf',
-      margin: 2,
-      image: {type: 'jpeg', quality: 1},
-      jsPDF: {format: 'letter', orientation: 'portrait'}
+    
+    // Obtener los datos del modal
+    const data = window.cotizacionDataParaPDF;
+    
+    if (!data) {
+      ccAlert("No hay datos de cotización para generar el PDF", 'error');
+      $(".loader").css("display", "none");
+      return;
+    }
+    
+    // Convertir logo a base64 y luego generar PDF
+    convertImageToBase64(avatar_hotel, function(logoBase64) {
+      data.logoBase64 = logoBase64;
+      generarPDFConPdfMake(data, id, esBorrador);
+      $(".loader").css("display", "none")
+    });
+  }
+
+  function generarPDFConPdfMake(data, id, esBorrador = false) {
+    const watermark = esBorrador ? {
+      text: 'BORRADOR',
+      color: 'red',
+      opacity: 0.15,
+      bold: true,
+      italics: false,
+      fontSize: 80,
+      angle: 45
+    } : null;
+
+    // Construir filas de la tabla según tipo de servicio
+    let tableBody = [
+      [
+        {text: '#', style: 'tableHeader', alignment: 'center', fillColor: '#f8fafc'},
+        {text: 'Item', style: 'tableHeader', fillColor: '#f8fafc'},
+        {text: 'Cantidad', style: 'tableHeader', alignment: 'center', fillColor: '#f8fafc'},
+        {text: 'Valor unitario', style: 'tableHeader', alignment: 'right', fillColor: '#f8fafc'},
+        {text: 'Total', style: 'tableHeader', alignment: 'right', fillColor: '#f8fafc'}
+      ]
+    ];
+
+    if (data.tipo_servicio == '0') {
+      tableBody.push(
+        ['1', 'Niños (3-11 Años)', {text: data.n_child, alignment: 'center'}, {text: '$' + puntosDecimales(data.tarifa_child), alignment: 'right'}, {text: '$' + puntosDecimales(data.totalchild), alignment: 'right'}],
+        ['2', 'Adultos', {text: data.n_adult_s, alignment: 'center'}, {text: '$' + puntosDecimales(data.tarifa_adult_s), alignment: 'right'}, {text: '$' + puntosDecimales(data.totaladult_s), alignment: 'right'}]
+      );
+    } else if (data.tipo_servicio == '1') {
+      tableBody.push(
+        ['1', 'Niños', {text: data.n_child, alignment: 'center'}, {text: '$' + puntosDecimales(data.tarifa_child), alignment: 'right'}, {text: '$' + puntosDecimales(data.totalchild), alignment: 'right'}],
+        ['2', 'Adultos normal', {text: data.n_adult_s, alignment: 'center'}, {text: '$' + puntosDecimales(data.tarifa_adult_s), alignment: 'right'}, {text: '$' + puntosDecimales(data.totaladult_s), alignment: 'right'}],
+        ['3', 'Adultos dobles', {text: data.n_adult_d, alignment: 'center'}, {text: '$' + puntosDecimales(data.tarifa_adult_d), alignment: 'right'}, {text: '$' + puntosDecimales(data.totaladult_d), alignment: 'right'}],
+        ['4', 'Adultos triple/Cuádruple', {text: data.n_adult_t_c, alignment: 'center'}, {text: '$' + puntosDecimales(data.tarifa_adult_t_c), alignment: 'right'}, {text: '$' + puntosDecimales(data.totaladult_t_c), alignment: 'right'}]
+      );
+    } else if (data.tipo_servicio == '2') {
+      tableBody.push(
+        ['1', 'N° Alquiler', {text: data.n_adult_s, alignment: 'center'}, {text: '$' + puntosDecimales(data.tarifa_adult_s), alignment: 'right'}, {text: '$' + puntosDecimales(data.totaladult_s), alignment: 'right'}]
+      );
+    }
+
+    const docDefinition = {
+      watermark: watermark,
+      pageSize: 'LETTER',
+      pageMargins: [50, 90, 50, 80],
+      header: function(currentPage) {
+        if (currentPage === 1) {
+          return {
+            columns: data.logoBase64 ? [
+              {
+                width: 90,
+                image: data.logoBase64,
+                fit: [80, 80],
+                margin: [50, 15, 0, 0]
+              },
+              {
+                width: '*',
+                stack: [
+                  {text: 'COTIZACIÓN', style: 'headerTitle', alignment: 'center', margin: [0, 20, 0, 2]},
+                  {text: 'Cotización válida por 24 HRS', style: 'headerSubtitle', alignment: 'center', margin: [0, 0, 0, 8]}
+                ]
+              },
+              {
+                width: 140,
+                stack: [
+                  {text: '#' + (id || 'BORRADOR'), style: 'headerNumber', alignment: 'right', margin: [0, 20, 50, 5]},
+                  {text: 'Fecha de emisión:', style: 'headerDateLabel', alignment: 'right', margin: [0, 0, 50, 2]},
+                  {text: data.fecha_expedicion, style: 'headerDate', alignment: 'right', margin: [0, 0, 50, 0]}
+                ]
+              }
+            ] : [
+              {
+                width: '*',
+                stack: [
+                  {text: 'COTIZACIÓN', style: 'headerTitle', alignment: 'center', margin: [0, 20, 0, 2]},
+                  {text: 'Cotización válida por 24 HRS', style: 'headerSubtitle', alignment: 'center', margin: [0, 0, 0, 8]}
+                ]
+              },
+              {
+                width: 140,
+                stack: [
+                  {text: '#' + (id || 'BORRADOR'), style: 'headerNumber', alignment: 'right', margin: [0, 20, 50, 5]},
+                  {text: 'Fecha de emisión:', style: 'headerDateLabel', alignment: 'right', margin: [0, 0, 50, 2]},
+                  {text: data.fecha_expedicion, style: 'headerDate', alignment: 'right', margin: [0, 0, 50, 0]}
+                ]
+              }
+            ]
+          };
+        }
+        return null;
+      },
+      content: [
+        // Línea separadora
+        {canvas: [{type: 'line', x1: 0, y1: 0, x2: 495, y2: 0, lineWidth: 1, lineColor: '#e5e7eb'}], margin: [0, 0, 0, 20]},
+        
+        // Información del titular
+        {text: 'Información del titular', style: 'sectionTitle'},
+        {
+          columns: [
+            [
+              {text: 'Nombre', style: 'label'},
+              {text: data.nombre_titular, style: 'value', margin: [0, 2, 0, 10]},
+              {text: 'Cédula', style: 'label'},
+              {text: data.cedula, style: 'value', margin: [0, 2, 0, 0]}
+            ],
+            [
+              {text: 'Email', style: 'label'},
+              {text: data.email, style: 'value', margin: [0, 2, 0, 10]},
+              {text: 'Teléfono', style: 'label'},
+              {text: data.telefono, style: 'value', margin: [0, 2, 0, 0]}
+            ]
+          ],
+          columnGap: 30,
+          margin: [0, 10, 0, 25]
+        },
+        
+        // Información de la reserva
+        {text: 'Información de la reserva', style: 'sectionTitle'},
+        {
+          columns: [
+            [
+              {text: 'Plan', style: 'label'},
+              {text: data.nombre_plan, style: 'value', margin: [0, 2, 0, 10]},
+              {text: 'Motivo de viaje', style: 'label'},
+              {text: data.nombre_motivo, style: 'value', margin: [0, 2, 0, 0]}
+            ],
+            [
+              {text: 'Check-in', style: 'label'},
+              {text: data.fecha_entrada, style: 'value', margin: [0, 2, 0, 10]},
+              {text: 'Check-out', style: 'label'},
+              {text: data.fecha_salida, style: 'value', margin: [0, 2, 0, 0]}
+            ]
+          ],
+          columnGap: 30,
+          margin: [0, 10, 0, 25]
+        },
+        
+        // Detalles de la tarifa
+        {text: 'Detalles de la tarifa', style: 'sectionTitle', margin: [0, 0, 0, 15]},
+        {
+          table: {
+            headerRows: 1,
+            widths: [35, '*', 60, 90, 90],
+            body: tableBody
+          },
+          layout: {
+            hLineWidth: function (i, node) {
+              return (i === 0 || i === 1 || i === node.table.body.length) ? 1 : 0.5;
+            },
+            vLineWidth: function () {
+              return 0;
+            },
+            hLineColor: function () {
+              return '#e5e7eb';
+            },
+            paddingLeft: function () { return 8; },
+            paddingRight: function () { return 8; },
+            paddingTop: function () { return 8; },
+            paddingBottom: function () { return 8; }
+          },
+          margin: [0, 0, 0, 20]
+        },
+        
+        // Totales
+        {
+          columns: [
+            {width: '*', text: ''},
+            {
+              width: 220,
+              stack: [
+                {
+                  columns: [
+                    {text: 'Subtotal:', style: 'totalLabel'},
+                    {text: '$' + puntosDecimales(data.subtotal), style: 'totalValue', alignment: 'right'}
+                  ],
+                  margin: [0, 0, 0, 8]
+                },
+                {
+                  columns: [
+                    {text: 'Noches/Días:', style: 'totalLabel'},
+                    {text: data.noche_tour, style: 'totalValue', alignment: 'right'}
+                  ],
+                  margin: [0, 0, 0, 8]
+                },
+                {canvas: [{type: 'line', x1: 0, y1: 0, x2: 220, y2: 0, lineWidth: 1, lineColor: '#cbd5e1'}], margin: [0, 8, 0, 8]},
+                {
+                  columns: [
+                    {text: 'TOTAL:', style: 'grandTotalLabel'},
+                    {text: '$' + puntosDecimales(data.total), style: 'grandTotalValue', alignment: 'right'}
+                  ]
+                }
+              ],
+              margin: [0, 0, 0, 0]
+            }
+          ],
+          margin: [0, 0, 0, 25]
+        },
+        
+        // Acomodación
+        {text: 'Acomodación', style: 'sectionTitle'},
+        {
+          text: data.acomodo,
+          style: 'acomodacion',
+          margin: [0, 10, 0, 25]
+        },
+        
+        // Términos y condiciones
+        data.terminos ? {
+          stack: [
+            {text: 'Términos y condiciones', style: 'sectionTitle'},
+            {text: data.terminos, style: 'terminos', margin: [0, 10, 0, 0]}
+          ]
+        } : {}
+      ],
+      footer: function(currentPage, pageCount) {
+        return {
+          stack: [
+            {canvas: [{type: 'line', x1: 50, y1: 0, x2: 545, y2: 0, lineWidth: 1, lineColor: '#e5e7eb'}], margin: [0, 0, 0, 10]},
+            {
+              columns: [
+                {
+                  width: '*',
+                  stack: [
+                    {text: nombre_hotel, style: 'footerHotelName'},
+                    {text: direccion_hotel + ' - ' + pais_hotel + ', ' + depto_hotel, style: 'footerHotelInfo'},
+                    {text: 'Tel: ' + telefono_hotel + ' | Email: ' + email_hotel, style: 'footerHotelInfo'}
+                  ],
+                  margin: [50, 0, 0, 0]
+                },
+                {
+                  width: 'auto',
+                  text: 'Página ' + currentPage + ' de ' + pageCount,
+                  style: 'footerPage',
+                  margin: [0, 15, 50, 0]
+                }
+              ]
+            }
+          ]
+        };
+      },
+      styles: {
+        headerTitle: {
+          fontSize: 20,
+          bold: true,
+          color: '#1e293b'
+        },
+        headerSubtitle: {
+          fontSize: 10,
+          color: '#64748b'
+        },
+        headerBadgeText: {
+          fontSize: 9,
+          bold: true,
+          color: '#ffffff',
+          alignment: 'center',
+          margin: [5, 3, 5, 3]
+        },
+        headerNumber: {
+          fontSize: 32,
+          bold: true,
+          color: '#1e293b'
+        },
+        headerDateLabel: {
+          fontSize: 8,
+          color: '#64748b'
+        },
+        headerDate: {
+          fontSize: 9,
+          color: '#1e293b'
+        },
+        footerHotelName: {
+          fontSize: 10,
+          bold: true,
+          color: '#1e293b'
+        },
+        footerHotelInfo: {
+          fontSize: 8,
+          color: '#64748b'
+        },
+        footerPage: {
+          fontSize: 9,
+          color: '#64748b'
+        },
+        sectionTitle: {
+          fontSize: 12,
+          bold: true,
+          color: '#1e293b',
+          margin: [0, 0, 0, 0]
+        },
+        label: {
+          fontSize: 9,
+          color: '#64748b',
+          bold: true
+        },
+        value: {
+          fontSize: 10,
+          color: '#1e293b'
+        },
+        tableHeader: {
+          fontSize: 9,
+          bold: true,
+          color: '#64748b'
+        },
+        totalLabel: {
+          fontSize: 11,
+          color: '#475569'
+        },
+        totalValue: {
+          fontSize: 11,
+          color: '#1e293b'
+        },
+        grandTotalLabel: {
+          fontSize: 13,
+          bold: true,
+          color: '#1e293b'
+        },
+        grandTotalValue: {
+          fontSize: 15,
+          bold: true,
+          color: '#1e293b'
+        },
+        acomodacion: {
+          fontSize: 10,
+          color: '#475569',
+          lineHeight: 1.5
+        },
+        terminos: {
+          fontSize: 9,
+          color: '#64748b',
+          lineHeight: 1.4
+        },
+        footer: {
+          fontSize: 9,
+          color: '#94a3b8'
+        }
+      }
     };
 
-    html2pdf().set({
-      pagebreak: {mode: 'avoid-all', before:'#pageX'}
-    });
-    // Adds page-breaks according to the CSS break-before, break-after, and break-inside properties.
-    // Only recognizes always/left/right for before/after, and avoid for inside.
-    html2pdf().set({
-      pagebreak: {mode: 'css' }
-    });
-    // New Promise-based usage:
-    html2pdf().set(opt).from(element).save();
-    // Old monolithic-style usage:
-    //html2pdf(element, opt);
-    $(".loader").css("display", "none")
+    const filename = esBorrador ? 'Cotizacion_Borrador.pdf' : 'Cotizacion_' + id + '.pdf';
+    pdfMake.createPdf(docDefinition).download(filename);
   }
 
   function limpiar_formulario(){
@@ -2807,6 +3209,138 @@ session_start();
     } catch (e) {
       ccAlert(e.message || "Ocurrió un error al guardar.", "error");
     }
+  }
+
+  function previsualizarPDFBorrador() {
+    // Validar que haya un titular seleccionado
+    if (!$("#id_usuario").val()) {
+      ccAlert('Debes seleccionar un titular antes de previsualizar el PDF', 'error');
+      return;
+    }
+
+    // Validar que al menos un tipo esté seleccionado y tenga datos
+    let tipoActivo = null;
+    let suffix = '';
+    
+    if (estaActivoTipo(1) && $("#id_planes").val()) {
+      tipoActivo = 1;
+      suffix = '';
+    } else if (estaActivoTipo(2) && $("#id_planes_tour").val()) {
+      tipoActivo = 2;
+      suffix = '_tour';
+    } else if (estaActivoTipo(3) && $("#id_planes_alq").val()) {
+      tipoActivo = 3;
+      suffix = '_alq';
+    }
+
+    if (!tipoActivo) {
+      ccAlert('Debes completar al menos un formulario de cotización para previsualizar', 'error');
+      return;
+    }
+
+    // Construir datos para el PDF desde el formulario activo
+    const titular = $("#id_usuario option:selected");
+    const plan = $("#id_planes" + suffix + " option:selected");
+    const motivo = $("#id_motivo" + suffix + " option:selected");
+    const tarifa = $("#id_tarifa" + suffix + " option:selected");
+
+    if (!tarifa.val()) {
+      ccAlert('Debes seleccionar una tarifa para previsualizar', 'error');
+      return;
+    }
+
+    const tipo_viaje_name = suffix === '' ? 'tipo_viaje' : (suffix === '_tour' ? 'tipo_viaje_tour' : 'tipo_viaje_alq');
+    const tipo_servicio = $("input[name='" + tipo_viaje_name + "']:checked").val();
+
+    if (!tipo_servicio) {
+      ccAlert('Debes seleccionar un tipo de servicio', 'error');
+      return;
+    }
+
+    // Obtener valores del formulario
+    const n_child = parseInt($("#child" + suffix).val() || "0");
+    const n_adult_s = parseInt($("#adult_s" + suffix).val() || "0");
+    const n_adult_d = parseInt($("#adult_d" + suffix).val() || "0");
+    const n_adult_t_c = parseInt($("#adult_t_c" + suffix).val() || "0");
+
+    const tarifa_child = parseInt(tarifa.attr('child') || "0");
+    const tarifa_adult_s = parseInt(tarifa.attr('adult_s') || "0");
+    const tarifa_adult_d = parseInt(tarifa.attr('adult_d') || "0");
+    const tarifa_adult_t_c = parseInt(tarifa.attr('adult_t_c') || "0");
+
+    const totalchild = n_child * tarifa_child;
+    const totaladult_s = n_adult_s * tarifa_adult_s;
+    const totaladult_d = n_adult_d * tarifa_adult_d;
+    const totaladult_t_c = n_adult_t_c * tarifa_adult_t_c;
+
+    const subtotal = totalchild + totaladult_s + totaladult_d + totaladult_t_c;
+
+    const fecha_entrada = $("#startDate" + suffix).val();
+    const fecha_salida = $("#endDate" + suffix).val();
+
+    if (!fecha_entrada || !fecha_salida) {
+      ccAlert('Debes seleccionar las fechas', 'error');
+      return;
+    }
+
+    const fechaIni = new Date(fecha_entrada);
+    const fechaFin = new Date(fecha_salida);
+    const diff = fechaFin - fechaIni;
+    const noches = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const n_noches = noches === 0 ? 1 : noches;
+    const noche_tour = noches === 0 ? '1 día' : noches + ' noches';
+
+    const total = subtotal * n_noches;
+
+    const acomodo = $("#id_acomodacion" + suffix).val() || 'Sin especificar';
+
+    // Preparar datos para PDF
+    window.cotizacionDataParaPDF = {
+      id: 'BORRADOR',
+      nombre_hotel: nombre_hotel,
+      direccion_hotel: direccion_hotel,
+      pais_hotel: pais_hotel,
+      depto_hotel: depto_hotel,
+      telefono_hotel: telefono_hotel,
+      fecha_expedicion: new Date().toLocaleString('es-ES', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+      }).replace(/(\d+)\/(\d+)\/(\d+),?\s*(\d+:\d+:\d+)/, '$3-$2-$1 $4'),
+      nombre_titular: titular.attr('nombre'),
+      cedula: titular.attr('cedula'),
+      email: titular.attr('email'),
+      telefono: titular.attr('telefono'),
+      nombre_plan: plan.text(),
+      nombre_motivo: motivo.text(),
+      fecha_entrada: fecha_entrada,
+      fecha_salida: fecha_salida,
+      tipo_servicio: tipo_servicio,
+      n_child: n_child,
+      n_adult_s: n_adult_s,
+      n_adult_d: n_adult_d,
+      n_adult_t_c: n_adult_t_c,
+      tarifa_child: tarifa_child,
+      tarifa_adult_s: tarifa_adult_s,
+      tarifa_adult_d: tarifa_adult_d,
+      tarifa_adult_t_c: tarifa_adult_t_c,
+      totalchild: totalchild,
+      totaladult_s: totaladult_s,
+      totaladult_d: totaladult_d,
+      totaladult_t_c: totaladult_t_c,
+      subtotal: subtotal,
+      noche_tour: noche_tour,
+      total: total,
+      acomodo: acomodo,
+      terminos: plan.data('id_terminos') ? 'Ver términos y condiciones en la cotización final' : ''
+    };
+
+    // Generar PDF con marca de agua
+    imprimir_cotizacion('BORRADOR', true);
   }
 
   function limpiarErrores(scope) {
