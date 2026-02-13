@@ -153,6 +153,8 @@ try {
   // 4) Commit
   mysqli_commit($con);
 
+  error_log("guardar_cotizacion - Guardado exitoso: id_principal=$id_principal, ids_detalle=" . json_encode($ids_detalle));
+
   echo json_encode([
     "success" => true,
     "message" => "OK",

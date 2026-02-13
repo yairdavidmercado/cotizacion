@@ -1677,84 +1677,196 @@ session_start();
             $(".loader").css("display", "inline-block")
         },
         success: function(respuesta) {
-          //console.log(respuesta)
+          console.log('Respuesta del servidor:', respuesta)
           $("#brn_modal_print").click()
           let obj = JSON.parse(respuesta)
-          let acomodo = obj["resultado"][0]["acomodo"]
-          let cod_vendedor = obj["resultado"][0]["cod_vendedor"]
-          let fecha_entrada = obj["resultado"][0]["fecha_entrada"]
-          let fecha_expedicion = obj["resultado"][0]["fecha_expedicion"]
-          let fecha_salida = obj["resultado"][0]["fecha_salida"]
           
-          let nombre_plan = obj["resultado"][0]["nombre_plan"]
-          let descripcion_plan = obj["resultado"][0]["descripcion_plan"]
-
-          let n_adult_d = obj["resultado"][0]["n_adult_d"]
-          let n_adult_s = obj["resultado"][0]["n_adult_s"]
-          let n_adult_t_c = obj["resultado"][0]["n_adult_t_c"]
-          let n_child = obj["resultado"][0]["n_child"]
-          let n_infante = obj["resultado"][0]["n_infante"]
-          let noche = obj["resultado"][0]["noche"]
-          let tipo_servicio = obj["resultado"][0]["tipo_servicio"]
-          let nombre_motivo = obj["resultado"][0]["nombre_motivo"]
-          let terminos = obj["resultado"][0]["terminos"]
-          console.log(tipo_servicio)
-            let cedula = ""
-            let ciudad = ""
-            let depto = ""
-            let direccion = ""
-            let email = ""
-            let nombre_titular = ""
-            let pais = ""
-            let telefono = ""
-          $.each(obj["info_titular"], function( index, val ) {
-            cedula = val.cedula
-            ciudad = val.ciudad
-            depto = val.depto
-            direccion = val.direccion
-            email = val.email
-            nombre_titular = val.nombre1+" "+val.nombre2+" "+val.apellido1+" "+val.apellido2
-            pais = val.pais
-            telefono = val.telefono
-
-          })
-            let tarifa_adult_d = 0
-            let tarifa_adult_s = 0
-            let tarifa_adult_t_c = 0
-            let tarifa_child = 0
-            let tarifa_nombre = ""
-
-          $.each(obj["info_tarifa"], function( index, val ) {
-            tarifa_adult_d = parseInt(val.adult_d)
-            tarifa_adult_s = parseInt(val.adult_s)
-            tarifa_adult_t_c = parseInt(val.adult_t_c)
-            tarifa_child = parseInt(val.child)
-            tarifa_nombre = val.nombre
-
-          })
-          let consumo = ""
-          let servicios = ""
-          $.each(obj["info_planes"], function( index, val ) {
-            if (val.tipo == "CONSUMO") {
-              consumo+= "* "+val.nombre+", ";
-            }else if (val.tipo == "SERVICIOS") {
-              servicios+=  "* "+val.nombre+"<br>";
+          console.log('Total cotizaciones recibidas:', obj["resultado"].length)
+          
+          // Procesar TODAS las cotizaciones para el PDF
+          let cotizaciones_para_pdf = [];
+          let info_titular_comun = null;
+          let fecha_expedicion_comun = null;
+          let id_primera = null;
+          
+          $.each(obj["resultado"], function(index, cotizacion) {
+            console.log('Procesando cotización ' + (index + 1) + ':', cotizacion);
+            if (index === 0) {
+              id_primera = cotizacion.id;
+              fecha_expedicion_comun = cotizacion.fecha_expedicion;
             }
-
-          })
-
-          let totalchild = parseInt( n_child )* parseInt( tarifa_child )
-          let totaladult_s = parseInt( n_adult_s )* parseInt( tarifa_adult_s )
-          let totaladult_d = parseInt( n_adult_d )* parseInt( tarifa_adult_d )
-          let totaladult_t_c = parseInt( n_adult_t_c )* parseInt( tarifa_adult_t_c )
-
-          let total_pasajero = parseInt( n_child )+parseInt( n_adult_s )+parseInt( n_adult_d )+parseInt( n_adult_t_c)
-
-          let subtotal = totalchild+totaladult_s+totaladult_d+totaladult_t_c
-          let n_noches = noche == "N/A" ? 1 : parseInt(noche)
-          let noche_tour = noche == "N/A" ? 'tour/alquiler' :'noches'
-
-          let content_fila = ''
+            
+            // Info del titular (común para todas)
+            if (!info_titular_comun && obj["info_titular"]) {
+              $.each(obj["info_titular"], function(idx, val) {
+                info_titular_comun = {
+                  cedula: val.cedula,
+                  email: val.email,
+                  telefono: val.telefono,
+                  nombre_titular: val.nombre1 + " " + val.nombre2 + " " + val.apellido1 + " " + val.apellido2,
+                  ciudad: val.ciudad,
+                  depto: val.depto,
+                  pais: val.pais,
+                  direccion: val.direccion
+                };
+              });
+            }
+            
+            // Info de la tarifa para esta cotización
+            let tarifa_info = {
+              tarifa_adult_d: 0,
+              tarifa_adult_s: 0,
+              tarifa_adult_t_c: 0,
+              tarifa_child: 0,
+              tarifa_nombre: ""
+            };
+            
+            if (cotizacion.info_tarifa) {
+              tarifa_info.tarifa_adult_d = parseInt(cotizacion.info_tarifa.adult_d || 0);
+              tarifa_info.tarifa_adult_s = parseInt(cotizacion.info_tarifa.adult_s || 0);
+              tarifa_info.tarifa_adult_t_c = parseInt(cotizacion.info_tarifa.adult_t_c || 0);
+              tarifa_info.tarifa_child = parseInt(cotizacion.info_tarifa.child || 0);
+              tarifa_info.tarifa_nombre = cotizacion.info_tarifa.nombre || "";
+            }
+            
+            // Info de los planes para esta cotización
+            let consumo = "";
+            let servicios = "";
+            if (cotizacion.info_planes) {
+              $.each(cotizacion.info_planes, function(idx, val) {
+                if (val.tipo == "CONSUMO") {
+                  consumo += "• " + val.nombre + "\n";
+                } else if (val.tipo == "SERVICIOS") {
+                  servicios += "• " + val.nombre + "\n";
+                }
+              });
+            }
+            
+            // Calcular totales
+            let n_child = parseInt(cotizacion.n_child || 0);
+            let n_adult_s = parseInt(cotizacion.n_adult_s || 0);
+            let n_adult_d = parseInt(cotizacion.n_adult_d || 0);
+            let n_adult_t_c = parseInt(cotizacion.n_adult_t_c || 0);
+            
+            let totalchild = n_child * tarifa_info.tarifa_child;
+            let totaladult_s = n_adult_s * tarifa_info.tarifa_adult_s;
+            let totaladult_d = n_adult_d * tarifa_info.tarifa_adult_d;
+            let totaladult_t_c = n_adult_t_c * tarifa_info.tarifa_adult_t_c;
+            
+            let subtotal = totalchild + totaladult_s + totaladult_d + totaladult_t_c;
+            let noche = cotizacion.noche;
+            let n_noches = noche == "N/A" ? 1 : parseInt(noche);
+            let noche_tour = noche == "N/A" ? '1 día' : noche + ' noches';
+            let total = subtotal * n_noches;
+            
+            // Construir objeto de cotización para PDF
+            cotizaciones_para_pdf.push({
+              tipo_cotizacion: cotizacion.tipo_cotizacion,
+              tipo_servicio: cotizacion.tipo_servicio,
+              nombre_plan: cotizacion.nombre_plan,
+              descripcion_plan: cotizacion.descripcion_plan || '',
+              nombre_motivo: cotizacion.nombre_motivo,
+              fecha_entrada: cotizacion.fecha_entrada,
+              fecha_salida: cotizacion.fecha_salida,
+              acomodo: cotizacion.acomodo ? cotizacion.acomodo.replace(/<br\s*\/?>/gi, '\n') : '',
+              consumo: consumo,
+              servicios: servicios,
+              terminos: cotizacion.terminos,
+              n_child: n_child,
+              n_adult_s: n_adult_s,
+              n_adult_d: n_adult_d,
+              n_adult_t_c: n_adult_t_c,
+              tarifa_child: tarifa_info.tarifa_child,
+              tarifa_adult_s: tarifa_info.tarifa_adult_s,
+              tarifa_adult_d: tarifa_info.tarifa_adult_d,
+              tarifa_adult_t_c: tarifa_info.tarifa_adult_t_c,
+              totalchild: totalchild,
+              totaladult_s: totaladult_s,
+              totaladult_d: totaladult_d,
+              totaladult_t_c: totaladult_t_c,
+              subtotal: subtotal,
+              noche_tour: noche_tour,
+              total: total
+            });
+          });
+          
+          console.log('Total cotizaciones para PDF:', cotizaciones_para_pdf.length, cotizaciones_para_pdf)
+          
+          // Guardar datos para generar PDF con pdfmake (múltiples cotizaciones)
+          window.cotizacionDataParaPDF = {
+            id: id_primera,
+            nombre_hotel: nombre_hotel,
+            direccion_hotel: direccion_hotel,
+            pais_hotel: pais_hotel,
+            depto_hotel: depto_hotel,
+            telefono_hotel: telefono_hotel,
+            fecha_expedicion: fecha_expedicion_comun,
+            nombre_titular: info_titular_comun ? info_titular_comun.nombre_titular : '',
+            cedula: info_titular_comun ? info_titular_comun.cedula : '',
+            email: info_titular_comun ? info_titular_comun.email : '',
+            telefono: info_titular_comun ? info_titular_comun.telefono : '',
+            cotizaciones: cotizaciones_para_pdf  // Array de cotizaciones
+          };
+          
+          // Para la visualización en pantalla, usar la primera cotización
+          let primera_cot = obj["resultado"][0];
+          let acomodo = primera_cot.acomodo;
+          let cod_vendedor = primera_cot.cod_vendedor;
+          let fecha_entrada = primera_cot.fecha_entrada;
+          let fecha_expedicion = primera_cot.fecha_expedicion;
+          let fecha_salida = primera_cot.fecha_salida;
+          let nombre_plan = primera_cot.nombre_plan;
+          let descripcion_plan = primera_cot.descripcion_plan;
+          let n_adult_d = parseInt(primera_cot.n_adult_d || 0);
+          let n_adult_s = parseInt(primera_cot.n_adult_s || 0);
+          let n_adult_t_c = parseInt(primera_cot.n_adult_t_c || 0);
+          let n_child = parseInt(primera_cot.n_child || 0);
+          let n_infante = parseInt(primera_cot.n_infante || 0);
+          let noche = primera_cot.noche;
+          let tipo_servicio = primera_cot.tipo_servicio;
+          let tipo_cotizacion = primera_cot.tipo_cotizacion;
+          let nombre_motivo = primera_cot.nombre_motivo;
+          let terminos = primera_cot.terminos;
+          
+          // Info de la tarifa para visualización
+          let tarifa_adult_d = 0, tarifa_adult_s = 0, tarifa_adult_t_c = 0, tarifa_child = 0, tarifa_nombre = "";
+          if (primera_cot.info_tarifa) {
+            tarifa_adult_d = parseInt(primera_cot.info_tarifa.adult_d || 0);
+            tarifa_adult_s = parseInt(primera_cot.info_tarifa.adult_s || 0);
+            tarifa_adult_t_c = parseInt(primera_cot.info_tarifa.adult_t_c || 0);
+            tarifa_child = parseInt(primera_cot.info_tarifa.child || 0);
+            tarifa_nombre = primera_cot.info_tarifa.nombre || "";
+          }
+          
+          // consumo y servicios para visualización
+          let consumo = "", servicios = "";
+          if (primera_cot.info_planes) {
+            $.each(primera_cot.info_planes, function(idx, val) {
+              if (val.tipo == "CONSUMO") consumo += "• " + val.nombre + "\n";
+              else if (val.tipo == "SERVICIOS") servicios += "• " + val.nombre + "\n";
+            });
+          }
+          
+          let totalchild = n_child * tarifa_child;
+          let totaladult_s = n_adult_s * tarifa_adult_s;
+          let totaladult_d = n_adult_d * tarifa_adult_d;
+          let totaladult_t_c = n_adult_t_c * tarifa_adult_t_c;
+          let total_pasajero = n_child + n_adult_s + n_adult_d + n_adult_t_c;
+          let subtotal = totalchild + totaladult_s + totaladult_d + totaladult_t_c;
+          let n_noches = noche == "N/A" ? 1 : parseInt(noche);
+          let noche_tour = noche == "N/A" ? 'tour/alquiler' : 'noches';
+          let total = subtotal * n_noches;
+          
+          // Variables del titular para visualización en modal
+          let nombre_titular = info_titular_comun ? info_titular_comun.nombre_titular : '';
+          let email_titular = info_titular_comun ? info_titular_comun.email : '';
+          let telefono = info_titular_comun ? info_titular_comun.telefono : '';
+          let ciudad = info_titular_comun ? info_titular_comun.ciudad : '';
+          let depto = info_titular_comun ? info_titular_comun.depto : '';
+          let pais = info_titular_comun ? info_titular_comun.pais : '';
+          
+          // Generar tabla según tipo de servicio
+          let content_fila = '';
           if (tipo_servicio == '0') {
             content_fila = `<tbody id="tbody_tarifa_modal">
                               <tr>
@@ -1771,8 +1883,8 @@ session_start();
                                   <td class="table-right">$${puntosDecimales(tarifa_adult_s)}</td>
                                   <td class="table-right">$${puntosDecimales(totaladult_s)}</td>
                               </tr>
-                            </tbody>`
-          }else if (tipo_servicio == '1') {
+                            </tbody>`;
+          } else if (tipo_servicio == '1') {
             content_fila = `<tbody id="tbody_tarifa_modal">
                               <tr>
                                   <td class="table-number">1</td>
@@ -1792,7 +1904,7 @@ session_start();
                                   <td class="table-number">3</td>
                                   <td>Adultos dobles</td>
                                   <td style="text-align: center;">${n_adult_d}</td>
-                                  <td class="table-right">$${puntosDecimales( tarifa_adult_d)}</td>
+                                  <td class="table-right">$${puntosDecimales(tarifa_adult_d)}</td>
                                   <td class="table-right">$${puntosDecimales(totaladult_d)}</td>
                               </tr>
                               <tr>
@@ -1802,8 +1914,8 @@ session_start();
                                   <td class="table-right">$${puntosDecimales(tarifa_adult_t_c)}</td>
                                   <td class="table-right">$${puntosDecimales(totaladult_t_c)}</td>
                               </tr>
-                            </tbody>`
-          }else if (tipo_servicio == '2') {
+                            </tbody>`;
+          } else if (tipo_servicio == '2') {
             content_fila = `<tbody id="tbody_tarifa_modal">
                               <tr>
                                   <td class="table-number">1</td>
@@ -1812,49 +1924,10 @@ session_start();
                                   <td class="table-right">$${puntosDecimales(tarifa_adult_s)}</td>
                                   <td class="table-right">$${puntosDecimales(totaladult_s)}</td>
                               </tr>
-                            </tbody>`
+                            </tbody>`;
           }
-
-          let total = subtotal * parseInt(n_noches)
           
-          // Guardar datos para generar PDF con pdfmake
-          window.cotizacionDataParaPDF = {
-            id: id,
-            nombre_hotel: nombre_hotel,
-            direccion_hotel: direccion_hotel,
-            pais_hotel: pais_hotel,
-            depto_hotel: depto_hotel,
-            telefono_hotel: telefono_hotel,
-            fecha_expedicion: fecha_expedicion,
-            nombre_titular: nombre_titular,
-            cedula: cedula,
-            email: email,
-            telefono: telefono,
-            nombre_plan: nombre_plan,
-            nombre_motivo: nombre_motivo,
-            fecha_entrada: fecha_entrada,
-            fecha_salida: fecha_salida,
-            tipo_servicio: tipo_servicio,
-            n_child: n_child,
-            n_adult_s: n_adult_s,
-            n_adult_d: n_adult_d,
-            n_adult_t_c: n_adult_t_c,
-            tarifa_child: tarifa_child,
-            tarifa_adult_s: tarifa_adult_s,
-            tarifa_adult_d: tarifa_adult_d,
-            tarifa_adult_t_c: tarifa_adult_t_c,
-            totalchild: totalchild,
-            totaladult_s: totaladult_s,
-            totaladult_d: totaladult_d,
-            totaladult_t_c: totaladult_t_c,
-            subtotal: subtotal,
-            noche_tour: noche_tour,
-            total: total,
-            acomodo: acomodo,
-            terminos: terminos
-          };
-          
-          $("#btn_pdf").html(`<button onclick="imprimir_cotizacion('${id}', false)" class="btn btn-danger btn-sm" style="display: flex; align-items: center; gap: 8px;"><i class="fas fa-file-pdf"></i> Descargar PDF</button>`)
+          $("#btn_pdf").html(`<button onclick="imprimir_cotizacion('${id_primera}', false)" class="btn btn-danger btn-sm" style="display: flex; align-items: center; gap: 8px;"><i class="fas fa-file-pdf"></i> Descargar PDF</button>`)
               let fila = `
               <style>
                 .cotizacion-mockup {
@@ -2158,7 +2231,6 @@ session_start();
                   <div class="cotizacion-title-section">
                     <h1 class="cotizacion-title">COTIZACIÓN</h1>
                     <p class="cotizacion-subtitle">Cotización válida por 24 HRS</p>
-                    <span class="cotizacion-badge">Válida por 24 HRS</span>
                   </div>
                   <div class="cotizacion-number">
                     <div class="cotizacion-id">#${id}</div>
@@ -2180,7 +2252,7 @@ session_start();
                     </div>
                     <div class="info-item">
                       <span class="info-label">Email</span>
-                      <span class="info-value">${email}</span>
+                      <span class="info-value">${email_titular}</span>
                     </div>
                     <div class="info-item">
                       <span class="info-label">Procedencia</span>
@@ -2219,6 +2291,19 @@ session_start();
                     </div>
                   </div>
                 </div>
+                <div class="cotizacion-section">
+                  <div class="section-header">
+                    <div class="section-icon">
+                      <i class="fas fa-bed"></i>
+                    </div>
+                    <h2 class="section-title">Acomodación</h2>
+                  </div>
+                  <div class="acomodacion-box">
+                    <div class="acomodacion-label">Plan: ${nombre_plan}</div>
+                    <div style="margin-bottom: 8px;">${acomodo}</div>
+                    <div style="color: #64748b; font-size: 11px;">${descripcion_plan}</div>
+                  </div>
+                </div>
 
                 <div class="cotizacion-section">
                   <div class="section-header">
@@ -2252,21 +2337,6 @@ session_start();
                     </div>
                   </div>
                 </div>
-
-                <div class="cotizacion-section">
-                  <div class="section-header">
-                    <div class="section-icon">
-                      <i class="fas fa-bed"></i>
-                    </div>
-                    <h2 class="section-title">Acomodación</h2>
-                  </div>
-                  <div class="acomodacion-box">
-                    <div class="acomodacion-label">Plan: ${nombre_plan}</div>
-                    <div style="margin-bottom: 8px;">${acomodo}</div>
-                    <div style="color: #64748b; font-size: 11px;">${descripcion_plan}</div>
-                  </div>
-                </div>
-
                 <div class="cotizacion-section">
                   <div class="section-header">
                     <div class="section-icon">
@@ -2482,6 +2552,7 @@ session_start();
   }
 
   function generarPDFConPdfMake(data, id, esBorrador = false) {
+    console.log('Datos para PDF:', data); // Debug
     const watermark = esBorrador ? {
       text: 'BORRADOR',
       color: 'red',
@@ -2492,33 +2563,337 @@ session_start();
       angle: 45
     } : null;
 
-    // Construir filas de la tabla según tipo de servicio
-    let tableBody = [
-      [
-        {text: '#', style: 'tableHeader', alignment: 'center', fillColor: '#f8fafc'},
-        {text: 'Item', style: 'tableHeader', fillColor: '#f8fafc'},
-        {text: 'Cantidad', style: 'tableHeader', alignment: 'center', fillColor: '#f8fafc'},
-        {text: 'Valor unitario', style: 'tableHeader', alignment: 'right', fillColor: '#f8fafc'},
-        {text: 'Total', style: 'tableHeader', alignment: 'right', fillColor: '#f8fafc'}
-      ]
-    ];
+    // Verificar si hay múltiples cotizaciones
+    const cotizaciones = data.cotizaciones || [];
+    let contentArray = [];
+    
+    // Construir contenido para cada cotización
+    if (cotizaciones.length > 0) {
+      // Múltiples cotizaciones
+      cotizaciones.forEach((cot, index) => {
+        const isFirst = index === 0;
+        const isLast = index === cotizaciones.length - 1;
+        
+        // Agregar título de la sección
+        contentArray.push({
+          text: cot.tipo_cotizacion == '1' ? 'Descripción de alojamiento' : (cot.tipo_cotizacion == '2' ? 'Información del Tour' : 'Información del Alquiler'), 
+          style: 'sectionTitle',
+          pageBreak: isFirst ? undefined : 'before'
+        });
+        
+        // Información del plan
+        contentArray.push({
+          columns: [
+            [
+              {text: 'Plan', style: 'label'},
+              {text: cot.nombre_plan, style: 'value', margin: [0, 2, 0, 10]},
+              {text: 'Motivo de viaje', style: 'label'},
+              {text: cot.nombre_motivo, style: 'value', margin: [0, 2, 0, 0]}
+            ],
+            [
+              {text: 'Check-in', style: 'label'},
+              {text: cot.fecha_entrada, style: 'value', margin: [0, 2, 0, 10]},
+              {text: 'Check-out', style: 'label'},
+              {text: cot.fecha_salida, style: 'value', margin: [0, 2, 0, 0]}
+            ]
+          ],
+          columnGap: 30,
+          margin: [0, 10, 0, 25]
+        });
+        
+        // Descripción/Acomodación/Servicios
+        contentArray.push({
+          text: cot.tipo_cotizacion == '1' ? 'Acomodación' : (cot.tipo_cotizacion == '2' ? 'Descripción del Tour' : 'Descripción del Alquiler'), 
+          style: 'sectionTitle'
+        });
+        
+        let descripStack = [];
+        if (cot.descripcion_plan) {
+          descripStack.push({text: cot.descripcion_plan, style: 'descripcionPlan', margin: [0, 10, 0, 15]});
+        }
+        if (cot.consumo && cot.consumo.trim()) {
+          descripStack.push({
+            stack: [
+              {text: 'Consumo:', style: 'label', margin: [0, 0, 0, 5]},
+              {text: cot.consumo.trim(), style: 'consumo', margin: [0, 0, 0, 10]}
+            ]
+          });
+        }
+        if (cot.servicios && cot.servicios.trim()) {
+          descripStack.push({
+            stack: [
+              {text: 'Servicios incluidos:', style: 'label', margin: [0, 0, 0, 5]},
+              {text: cot.servicios.trim(), style: 'servicios', margin: [0, 0, 0, 0]}
+            ]
+          });
+        }
+        
+        contentArray.push({
+          stack: descripStack,
+          margin: [0, 0, 0, 25]
+        });
+        
+        // Tabla de tarifas
+        contentArray.push({text: 'Detalles de la tarifa', style: 'sectionTitle', margin: [0, 0, 0, 15], pageBreak: 'before'});
+        
+        let tableBody = [
+          [
+            {text: '#', style: 'tableHeader', alignment: 'center', fillColor: '#f8fafc'},
+            {text: 'Item', style: 'tableHeader', fillColor: '#f8fafc'},
+            {text: 'Cantidad', style: 'tableHeader', alignment: 'center', fillColor: '#f8fafc'},
+            {text: 'Valor unitario', style: 'tableHeader', alignment: 'right', fillColor: '#f8fafc'},
+            {text: 'Total', style: 'tableHeader', alignment: 'right', fillColor: '#f8fafc'}
+          ]
+        ];
+        
+        if (cot.tipo_servicio == '0') {
+          tableBody.push(
+            ['1', 'Niños (3-11 Años)', {text: cot.n_child, alignment: 'center'}, {text: '$' + puntosDecimales(cot.tarifa_child), alignment: 'right'}, {text: '$' + puntosDecimales(cot.totalchild), alignment: 'right'}],
+            ['2', 'Adultos', {text: cot.n_adult_s, alignment: 'center'}, {text: '$' + puntosDecimales(cot.tarifa_adult_s), alignment: 'right'}, {text: '$' + puntosDecimales(cot.totaladult_s), alignment: 'right'}]
+          );
+        } else if (cot.tipo_servicio == '1') {
+          tableBody.push(
+            ['1', 'Niños', {text: cot.n_child, alignment: 'center'}, {text: '$' + puntosDecimales(cot.tarifa_child), alignment: 'right'}, {text: '$' + puntosDecimales(cot.totalchild), alignment: 'right'}],
+            ['2', 'Adultos normal', {text: cot.n_adult_s, alignment: 'center'}, {text: '$' + puntosDecimales(cot.tarifa_adult_s), alignment: 'right'}, {text: '$' + puntosDecimales(cot.totaladult_s), alignment: 'right'}],
+            ['3', 'Adultos dobles', {text: cot.n_adult_d, alignment: 'center'}, {text: '$' + puntosDecimales(cot.tarifa_adult_d), alignment: 'right'}, {text: '$' + puntosDecimales(cot.totaladult_d), alignment: 'right'}],
+            ['4', 'Adultos triple/Cuádruple', {text: cot.n_adult_t_c, alignment: 'center'}, {text: '$' + puntosDecimales(cot.tarifa_adult_t_c), alignment: 'right'}, {text: '$' + puntosDecimales(cot.totaladult_t_c), alignment: 'right'}]
+          );
+        } else if (cot.tipo_servicio == '2') {
+          tableBody.push(
+            ['1', 'N° Alquiler', {text: cot.n_adult_s, alignment: 'center'}, {text: '$' + puntosDecimales(cot.tarifa_adult_s), alignment: 'right'}, {text: '$' + puntosDecimales(cot.totaladult_s), alignment: 'right'}]
+          );
+        }
+        
+        contentArray.push({
+          table: {
+            headerRows: 1,
+            widths: [35, '*', 60, 90, 90],
+            body: tableBody
+          },
+          layout: {
+            hLineWidth: function (i, node) {
+              return (i === 0 || i === 1 || i === node.table.body.length) ? 1 : 0.5;
+            },
+            vLineWidth: function () { return 0; },
+            hLineColor: function () { return '#e5e7eb'; },
+            paddingLeft: function () { return 8; },
+            paddingRight: function () { return 8; },
+            paddingTop: function () { return 8; },
+            paddingBottom: function () { return 8; }
+          },
+          margin: [0, 0, 0, 20]
+        });
+        
+        // Totales
+        contentArray.push({
+          columns: [
+            {width: '*', text: ''},
+            {
+              width: 220,
+              stack: [
+                {
+                  columns: [
+                    {text: 'Subtotal:', style: 'totalLabel'},
+                    {text: '$' + puntosDecimales(cot.subtotal), style: 'totalValue', alignment: 'right'}
+                  ],
+                  margin: [0, 0, 0, 8]
+                },
+                {
+                  columns: [
+                    {text: 'Noches/Días:', style: 'totalLabel'},
+                    {text: cot.noche_tour, style: 'totalValue', alignment: 'right'}
+                  ],
+                  margin: [0, 0, 0, 8]
+                },
+                {canvas: [{type: 'line', x1: 0, y1: 0, x2: 220, y2: 0, lineWidth: 1, lineColor: '#cbd5e1'}], margin: [0, 8, 0, 8]},
+                {
+                  columns: [
+                    {text: 'TOTAL:', style: 'grandTotalLabel'},
+                    {text: '$' + puntosDecimales(cot.total), style: 'grandTotalValue', alignment: 'right'}
+                  ]
+                }
+              ],
+              margin: [0, 0, 0, 0]
+            }
+          ],
+          margin: [0, 0, 0, 25]
+        });
+        
+        // Términos (solo en la última cotización)
+        if (isLast && cot.terminos) {
+          contentArray.push({
+            pageBreak: 'before',
+            stack: [
+              {text: 'Términos y condiciones', style: 'sectionTitle'},
+              {text: cot.terminos, style: 'terminos', margin: [0, 10, 0, 0]}
+            ]
+          });
+        }
+      });
+    } else {
+      // Formato antiguo (una sola cotización) - mantener compatibilidad
+      const tableBody = [
+        [
+          {text: '#', style: 'tableHeader', alignment: 'center', fillColor: '#f8fafc'},
+          {text: 'Item', style: 'tableHeader', fillColor: '#f8fafc'},
+          {text: 'Cantidad', style: 'tableHeader', alignment: 'center', fillColor: '#f8fafc'},
+          {text: 'Valor unitario', style: 'tableHeader', alignment: 'right', fillColor: '#f8fafc'},
+          {text: 'Total', style: 'tableHeader', alignment: 'right', fillColor: '#f8fafc'}
+        ]
+      ];
 
-    if (data.tipo_servicio == '0') {
-      tableBody.push(
-        ['1', 'Niños (3-11 Años)', {text: data.n_child, alignment: 'center'}, {text: '$' + puntosDecimales(data.tarifa_child), alignment: 'right'}, {text: '$' + puntosDecimales(data.totalchild), alignment: 'right'}],
-        ['2', 'Adultos', {text: data.n_adult_s, alignment: 'center'}, {text: '$' + puntosDecimales(data.tarifa_adult_s), alignment: 'right'}, {text: '$' + puntosDecimales(data.totaladult_s), alignment: 'right'}]
-      );
-    } else if (data.tipo_servicio == '1') {
-      tableBody.push(
-        ['1', 'Niños', {text: data.n_child, alignment: 'center'}, {text: '$' + puntosDecimales(data.tarifa_child), alignment: 'right'}, {text: '$' + puntosDecimales(data.totalchild), alignment: 'right'}],
-        ['2', 'Adultos normal', {text: data.n_adult_s, alignment: 'center'}, {text: '$' + puntosDecimales(data.tarifa_adult_s), alignment: 'right'}, {text: '$' + puntosDecimales(data.totaladult_s), alignment: 'right'}],
-        ['3', 'Adultos dobles', {text: data.n_adult_d, alignment: 'center'}, {text: '$' + puntosDecimales(data.tarifa_adult_d), alignment: 'right'}, {text: '$' + puntosDecimales(data.totaladult_d), alignment: 'right'}],
-        ['4', 'Adultos triple/Cuádruple', {text: data.n_adult_t_c, alignment: 'center'}, {text: '$' + puntosDecimales(data.tarifa_adult_t_c), alignment: 'right'}, {text: '$' + puntosDecimales(data.totaladult_t_c), alignment: 'right'}]
-      );
-    } else if (data.tipo_servicio == '2') {
-      tableBody.push(
-        ['1', 'N° Alquiler', {text: data.n_adult_s, alignment: 'center'}, {text: '$' + puntosDecimales(data.tarifa_adult_s), alignment: 'right'}, {text: '$' + puntosDecimales(data.totaladult_s), alignment: 'right'}]
-      );
+      if (data.tipo_servicio == '0') {
+        tableBody.push(
+          ['1', 'Niños (3-11 Años)', {text: data.n_child, alignment: 'center'}, {text: '$' + puntosDecimales(data.tarifa_child), alignment: 'right'}, {text: '$' + puntosDecimales(data.totalchild), alignment: 'right'}],
+          ['2', 'Adultos', {text: data.n_adult_s, alignment: 'center'}, {text: '$' + puntosDecimales(data.tarifa_adult_s), alignment: 'right'}, {text: '$' + puntosDecimales(data.totaladult_s), alignment: 'right'}]
+        );
+      } else if (data.tipo_servicio == '1') {
+        tableBody.push(
+          ['1', 'Niños', {text: data.n_child, alignment: 'center'}, {text: '$' + puntosDecimales(data.tarifa_child), alignment: 'right'}, {text: '$' + puntosDecimales(data.totalchild), alignment: 'right'}],
+          ['2', 'Adultos normal', {text: data.n_adult_s, alignment: 'center'}, {text: '$' + puntosDecimales(data.tarifa_adult_s), alignment: 'right'}, {text: '$' + puntosDecimales(data.totaladult_s), alignment: 'right'}],
+          ['3', 'Adultos dobles', {text: data.n_adult_d, alignment: 'center'}, {text: '$' + puntosDecimales(data.tarifa_adult_d), alignment: 'right'}, {text: '$' + puntosDecimales(data.totaladult_d), alignment: 'right'}],
+          ['4', 'Adultos triple/Cuádruple', {text: data.n_adult_t_c, alignment: 'center'}, {text: '$' + puntosDecimales(data.tarifa_adult_t_c), alignment: 'right'}, {text: '$' + puntosDecimales(data.totaladult_t_c), alignment: 'right'}]
+        );
+      } else if (data.tipo_servicio == '2') {
+        tableBody.push(
+          ['1', 'N° Alquiler', {text: data.n_adult_s, alignment: 'center'}, {text: '$' + puntosDecimales(data.tarifa_adult_s), alignment: 'right'}, {text: '$' + puntosDecimales(data.totaladult_s), alignment: 'right'}]
+        );
+      }
+      
+      // Contenido formato antiguo
+      contentArray = [
+        // Línea separadora
+        {canvas: [{type: 'line', x1: 0, y1: 0, x2: 495, y2: 0, lineWidth: 1, lineColor: '#e5e7eb'}], margin: [0, 0, 0, 20]},
+        
+        // Información del titular
+        {text: 'Información del titular', style: 'sectionTitle'},
+        {
+          columns: [
+            [
+              {text: 'Nombre', style: 'label'},
+              {text: data.nombre_titular, style: 'value', margin: [0, 2, 0, 10]},
+              {text: 'Cédula', style: 'label'},
+              {text: data.cedula, style: 'value', margin: [0, 2, 0, 0]}
+            ],
+            [
+              {text: 'Email', style: 'label'},
+              {text: data.email, style: 'value', margin: [0, 2, 0, 10]},
+              {text: 'Teléfono', style: 'label'},
+              {text: data.telefono, style: 'value', margin: [0, 2, 0, 0]}
+            ]
+          ],
+          columnGap: 30,
+          margin: [0, 10, 0, 25]
+        },
+        
+        // Inform ación de la reserva
+        {text: data.tipo_cotizacion == '1' ? 'Descripción de alojamiento' : (data.tipo_cotizacion == '2' ? 'Información del Tour' : 'Información del Alquiler'), style: 'sectionTitle'},
+        {
+          columns: [
+            [
+              {text: 'Plan', style: 'label'},
+              {text: data.nombre_plan, style: 'value', margin: [0, 2, 0, 10]},
+              {text: 'Motivo de viaje', style: 'label'},
+              {text: data.nombre_motivo, style: 'value', margin: [0, 2, 0, 0]}
+            ],
+            [
+              {text: 'Check-in', style: 'label'},
+              {text: data.fecha_entrada, style: 'value', margin: [0, 2, 0, 10]},
+              {text: 'Check-out', style: 'label'},
+              {text: data.fecha_salida, style: 'value', margin: [0, 2, 0, 0]}
+            ]
+          ],
+          columnGap: 30,
+          margin: [0, 10, 0, 25]
+        },
+        
+        // Acomodación
+        {text: data.tipo_cotizacion == '1' ? 'Acomodación' : (data.tipo_cotizacion == '2' ? 'Descripción del Tour' : 'Descripción del Alquiler'), style: 'sectionTitle'},
+        {
+          stack: [
+            data.descripcion_plan ? {text: data.descripcion_plan, style: 'descripcionPlan', margin: [0, 10, 0, 15]} : {},
+            data.consumo && data.consumo.trim() ? {
+              stack: [
+                {text: 'Consumo:', style: 'label', margin: [0, 0, 0, 5]},
+                {text: data.consumo.trim(), style: 'consumo', margin: [0, 0, 0, 10]}
+              ]
+            } : {},
+            data.servicios && data.servicios.trim() ? {
+              stack: [
+                {text: 'Servicios incluidos:', style: 'label', margin: [0, 0, 0, 5]},
+                {text: data.servicios.trim(), style: 'servicios', margin: [0, 0, 0, 0]}
+              ]
+            } : {}
+          ],
+          margin: [0, 0, 0, 25]
+        },
+        
+        // Detalles de la tarifa
+        {text: 'Detalles de la tarifa', style: 'sectionTitle', margin: [0, 0, 0, 15], pageBreak: 'before'},
+        {
+          table: {
+            headerRows: 1,
+            widths: [35, '*', 60, 90, 90],
+            body: tableBody
+          },
+          layout: {
+            hLineWidth: function (i, node) {
+              return (i === 0 || i === 1 || i === node.table.body.length) ? 1 : 0.5;
+            },
+            vLineWidth: function () { return 0; },
+            hLineColor: function () { return '#e5e7eb'; },
+            paddingLeft: function () { return 8; },
+            paddingRight: function () { return 8; },
+            paddingTop: function () { return 8; },
+            paddingBottom: function () { return 8; }
+          },
+          margin: [0, 0, 0, 20]
+        },
+        
+        // Totales
+        {
+          columns: [
+            {width: '*', text: ''},
+            {
+              width: 220,
+              stack: [
+                {
+                  columns: [
+                    {text: 'Subtotal:', style: 'totalLabel'},
+                    {text: '$' + puntosDecimales(data.subtotal), style: 'totalValue', alignment: 'right'}
+                  ],
+                  margin: [0, 0, 0, 8]
+                },
+                {
+                  columns: [
+                    {text: 'Noches/Días:', style: 'totalLabel'},
+                    {text: data.noche_tour, style: 'totalValue', alignment: 'right'}
+                  ],
+                  margin: [0, 0, 0, 8]
+                },
+                {canvas: [{type: 'line', x1: 0, y1: 0, x2: 220, y2: 0, lineWidth: 1, lineColor: '#cbd5e1'}], margin: [0, 8, 0, 8]},
+                {
+                  columns: [
+                    {text: 'TOTAL:', style: 'grandTotalLabel'},
+                    {text: '$' + puntosDecimales(data.total), style: 'grandTotalValue', alignment: 'right'}
+                  ]
+                }
+              ],
+              margin: [0, 0, 0, 0]
+            }
+          ],
+          margin: [0, 0, 0, 25]
+        },
+        
+        // Términos y condiciones
+        data.terminos ? {
+          pageBreak: 'before',
+          stack: [
+            {text: 'Términos y condiciones', style: 'sectionTitle'},
+            {text: data.terminos, style: 'terminos', margin: [0, 10, 0, 0]}
+          ]
+        } : {}
+      ];
     }
 
     const docDefinition = {
@@ -2572,127 +2947,30 @@ session_start();
         return null;
       },
       content: [
-        // Línea separadora
-        {canvas: [{type: 'line', x1: 0, y1: 0, x2: 495, y2: 0, lineWidth: 1, lineColor: '#e5e7eb'}], margin: [0, 0, 0, 20]},
-        
-        // Información del titular
-        {text: 'Información del titular', style: 'sectionTitle'},
-        {
-          columns: [
-            [
-              {text: 'Nombre', style: 'label'},
-              {text: data.nombre_titular, style: 'value', margin: [0, 2, 0, 10]},
-              {text: 'Cédula', style: 'label'},
-              {text: data.cedula, style: 'value', margin: [0, 2, 0, 0]}
-            ],
-            [
-              {text: 'Email', style: 'label'},
-              {text: data.email, style: 'value', margin: [0, 2, 0, 10]},
-              {text: 'Teléfono', style: 'label'},
-              {text: data.telefono, style: 'value', margin: [0, 2, 0, 0]}
-            ]
-          ],
-          columnGap: 30,
-          margin: [0, 10, 0, 25]
-        },
-        
-        // Información de la reserva
-        {text: 'Información de la reserva', style: 'sectionTitle'},
-        {
-          columns: [
-            [
-              {text: 'Plan', style: 'label'},
-              {text: data.nombre_plan, style: 'value', margin: [0, 2, 0, 10]},
-              {text: 'Motivo de viaje', style: 'label'},
-              {text: data.nombre_motivo, style: 'value', margin: [0, 2, 0, 0]}
-            ],
-            [
-              {text: 'Check-in', style: 'label'},
-              {text: data.fecha_entrada, style: 'value', margin: [0, 2, 0, 10]},
-              {text: 'Check-out', style: 'label'},
-              {text: data.fecha_salida, style: 'value', margin: [0, 2, 0, 0]}
-            ]
-          ],
-          columnGap: 30,
-          margin: [0, 10, 0, 25]
-        },
-        
-        // Detalles de la tarifa
-        {text: 'Detalles de la tarifa', style: 'sectionTitle', margin: [0, 0, 0, 15]},
-        {
-          table: {
-            headerRows: 1,
-            widths: [35, '*', 60, 90, 90],
-            body: tableBody
-          },
-          layout: {
-            hLineWidth: function (i, node) {
-              return (i === 0 || i === 1 || i === node.table.body.length) ? 1 : 0.5;
-            },
-            vLineWidth: function () {
-              return 0;
-            },
-            hLineColor: function () {
-              return '#e5e7eb';
-            },
-            paddingLeft: function () { return 8; },
-            paddingRight: function () { return 8; },
-            paddingTop: function () { return 8; },
-            paddingBottom: function () { return 8; }
-          },
-          margin: [0, 0, 0, 20]
-        },
-        
-        // Totales
-        {
-          columns: [
-            {width: '*', text: ''},
-            {
-              width: 220,
-              stack: [
-                {
-                  columns: [
-                    {text: 'Subtotal:', style: 'totalLabel'},
-                    {text: '$' + puntosDecimales(data.subtotal), style: 'totalValue', alignment: 'right'}
-                  ],
-                  margin: [0, 0, 0, 8]
-                },
-                {
-                  columns: [
-                    {text: 'Noches/Días:', style: 'totalLabel'},
-                    {text: data.noche_tour, style: 'totalValue', alignment: 'right'}
-                  ],
-                  margin: [0, 0, 0, 8]
-                },
-                {canvas: [{type: 'line', x1: 0, y1: 0, x2: 220, y2: 0, lineWidth: 1, lineColor: '#cbd5e1'}], margin: [0, 8, 0, 8]},
-                {
-                  columns: [
-                    {text: 'TOTAL:', style: 'grandTotalLabel'},
-                    {text: '$' + puntosDecimales(data.total), style: 'grandTotalValue', alignment: 'right'}
-                  ]
-                }
+        // Línea separadora y info del titular (solo para múltiples)
+        ...(cotizaciones.length > 0 ? [
+          {canvas: [{type: 'line', x1: 0, y1: 0, x2: 495, y2: 0, lineWidth: 1, lineColor: '#e5e7eb'}], margin: [0, 0, 0, 20]},
+          {text: 'Información del titular', style: 'sectionTitle'},
+          {
+            columns: [
+              [
+                {text: 'Nombre', style: 'label'},
+                {text: data.nombre_titular, style: 'value', margin: [0, 2, 0, 10]},
+                {text: 'Cédula', style: 'label'},
+                {text: data.cedula, style: 'value', margin: [0, 2, 0, 0]}
               ],
-              margin: [0, 0, 0, 0]
-            }
-          ],
-          margin: [0, 0, 0, 25]
-        },
-        
-        // Acomodación
-        {text: 'Acomodación', style: 'sectionTitle'},
-        {
-          text: data.acomodo,
-          style: 'acomodacion',
-          margin: [0, 10, 0, 25]
-        },
-        
-        // Términos y condiciones
-        data.terminos ? {
-          stack: [
-            {text: 'Términos y condiciones', style: 'sectionTitle'},
-            {text: data.terminos, style: 'terminos', margin: [0, 10, 0, 0]}
-          ]
-        } : {}
+              [
+                {text: 'Email', style: 'label'},
+                {text: data.email, style: 'value', margin: [0, 2, 0, 10]},
+                {text: 'Teléfono', style: 'label'},
+                {text: data.telefono, style: 'value', margin: [0, 2, 0, 0]}
+              ]
+            ],
+            columnGap: 30,
+            margin: [0, 10, 0, 25]
+          }
+        ] : []),
+        ...contentArray
       ],
       footer: function(currentPage, pageCount) {
         return {
@@ -2805,6 +3083,21 @@ session_start();
           fontSize: 10,
           color: '#475569',
           lineHeight: 1.5
+        },
+        descripcionPlan: {
+          fontSize: 10,
+          color: '#475569',
+          lineHeight: 1.5
+        },
+        consumo: {
+          fontSize: 10,
+          color: '#475569',
+          lineHeight: 1.4
+        },
+        servicios: {
+          fontSize: 10,
+          color: '#475569',
+          lineHeight: 1.4
         },
         terminos: {
           fontSize: 9,
@@ -3202,9 +3495,26 @@ session_start();
       }
 
       const result = await GuardarCotizacionFetch(cotizaciones);
-      ccAlert("Cotización(es) guardada(s) correctamente.", "success");
+      
+      const mensajeCotizaciones = cotizaciones.length > 1 
+        ? `Se guardaron ${cotizaciones.length} cotizaciones (${cotizaciones.map(c => c.tipo_cotizacion == 1 ? 'Alojamiento' : c.tipo_cotizacion == 2 ? 'Tour' : 'Alquiler').join(' + ')})`
+        : 'Cotización guardada correctamente';
+      
+      ccAlert(mensajeCotizaciones, "success");
 
-      console.log(result);
+      console.log('Resultado de guardar:', result);
+      console.log('id_principal:', result.id_principal);
+      console.log('ids_detalle:', result.ids_detalle);
+      console.log('Total cotizaciones guardadas:', cotizaciones.length);
+      
+      // Verificar que se guardó correctamente trayendo las cotizaciones guardadas
+      if (result.ids_detalle && result.ids_detalle.length > 0) {
+        console.log('Abriendo cotización recién guardada con ID:', result.ids_detalle[0]);
+        ccAlert(`Abriendo PDF con ${result.ids_detalle.length} cotización(es)...`, "info");
+        setTimeout(() => {
+          traer_cotizacion(result.ids_detalle[0]);
+        }, 1000);
+      }
 
     } catch (e) {
       ccAlert(e.message || "Ocurrió un error al guardar.", "error");
@@ -3218,83 +3528,136 @@ session_start();
       return;
     }
 
-    // Validar que al menos un tipo esté seleccionado y tenga datos
-    let tipoActivo = null;
-    let suffix = '';
+    // Obtener información del titular (común para todas)
+    const titular = $("#id_usuario option:selected");
     
-    if (estaActivoTipo(1) && $("#id_planes").val()) {
-      tipoActivo = 1;
-      suffix = '';
-    } else if (estaActivoTipo(2) && $("#id_planes_tour").val()) {
-      tipoActivo = 2;
-      suffix = '_tour';
-    } else if (estaActivoTipo(3) && $("#id_planes_alq").val()) {
-      tipoActivo = 3;
-      suffix = '_alq';
+    // Construir array de cotizaciones desde los formularios activos
+    const cotizaciones_borrador = [];
+    
+    // Función helper para construir cotización desde formulario
+    function buildCotizacionBorrador(tipo_cot, suffix) {
+      const plan = $("#id_planes" + suffix + " option:selected");
+      const motivo = $("#id_motivo" + suffix + " option:selected");
+      const tarifa = $("#id_tarifa" + suffix + " option:selected");
+      
+      if (!tarifa.val() || !plan.val()) {
+        return null;
+      }
+      
+      const tipo_viaje_name = suffix === '' ? 'tipo_viaje' : (suffix === '_tour' ? 'tipo_viaje_tour' : 'tipo_viaje_alq');
+      const tipo_servicio = $("input[name='" + tipo_viaje_name + "']:checked").val();
+      
+      if (!tipo_servicio) {
+        return null;
+      }
+      
+      const n_child = parseInt($("#child" + suffix).val() || "0");
+      const n_adult_s = parseInt($("#adult_s" + suffix).val() || "0");
+      const n_adult_d = parseInt($("#adult_d" + suffix).val() || "0");
+      const n_adult_t_c = parseInt($("#adult_t_c" + suffix).val() || "0");
+      
+      const tarifa_child = parseInt(tarifa.attr('child') || "0");
+      const tarifa_adult_s = parseInt(tarifa.attr('adult_s') || "0");
+      const tarifa_adult_d = parseInt(tarifa.attr('adult_d') || "0");
+      const tarifa_adult_t_c = parseInt(tarifa.attr('adult_t_c') || "0");
+      
+      const totalchild = n_child * tarifa_child;
+      const totaladult_s = n_adult_s * tarifa_adult_s;
+      const totaladult_d = n_adult_d * tarifa_adult_d;
+      const totaladult_t_c = n_adult_t_c * tarifa_adult_t_c;
+      
+      const subtotal = totalchild + totaladult_s + totaladult_d + totaladult_t_c;
+      
+      const fecha_entrada = $("#startDate" + suffix).val();
+      const fecha_salida = $("#endDate" + suffix).val();
+      
+      if (!fecha_entrada || !fecha_salida) {
+        return null;
+      }
+      
+      const fechaIni = new Date(fecha_entrada);
+      const fechaFin = new Date(fecha_salida);
+      const diff = fechaFin - fechaIni;
+      const noches = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const n_noches = noches === 0 ? 1 : noches;
+      const noche_tour = noches === 0 ? '1 día' : noches + ' noches';
+      
+      const total = subtotal * n_noches;
+      const acomodo = $("#id_acomodacion" + suffix).val() || 'Sin especificar';
+      const descripcion_plan = plan.attr('descripcion') || '';
+      
+      // Construir consumo desde content_detalles_plan
+      let consumo = '';
+      $("#content_detalles_plan" + suffix + " div").each(function() {
+        const texto = $(this).text().trim();
+        if (texto) {
+          consumo += "• " + texto + "\n";
+        }
+      });
+      
+      // Construir servicios desde content_servicios_incluidos
+      let servicios = '';
+      $("#content_servicios_incluidos" + suffix + " div").each(function() {
+        const texto = $(this).text().trim();
+        if (texto) {
+          servicios += "• " + texto + "\n";
+        }
+      });
+      
+      return {
+        tipo_cotizacion: tipo_cot.toString(),
+        tipo_servicio: tipo_servicio,
+        nombre_plan: plan.text(),
+        descripcion_plan: descripcion_plan,
+        nombre_motivo: motivo.text(),
+        fecha_entrada: fecha_entrada,
+        fecha_salida: fecha_salida,
+        acomodo: acomodo,
+        consumo: consumo,
+        servicios: servicios,
+        terminos: '',
+        n_child: n_child,
+        n_adult_s: n_adult_s,
+        n_adult_d: n_adult_d,
+        n_adult_t_c: n_adult_t_c,
+        tarifa_child: tarifa_child,
+        tarifa_adult_s: tarifa_adult_s,
+        tarifa_adult_d: tarifa_adult_d,
+        tarifa_adult_t_c: tarifa_adult_t_c,
+        totalchild: totalchild,
+        totaladult_s: totaladult_s,
+        totaladult_d: totaladult_d,
+        totaladult_t_c: totaladult_t_c,
+        subtotal: subtotal,
+        noche_tour: noche_tour,
+        total: total
+      };
     }
-
-    if (!tipoActivo) {
+    
+    // Procesar Alojamiento
+    if (estaActivoTipo(1)) {
+      const cot = buildCotizacionBorrador(1, '');
+      if (cot) cotizaciones_borrador.push(cot);
+    }
+    
+    // Procesar Tour
+    if (estaActivoTipo(2)) {
+      const cot = buildCotizacionBorrador(2, '_tour');
+      if (cot) cotizaciones_borrador.push(cot);
+    }
+    
+    // Procesar Alquiler
+    if (estaActivoTipo(3)) {
+      const cot = buildCotizacionBorrador(3, '_alq');
+      if (cot) cotizaciones_borrador.push(cot);
+    }
+    
+    if (cotizaciones_borrador.length === 0) {
       ccAlert('Debes completar al menos un formulario de cotización para previsualizar', 'error');
       return;
     }
-
-    // Construir datos para el PDF desde el formulario activo
-    const titular = $("#id_usuario option:selected");
-    const plan = $("#id_planes" + suffix + " option:selected");
-    const motivo = $("#id_motivo" + suffix + " option:selected");
-    const tarifa = $("#id_tarifa" + suffix + " option:selected");
-
-    if (!tarifa.val()) {
-      ccAlert('Debes seleccionar una tarifa para previsualizar', 'error');
-      return;
-    }
-
-    const tipo_viaje_name = suffix === '' ? 'tipo_viaje' : (suffix === '_tour' ? 'tipo_viaje_tour' : 'tipo_viaje_alq');
-    const tipo_servicio = $("input[name='" + tipo_viaje_name + "']:checked").val();
-
-    if (!tipo_servicio) {
-      ccAlert('Debes seleccionar un tipo de servicio', 'error');
-      return;
-    }
-
-    // Obtener valores del formulario
-    const n_child = parseInt($("#child" + suffix).val() || "0");
-    const n_adult_s = parseInt($("#adult_s" + suffix).val() || "0");
-    const n_adult_d = parseInt($("#adult_d" + suffix).val() || "0");
-    const n_adult_t_c = parseInt($("#adult_t_c" + suffix).val() || "0");
-
-    const tarifa_child = parseInt(tarifa.attr('child') || "0");
-    const tarifa_adult_s = parseInt(tarifa.attr('adult_s') || "0");
-    const tarifa_adult_d = parseInt(tarifa.attr('adult_d') || "0");
-    const tarifa_adult_t_c = parseInt(tarifa.attr('adult_t_c') || "0");
-
-    const totalchild = n_child * tarifa_child;
-    const totaladult_s = n_adult_s * tarifa_adult_s;
-    const totaladult_d = n_adult_d * tarifa_adult_d;
-    const totaladult_t_c = n_adult_t_c * tarifa_adult_t_c;
-
-    const subtotal = totalchild + totaladult_s + totaladult_d + totaladult_t_c;
-
-    const fecha_entrada = $("#startDate" + suffix).val();
-    const fecha_salida = $("#endDate" + suffix).val();
-
-    if (!fecha_entrada || !fecha_salida) {
-      ccAlert('Debes seleccionar las fechas', 'error');
-      return;
-    }
-
-    const fechaIni = new Date(fecha_entrada);
-    const fechaFin = new Date(fecha_salida);
-    const diff = fechaFin - fechaIni;
-    const noches = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const n_noches = noches === 0 ? 1 : noches;
-    const noche_tour = noches === 0 ? '1 día' : noches + ' noches';
-
-    const total = subtotal * n_noches;
-
-    const acomodo = $("#id_acomodacion" + suffix).val() || 'Sin especificar';
-
-    // Preparar datos para PDF
+    
+    // Preparar datos para PDF (formato multi-cotización)
     window.cotizacionDataParaPDF = {
       id: 'BORRADOR',
       nombre_hotel: nombre_hotel,
@@ -3315,29 +3678,11 @@ session_start();
       cedula: titular.attr('cedula'),
       email: titular.attr('email'),
       telefono: titular.attr('telefono'),
-      nombre_plan: plan.text(),
-      nombre_motivo: motivo.text(),
-      fecha_entrada: fecha_entrada,
-      fecha_salida: fecha_salida,
-      tipo_servicio: tipo_servicio,
-      n_child: n_child,
-      n_adult_s: n_adult_s,
-      n_adult_d: n_adult_d,
-      n_adult_t_c: n_adult_t_c,
-      tarifa_child: tarifa_child,
-      tarifa_adult_s: tarifa_adult_s,
-      tarifa_adult_d: tarifa_adult_d,
-      tarifa_adult_t_c: tarifa_adult_t_c,
-      totalchild: totalchild,
-      totaladult_s: totaladult_s,
-      totaladult_d: totaladult_d,
-      totaladult_t_c: totaladult_t_c,
-      subtotal: subtotal,
-      noche_tour: noche_tour,
-      total: total,
-      acomodo: acomodo,
-      terminos: plan.data('id_terminos') ? 'Ver términos y condiciones en la cotización final' : ''
+      cotizaciones: cotizaciones_borrador  // Array de cotizaciones
     };
+
+    console.log('Datos para PDF Borrador (múltiples cotizaciones):', window.cotizacionDataParaPDF);
+    console.log('Total cotizaciones en borrador:', cotizaciones_borrador.length);
 
     // Generar PDF con marca de agua
     imprimir_cotizacion('BORRADOR', true);

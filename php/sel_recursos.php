@@ -248,7 +248,43 @@ if ($conn) {
 		$id_titular = '';
 		$id_tarifa = '';
 		$id_plan = '';
+		
+		// Primero obtener el id_principal de la cotización solicitada
+		$query_principal = mysqli_query($conn, "SELECT id_principal FROM cotizacion WHERE id = $parametro1");
+		$id_principal = 0;
+		if ($row_principal = mysqli_fetch_array($query_principal)) {
+			$id_principal = $row_principal['id_principal'];
+		}
+		
+		error_log("traer_cotizacion - ID solicitado: $parametro1, id_principal encontrado: $id_principal");
+		
+		// Si no hay id_principal, significa que es una cotización antigua sin migrar
+		// En este caso, intentamos encontrar otras cotizaciones con el mismo titular y fechas similares
+		// o simplemente retornamos solo esa cotización
+		if ($id_principal <= 0) {
+			error_log("traer_cotizacion - Cotización sin id_principal, intentando encontrar por ID directo");
+			// Intentar obtener la cotización directamente
+			$test_query = mysqli_query($conn, "SELECT id, id_titular, id_principal FROM cotizacion WHERE id = $parametro1");
+			if ($test_row = mysqli_fetch_array($test_query)) {
+				error_log("traer_cotizacion - Cotización encontrada: ID=" . $test_row['id'] . ", id_titular=" . $test_row['id_titular'] . ", id_principal=" . $test_row['id_principal']);
+			} else {
+				error_log("traer_cotizacion - NO se encontró la cotización con ID $parametro1");
+			}
+		}
+		
+		// Ahora buscar TODAS las cotizaciones con el mismo id_principal
+		$where_clause = $id_principal > 0 ? "cotizacion.id_principal = $id_principal" : "cotizacion.id = $parametro1";
+		
+		error_log("traer_cotizacion - WHERE clause: $where_clause");
+		
 		$result = mysqli_query($conn, 	"SELECT cotizacion.*, 
+										COALESCE(cotizacion_master.id_titular, cotizacion.id_titular) as id_titular,
+										COALESCE(cotizacion_master.id_hotel, cotizacion.id_hotel) as id_hotel,
+										COALESCE(cotizacion_master.cod_vendedor, cotizacion.cod_vendedor) as cod_vendedor,
+										COALESCE(cotizacion_master.estado, 1) as estado,
+										COALESCE(cotizacion_master.id_autor, cotizacion.id_autor) as id_autor,
+										COALESCE(cotizacion_master.created_at, cotizacion.fecha_expedicion) as created_at,
+										COALESCE(cotizacion_master.update_at, cotizacion.fecha_crea) as update_at,
 										(SELECT nombre FROM motivos WHERE motivos.id = cotizacion.id_motivo) AS nombre_motivo,
 										(SELECT nombre FROM planes WHERE planes.id = cotizacion.id_plan) AS nombre_plan,
 										(SELECT descripcion FROM planes WHERE planes.id = cotizacion.id_plan) AS descripcion_plan,
@@ -260,10 +296,18 @@ if ($conn) {
 										(SELECT id FROM vaucher WHERE vaucher.id_cotizacion = cotizacion.id AND vaucher.activo = true order by id desc limit 1) as id_vaucher,
 										(SELECT fecha_crea FROM vaucher WHERE vaucher.id_cotizacion = cotizacion.id AND vaucher.activo = true order by id desc limit 1) as vaucher_fecha_crea
 										FROM cotizacion 
-										WHERE id = $parametro1;");
-		if(mysqli_num_rows($result) > 0)
+										LEFT JOIN cotizacion_master ON cotizacion.id_principal = cotizacion_master.id
+										WHERE $where_clause
+										ORDER BY cotizacion.tipo_cotizacion ASC;");
+		
+		$num_rows = mysqli_num_rows($result);
+		error_log("traer_cotizacion - Total cotizaciones encontradas: $num_rows");
+		
+		if($num_rows > 0)
 		{	
 									$response["resultado"] = array();
+									$id_titular_comun = 0; // Para obtener info del titular una sola vez
+									
 									while ($row = mysqli_fetch_array($result)) {
 									$datos = array();
 
@@ -281,6 +325,7 @@ if ($conn) {
 										$datos['id_motivo'] = $row["id_motivo"];
 										$datos['noche'] = $row["noche"];
 										$datos['tipo_servicio'] = $row["tipo_servicio"];
+										$datos['tipo_cotizacion'] = $row["tipo_cotizacion"];
 										$datos['acomodo'] = nl2br($row["acomodo"]);
 										$datos['fecha_expedicion'] = $row["fecha_expedicion"];
 										$datos['fecha_entrada'] = $row["fecha_entrada"];
@@ -295,18 +340,50 @@ if ($conn) {
 										$datos['n_reserva'] = $row["n_reserva"];
 										$datos['vaucher_fecha_crea'] = $row["vaucher_fecha_crea"];
 
-										$id_titular = $row["id_titular"] == "" ? "0": $row["id_titular"];
+										if ($id_titular_comun == 0) {
+											$id_titular_comun = $row["id_titular"] == "" ? 0 : (int)$row["id_titular"];
+										}
+										
 										$id_tarifa = $row["id_tarifa"] == "" ? "0":  $row["id_tarifa"];
 										$id_plan = $row["id_plan"] == "" ? "0": $row["id_plan"];
+										
+										// Obtener info_tarifa para esta cotización
+										$info_tarifa_query = mysqli_query($conn, "SELECT * FROM tarifas WHERE id = $id_tarifa;");
+										$datos['info_tarifa'] = array();
+										if ($row_tarifa = mysqli_fetch_array($info_tarifa_query)) {
+											$datos['info_tarifa'] = array(
+												"id" => $row_tarifa["id"],
+												"nombre" => $row_tarifa["nombre"],
+												"child" => $row_tarifa["child"],
+												"adult_s" => $row_tarifa["adult_s"],
+												"adult_d" => $row_tarifa["adult_d"],
+												"adult_t_c" => $row_tarifa["adult_t_c"],
+												"noches" => $row_tarifa["noches"]
+											);
+										}
+										
+										// Obtener info_planes para esta cotización
+										$info_planes_query = mysqli_query($conn, "SELECT productos.* FROM tipo_plan 
+																			INNER JOIN productos ON tipo_plan.id_producto = productos.id 
+																			WHERE id_plan = $id_plan;");
+										$datos['info_planes'] = array();
+										while ($row_plan = mysqli_fetch_array($info_planes_query)) {
+											$datos['info_planes'][] = array(
+												"id" => $row_plan["id"],
+												"nombre" => $row_plan["nombre"],
+												"tipo" => $row_plan["tipo"]
+											);
+										}
 										
 										// push single product into final response array
 										array_push($response["resultado"], $datos);
 									}
 
+										// Info del titular (común para todas las cotizaciones)
 										$info_titular = mysqli_query($conn, "SELECT *, 
 																			(SELECT paisnombre FROM pais WHERE pais.id = id_pais) as pais, 
 																			(SELECT estadonombre FROM estado WHERE estado.id = id_depto) as depto 
-																			FROM usuarios WHERE id = $id_titular ;");
+																			FROM usuarios WHERE id = $id_titular_comun ;");
 										$datos_titular = array();
 										if(mysqli_num_rows($info_titular) > 0)
 										{							$response["info_titular"] = array();
@@ -331,44 +408,6 @@ if ($conn) {
 																	}
 
 										}
-
-										$info_tarifa = mysqli_query($conn, "SELECT * FROM tarifas WHERE id = $id_tarifa;");
-										$datos_tarifa = array();
-										if(mysqli_num_rows($info_tarifa) > 0)
-										{							$response["info_tarifa"] = array();
-																	while ($row = mysqli_fetch_array($info_tarifa)) {
-
-																		$datos_tarifa["id"] 			= $row["id"];
-																		$datos_tarifa["nombre"]		= $row["nombre"];
-																		$datos_tarifa["child"]			= $row["child"];
-																		$datos_tarifa["adult_s"] 		= $row["adult_s"];
-																		$datos_tarifa["adult_d"] 		= $row["adult_d"];
-																		$datos_tarifa["adult_t_c"] 	= $row["adult_t_c"];
-																		$datos_tarifa["noches"] 		= $row["noches"];
-																		
-																		// push single product into final response array
-																		array_push($response["info_tarifa"], $datos_tarifa);
-																	}
-
-										}
-
-										$info_planes = mysqli_query($conn, "SELECT productos.* FROM tipo_plan 
-																			INNER JOIN productos ON tipo_plan.id_producto = productos.id 
-																			WHERE id_plan = $id_plan;");
-										$datos_planes = array();
-										if(mysqli_num_rows($info_planes) > 0)
-										{							$response["info_planes"] = array();
-																	while ($row = mysqli_fetch_array($info_planes)) {
-
-																		$datos_planes["id"] 			= $row["id"];
-																		$datos_planes["nombre"]		= $row["nombre"];
-																		$datos_planes["tipo"]			= $row["tipo"];
-																		
-																		// push single product into final response array
-																		array_push($response["info_planes"], $datos_planes);
-																	}
-
-										}
 										
 									$response["success"] = true;
 									echo json_encode($response);
@@ -381,11 +420,18 @@ if ($conn) {
 		}
 	}else if ($codigo == "traer_tabla_cotizacion") {//titulares
 		$result = mysqli_query($conn, 	"SELECT cotizacion.*, 
-										(SELECT CONCAT(nombre1, ' ', nombre2, ' ', apellido1, ' ', apellido2) FROM usuarios WHERE usuarios.id = cotizacion.id_titular) AS nombre_titular,
-										(SELECT cedula FROM usuarios WHERE usuarios.id = cotizacion.id_titular) AS cedula_titular,
+										cotizacion_master.id_titular,
+										cotizacion_master.id_hotel,
+										cotizacion_master.cod_vendedor,
+										cotizacion_master.estado,
+										cotizacion_master.created_at as fecha_expedicion,
+										(SELECT CONCAT(nombre1, ' ', nombre2, ' ', apellido1, ' ', apellido2) FROM usuarios WHERE usuarios.id = cotizacion_master.id_titular) AS nombre_titular,
+										(SELECT cedula FROM usuarios WHERE usuarios.id = cotizacion_master.id_titular) AS cedula_titular,
 										(SELECT nombre FROM motivos WHERE motivos.id = cotizacion.id_motivo) AS nombre_motivo,
 										(SELECT nombre FROM planes WHERE planes.id = cotizacion.id_plan) AS nombre_plan
-										FROM cotizacion WHERE cotizacion.id_hotel = $id_hotel $condicion");
+										FROM cotizacion 
+										INNER JOIN cotizacion_master ON cotizacion.id_principal = cotizacion_master.id
+										WHERE cotizacion_master.id_hotel = $id_hotel $condicion");
 		$data = array();										
 		if(mysqli_num_rows($result) > 0)
 		{	
@@ -516,8 +562,13 @@ if ($conn) {
 		}
 	}else if ($codigo == "traer_tabla_vaucher") {//titulares
 		$result = mysqli_query($conn, 	"SELECT cotizacion.*, 
-										(SELECT CONCAT(nombre1, ' ', nombre2, ' ', apellido1, ' ', apellido2) FROM usuarios WHERE usuarios.id = cotizacion.id_titular) AS nombre_titular,
-										(SELECT cedula FROM usuarios WHERE usuarios.id = cotizacion.id_titular) AS cedula_titular,
+										cotizacion_master.id_titular,
+										cotizacion_master.id_hotel,
+										cotizacion_master.cod_vendedor,
+										cotizacion_master.estado,
+										cotizacion_master.created_at as fecha_expedicion,
+										(SELECT CONCAT(nombre1, ' ', nombre2, ' ', apellido1, ' ', apellido2) FROM usuarios WHERE usuarios.id = cotizacion_master.id_titular) AS nombre_titular,
+										(SELECT cedula FROM usuarios WHERE usuarios.id = cotizacion_master.id_titular) AS cedula_titular,
 										(SELECT nombre FROM motivos WHERE motivos.id = cotizacion.id_motivo) AS nombre_motivo,
 										(SELECT nombre FROM planes WHERE planes.id = cotizacion.id_plan) AS nombre_plan,
 										(SELECT reserva FROM vaucher  WHERE vaucher.id_cotizacion = cotizacion.id AND vaucher.activo = true LIMIT 1) as n_voucher,
@@ -525,7 +576,9 @@ if ($conn) {
 										(SELECT SUM(vaucher.deposito) FROM vaucher  WHERE vaucher.id_cotizacion = cotizacion.id AND vaucher.activo = true) as deposito,
 										(SELECT id FROM vaucher WHERE vaucher.id_cotizacion = cotizacion.id AND vaucher.activo = true order by id desc limit 1) as id_vaucher,
 										(SELECT fecha_crea FROM vaucher WHERE vaucher.id_cotizacion = cotizacion.id AND vaucher.activo = true order by id desc limit 1) as vaucher_fecha_crea
-										FROM cotizacion WHERE cotizacion.id_hotel = $id_hotel $condicion");
+										FROM cotizacion 
+										INNER JOIN cotizacion_master ON cotizacion.id_principal = cotizacion_master.id
+										WHERE cotizacion_master.id_hotel = $id_hotel $condicion");
 		$data = array();										
 		if(mysqli_num_rows($result) > 0)
 		{	
