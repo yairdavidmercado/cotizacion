@@ -1078,7 +1078,7 @@ session_start();
         ],
         firstDay: 1
       },
-      minDate: moment(), // 👈 hoy o fechas futuras
+      //minDate: moment(), // 👈 hoy o fechas futuras
     });
     $("#menu_inicio").removeClass("active");
     //traer_hotel()
@@ -2468,7 +2468,7 @@ session_start();
           } else if (tipo == 1) {
             cambiarModoDateRange(false, suffix)
           } else if (tipo == 2) {
-            cambiarModoDateRange(true, suffix) // Alquiler usa fecha única (pasadía)
+            cambiarModoDateRange(false, suffix)
           }
           mostrarOpciones(tipo, suffix)
           $.each(obj["resultado"], function( index, val ) {
@@ -3249,7 +3249,7 @@ session_start();
       singleDatePicker: esUnaFecha,
       showDropdowns: true,
       autoUpdateInput: false,
-      minDate: moment(),
+      //minDate: moment(),
       locale: {
         format: "YYYY-MM-DD",
         applyLabel: "Aplicar",
