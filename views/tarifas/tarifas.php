@@ -54,8 +54,12 @@ if ($conn) {
 			echo json_encode($response);
 		}
 	}else if ($codigo == "traer_tarifas_id") {
-		$result = mysqli_query($conn, 	"SELECT *, id_plan as nombre_plan 
-										FROM tarifas WHERE id_hotel = $parametro1 AND id = $parametro2;");
+		$id_hotel_param = intval($parametro1);
+		$id_tarifa_param = intval($parametro2);
+		$result = mysqli_query($conn, 	"SELECT tarifas.*, tarifas.id_plan as nombre_plan, planes.id_tipo_plan as id_tipo_plan
+									FROM tarifas
+									LEFT JOIN planes ON planes.id = tarifas.id_plan
+									WHERE tarifas.id_hotel = $id_hotel_param AND tarifas.id = $id_tarifa_param;");
 		$data = array();
 		if(mysqli_num_rows($result) > 0)
 		{							
@@ -72,6 +76,7 @@ if ($conn) {
 									$datos["adult_t_c"] 	= $row["adult_t_c"];
 									$datos["descripcion"] 	= $row["descripcion"];
 									$datos["nombre_plan"] 	= $row["nombre_plan"];
+									$datos["id_tipo_plan"]	= $row["id_tipo_plan"];
 									$datos["fecha_crea"] 	= $row["fecha_crea"];
 									$datos["noches"] 		= $row["noches"];
 										

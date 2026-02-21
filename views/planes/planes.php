@@ -156,6 +156,7 @@ if ($conn) {
 									
 									$datos["id"]					= $row["id"];
 									$datos["nombre"]				= $row["nombre"];
+									$datos["id_tipo_plan"]			= $row["id_tipo_plan"];
 									$datos["id_terminos"]			= $row["id_terminos"];
 									$datos["descripcion"]			= $row["descripcion"];
 									$datos["fecha_crea"] 			= $row["fecha_crea"];

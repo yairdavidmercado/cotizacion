@@ -144,6 +144,27 @@ session_start();
                   </div>
                 </div>
                 <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label><span>Tipo de plan</span></label>
+                    <br>
+                    <div class="form-check-inline">
+                      <label class="form-check-label">
+                        <input type="radio" name="tipo_plan_tarifa" onclick="onTipoPlanChange(this.value)" required value="1" class="form-check-input" >Alojamiento
+                      </label>
+                    </div>
+                    <div class="form-check-inline">
+                      <label class="form-check-label">
+                        <input type="radio" name="tipo_plan_tarifa" onclick="onTipoPlanChange(this.value)" required value="2" class="form-check-input" >Tour
+                      </label>
+                    </div>
+                    <div class="form-check-inline">
+                      <label class="form-check-label">
+                        <input type="radio" name="tipo_plan_tarifa" onclick="onTipoPlanChange(this.value)" required value="3" class="form-check-input" >Alquiler
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
                     <div class="col-md-6 mb-3">
                       <label for="firstName">Planes</label>
                       <select style="width:100%" name="select_plan" required id="select_plan" class="form-control form-control-sm terminos_condiciones">
@@ -251,6 +272,27 @@ session_start();
           </div>
           <div class="row">
             <div class="col-md-6 mb-3">
+              <label><span>Tipo de plan</span></label>
+              <br>
+              <div class="form-check-inline">
+                <label class="form-check-label">
+                  <input type="radio" name="tipo_plan_tarifa_edit" onclick="onTipoPlanChange(this.value, 1)" id="tipo_plan_tarifa_edit1" required value="1" class="form-check-input" >Alojamiento
+                </label>
+              </div>
+              <div class="form-check-inline">
+                <label class="form-check-label">
+                  <input type="radio" name="tipo_plan_tarifa_edit" onclick="onTipoPlanChange(this.value, 1)" id="tipo_plan_tarifa_edit2" required value="2" class="form-check-input" >Tour
+                </label>
+              </div>
+              <div class="form-check-inline">
+                <label class="form-check-label">
+                  <input type="radio" name="tipo_plan_tarifa_edit" onclick="onTipoPlanChange(this.value, 1)" id="tipo_plan_tarifa_edit3" required value="3" class="form-check-input" >Alquiler
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-3">
               <label for="firstName">Planes</label>
               <select style="width:100%" name="select_plan_edit" required id="select_plan_edit" class="form-control form-control-sm terminos_condiciones">
                 <option value="">Seleccionar</option>
@@ -313,10 +355,19 @@ $(function() {
   $("#menu_tarifas").addClass("active");
   $("#menu_nombre_hotel").addClass("active");
   //traer_hotel()
-  traer_planes()
   $(".loader").css("display", "none")
 
 });
+
+function onTipoPlanChange(idTipoPlan, edit) {
+  let isEdit = edit === 1 || edit === '1'
+  if (isEdit) {
+    $("#select_plan_edit").val("").change()
+  } else {
+    $("#select_plan").val("").change()
+  }
+  traer_planes(idTipoPlan, "", isEdit)
+}
 
 function mostrarOpciones(id, params, edit) {
   let campo1 = ''
@@ -414,12 +465,12 @@ function GuardarTarifas() {
     
 }
 
-  function traer_planes() {
-      let values = { 
-            codigo: 'traer_planes',
-            parametro1: id_hotel,
-            parametro2: ""
-      };
+    function traer_planes(idTipoPlan, idPlanSeleccionado, isEdit) {
+    let values = { 
+      codigo: 'traer_planes',
+      parametro1: id_hotel,
+      parametro2: idTipoPlan ? idTipoPlan : ""
+    };
       $.ajax({
         type : 'POST',
         data: values,
@@ -432,12 +483,31 @@ function GuardarTarifas() {
           let obj = JSON.parse(respuesta)
           let fila = ''
           fila += ''
-          $.each(obj["resultado"], function( index, val ) {
-            fila += `<option value='${val.id}'>${val.nombre}</option>`
-          });
+          if (obj["resultado"]) {
+            $.each(obj["resultado"], function( index, val ) {
+              fila += `<option value='${val.id}'>${val.nombre}</option>`
+            });
+          }
 
           $("#select_plan").html('<option value="">Seleccionar</option>'+fila)
           $("#select_plan_edit").html('<option value="">Seleccionar</option>'+fila)
+
+          if (idPlanSeleccionado) {
+            if (isEdit) {
+              $("#select_plan_edit").val(idPlanSeleccionado).change()
+            } else {
+              $("#select_plan").val(idPlanSeleccionado).change()
+            }
+          }
+
+          if ($("#select_plan").hasClass("select2-hidden-accessible")) {
+            $("#select_plan").select2('destroy');
+          }
+          if ($("#select_plan_edit").hasClass("select2-hidden-accessible")) {
+            $("#select_plan_edit").select2('destroy');
+          }
+          $("#select_plan").select2();
+          $("#select_plan_edit").select2();
           
         },
         error: function() {
@@ -445,10 +515,6 @@ function GuardarTarifas() {
           console.log("No se ha podido obtener la información");
         }
       });
-
-      $("#select_plan").select2();
-      $("#select_plan_edit").select2();
-    
   }
 
 
@@ -477,6 +543,7 @@ function GuardarTarifas() {
       $("#descripcion").val("")
       $("#select_plan").val("").change()
       $("input:radio[name='tipo_hospedaje']").prop('checked',false);
+        $("input:radio[name='tipo_plan_tarifa']").prop('checked',false);
   }
 
 
@@ -568,7 +635,14 @@ function GuardarTarifas() {
             $("#adult_t_c_edit").val(val.adult_t_c)
             $("#id_plan_edit").val(val.id_plan)
             $("#descripcion_edit").val(val.descripcion)
-            $("#select_plan_edit").val(val.nombre_plan).change()
+
+            $("input:radio[name='tipo_plan_tarifa_edit']").prop('checked', false);
+            if (val.id_tipo_plan && val.id_tipo_plan != '0') {
+              $("input:radio[name='tipo_plan_tarifa_edit'][value='"+val.id_tipo_plan+"']").prop('checked', true);
+              traer_planes(val.id_tipo_plan, val.nombre_plan, true)
+            } else {
+              $("#select_plan_edit").val(val.nombre_plan).change()
+            }
             var values = [{campo1: val.child, campo2: val.adult_s, campo3: val.adult_d, campo4: val.adult_t_c}]
             if (val.noches == 0) {
               mostrarOpciones(val.noches, values, 1)

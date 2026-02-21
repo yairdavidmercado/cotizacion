@@ -132,6 +132,15 @@ session_start();
                         <input type="text" autocomplete="off" class="form-control " name="nombre_planes" id="nombre_planes" placeholder="" required>                    
                       </div>
                       <div class="col-md-12 mb-3">
+                        <label for="firstName">Tipo de plan</label>
+                        <select style="width:100%" name="select_tipo_plan" required id="select_tipo_plan" class="form-control form-control-sm terminos_condiciones">
+                          <option value="">Seleccionar</option>
+                          <option value="1">Alojamiento</option>
+                          <option value="2">Tour</option>
+                          <option value="3">Alquiler</option>
+                        </select>
+                      </div>
+                      <div class="col-md-12 mb-3">
                         <label for="firstName">Términos y condiciones</label>
                         <select style="width:100%" name="select_terminos_condiciones" required id="select_terminos_condiciones" class="form-control form-control-sm terminos_condiciones">
                           <option value="">Seleccionar</option>
@@ -289,6 +298,15 @@ session_start();
                   <input type="text" autocomplete="off" class="form-control " name="nombre_planes_edit" id="nombre_planes_edit" placeholder="" required>                    
                 </div>
                 <div class="col-md-12 mb-3">
+                  <label for="firstName">Tipo de plan</label>
+                  <select style="width:100%" name="select_tipo_plan_edit" required id="select_tipo_plan_edit" class="form-control form-control-sm terminos_condiciones">
+                    <option value="">Seleccionar</option>
+                    <option value="1">Alojamiento</option>
+                    <option value="2">Tour</option>
+                    <option value="3">Alquiler</option>
+                  </select>
+                </div>
+                <div class="col-md-12 mb-3">
                   <label for="firstName">Términos y condiciones</label>
                   <select style="width:100%" name="select_terminos_condiciones_edit" required id="select_terminos_condiciones_edit" class="form-control form-control-sm terminos_condiciones">
                     <option value="">Seleccionar</option>
@@ -443,6 +461,7 @@ function GuardarPlanes() {
     //let formData = new FormData(form)
     let values = {
         nombre :  $("#nombre_planes").val(),
+        id_tipo_plan: $("#select_tipo_plan").val(),
         id_terminos: $("#select_terminos_condiciones").val(),
         descripcion :  $("#descripcion_planes").val(),
         ids: ids_productos,
@@ -457,7 +476,6 @@ function GuardarPlanes() {
     },
     success: function(respuesta) {
       $(".loader").css("display", "none")
-      console.log(respuesta)
       let obj = JSON.parse(respuesta)
       if (obj.success) {
         
@@ -495,7 +513,6 @@ function GuardarPlanes() {
     },
     success: function(respuesta) {
       $(".loader").css("display", "none")
-      console.log(respuesta)
       let obj = JSON.parse(respuesta)
       if (obj.success) {
         
@@ -652,6 +669,8 @@ function GuardarPlanes() {
   function limpiar_formulario_planes(){
     
     $("#nombre_planes").val("").change()
+    $("#select_tipo_plan").val("").change()
+    $("#select_tipo_plan_edit").val("").change()
     $("#select_terminos_condiciones").val("").change()
     $("#select_terminos_condiciones_edit").val("").change()
     $("#descripcion_planes").val("").change()
@@ -683,7 +702,6 @@ function GuardarPlanes() {
           parametro2: "",
         },
         "dataSrc": function (data) {	
-          console.log(data)
           return data.data
         }
 
@@ -734,7 +752,6 @@ function GuardarPlanes() {
             parametro2: "",
           },
 					"dataSrc": function (data) {	
-            console.log(data)
 						return data.data
 					}
 
@@ -810,7 +827,6 @@ function GuardarPlanes() {
             $(".loader").css("display", "inline-block")
         },
         success: function(respuesta) {
-          console.log(respuesta)
           $(".loader").css("display", "none")
           let obj = JSON.parse(respuesta)
           let fila = ''
@@ -821,6 +837,7 @@ function GuardarPlanes() {
             $("#nombre_planes_edit").val(val.nombre).change()
             $("#descripcion_planes_edit").val(val.descripcion).change()
             $("#select_terminos_condiciones_edit").val(val.id_terminos).change()
+            $("#select_tipo_plan_edit").val(val.id_tipo_plan).change()
           })
           $.each(obj["info_productos"], function( index, val ) {
             if (val.checked == 1) {
@@ -893,6 +910,7 @@ function GuardarPlanes() {
     let values = {
         id :  $("#id_planes_edit").val(),
         nombre :  $("#nombre_planes_edit").val(),
+        id_tipo_plan: $("#select_tipo_plan_edit").val(),
         id_terminos: $("#select_terminos_condiciones_edit").val(),
         descripcion :  $("#descripcion_planes_edit").val(),
         ids: ids_productos,
@@ -907,7 +925,6 @@ function GuardarPlanes() {
     },
     success: function(respuesta) {
       $(".loader").css("display", "none")
-      console.log(respuesta)
       let obj = JSON.parse(respuesta)
       if (obj.success) {
         traer_tabla_planes()
@@ -941,7 +958,6 @@ function traer_productos_id(id) {
             $(".loader").css("display", "inline-block")
         },
         success: function(respuesta) {
-          console.log(respuesta)
           $(".loader").css("display", "none")
           let obj = JSON.parse(respuesta)
           let fila = ''
@@ -994,7 +1010,6 @@ function traer_productos_id(id) {
     },
     success: function(respuesta) {
       $(".loader").css("display", "none")
-      console.log(respuesta)
       let obj = JSON.parse(respuesta)
       if (obj.success) {
         $('#close_modal_productos_edit').click()
@@ -1030,7 +1045,6 @@ function traer_productos_id(id) {
     },
     success: function(respuesta) {
       $(".loader").css("display", "none")
-      console.log(respuesta)
       let obj = JSON.parse(respuesta)
       if (obj.success) {
         alert(obj.message)
@@ -1066,7 +1080,6 @@ function EliminarProductos(id) {
     },
     success: function(respuesta) {
       $(".loader").css("display", "none")
-      console.log(respuesta)
       let obj = JSON.parse(respuesta)
       if (obj.success) {
         alert(obj.message)

@@ -191,7 +191,13 @@ if ($conn) {
 				echo json_encode($response);
 		}
 	}else if ($codigo == "traer_planes") {//titulares
-		$result = mysqli_query($conn, 	"SELECT * FROM planes WHERE id_hotel = $parametro1 AND activo = true;");
+		$id_hotel_param = intval($parametro1);
+		$id_tipo_plan_param = intval($parametro2);
+		$filtro_tipo_plan = '';
+		if ($id_tipo_plan_param > 0) {
+			$filtro_tipo_plan = " AND id_tipo_plan = $id_tipo_plan_param ";
+		}
+		$result = mysqli_query($conn, 	"SELECT * FROM planes WHERE id_hotel = $id_hotel_param AND activo = true $filtro_tipo_plan;");
 		if(mysqli_num_rows($result) > 0)
 		{	
 									$response["resultado"] = array();

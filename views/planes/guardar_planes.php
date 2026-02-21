@@ -7,6 +7,7 @@
     $descripcion = $_POST["descripcion"]; 
     $id_hotel = $_POST["id_hotel"];
     $ids = $_POST["ids"];
+    $id_tipo_plan = $_POST["id_tipo_plan"];
     $id_autor = $_SESSION['id'];
          
         $response = [];
@@ -18,19 +19,19 @@
         }
         // Insert some values
         try{
-             $result = mysqli_query($con, "INSERT INTO planes (nombre, 
-                                                                    descripcion, 
-                                                                    id_hotel,
-                                                                    id_terminos,
-                                                                    id_autor )
-                                                            VALUES ('$nombre', 
-                                                                    '$descripcion', 
-                                                                    $id_hotel,
-                                                                    $id_terminos,
-                                                                    $id_autor);");
-
+                 $result = mysqli_query($con, "INSERT INTO planes (nombre, 
+                                                descripcion, 
+                                                id_hotel,
+                                                id_terminos,
+                                                id_autor,
+                                                id_tipo_plan )
+                                            VALUES ('$nombre', 
+                                                '$descripcion', 
+                                                $id_hotel,
+                                                $id_terminos,
+                                                $id_autor,
+                                                $id_tipo_plan);");
                 //var_dump($result);
-                mysqli_query($con, $result);
                 if (mysqli_insert_id($con) > 0) {
 
                     $response["success"] = true;

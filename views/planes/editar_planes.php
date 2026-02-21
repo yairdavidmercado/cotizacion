@@ -4,6 +4,7 @@
 
     $id = $_POST["id"] == "" ? "0": $_POST["id"] ;
     $nombre = $_POST["nombre"];
+    $id_tipo_plan = isset($_POST["id_tipo_plan"]) ? $_POST["id_tipo_plan"] : "";
     $id_terminos = $_POST["id_terminos"];
     $descripcion = $_POST["descripcion"]; 
     $ids = $_POST["ids"];
@@ -19,10 +20,16 @@
 
     try{
 
+        $id_tipo_plan_update = "";
+        if ($id_tipo_plan !== "") {
+            $id_tipo_plan_update = ", id_tipo_plan = " . intval($id_tipo_plan);
+        }
+
         $result = mysqli_query($con, "UPDATE planes SET   nombre = '$nombre',
                                                             id_terminos = $id_terminos, 
                                                             descripcion = '$descripcion',
                                                             id_autor = $id_autor 
+                                                            $id_tipo_plan_update
                                                             WHERE id = $id;");
         $resultado = 0;                                                            
         if (mysqli_affected_rows($con) > 0) {

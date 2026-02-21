@@ -1,3 +1,0 @@
-[09-Jan-2023 21:37:20 America/Bogota] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home1/coticlic/public_html/views/planes/index.php:13) in /home1/coticlic/public_html/menu.php on line 3
-[01-Apr-2023 19:00:09 America/Bogota] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home1/coticlic/public_html/views/planes/index.php:13) in /home1/coticlic/public_html/menu.php on line 3
-[07-Oct-2024 20:38:06 America/Bogota] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home1/coticlic/public_html/views/planes/index.php:13) in /home1/coticlic/public_html/menu.php on line 3
