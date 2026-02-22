@@ -38,3 +38,6 @@ ADD CONSTRAINT fk_cotizacion_master
 FOREIGN KEY (id_principal)
 REFERENCES cotizacion_master(id)
 ON DELETE CASCADE;
+
+ALTER TABLE coticlic_cotizacion.planes
+ADD COLUMN id_tipo_plan INT UNSIGNED NOT NULL AFTER id_autor
