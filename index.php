@@ -22,6 +22,7 @@ if (isset($_SESSION['id'])) {
 
     <!-- Bootstrap core CSS -->
     <link href="assets/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <link href="assets/css/buttons-minimal.css" rel="stylesheet">
     
     <style>
       .bd-placeholder-img {

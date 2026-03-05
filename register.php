@@ -10,6 +10,7 @@
             <link rel="icon" type="image/ico" href="/cotizacion/assets/img/ideas.ico">
             <link rel="canonical" href="https://getbootstrap.com/docs/4.3/examples/sign-in/">
             <link rel="stylesheet" href="assets/css/ajax/bootstrap.css">
+            <link rel="stylesheet" href="assets/css/buttons-minimal.css">
             <!------ Include the above in your HEAD tag ---------->
 
             <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css">

@@ -29,8 +29,12 @@
 <link href="../../assets/css/select2.min.css" rel="stylesheet">
 <link href="../../assets/css/bootstrap-datepicker.css" rel="stylesheet">
 <link rel="stylesheet" href="../../assets/css/dataTables/dataTables.bootstrap4.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.bootstrap4.min.css">
+<link rel="stylesheet" href="../../assets/css/datatables-minimal.css">
 <link href="../../assets/css/gijgo.min.css" rel="stylesheet" type="text/css" />
 <link href="https://unpkg.com/gijgo@1.9.13/css/gijgo.min.css" rel="stylesheet" type="text/css" />
+
+<link href="../../assets/css/buttons-minimal.css" rel="stylesheet">
 
 <meta name="theme-color" content="#563d7c">
 
@@ -421,6 +425,9 @@
 <script src="../../assets/js/bootstrap-datepicker.min.js"></script>
 <script src="../../assets/js/dataTables/jquery.dataTables.min.js"></script>
 <script src="../../assets/js/dataTables/dataTables.bootstrap4.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.2.3/js/responsive.bootstrap4.min.js"></script>
+<script src="../../assets/js/datatables-defaults.js"></script>
 <script src="../../assets/js/html2pdf.bundle.min.js"></script>
 <script src="https://www.google.com/recaptcha/api.js" async></script>
 <script src="https://unpkg.com/gijgo@1.9.13/js/gijgo.min.js" type="text/javascript"></script>
@@ -875,7 +882,6 @@ function GuardarUsuario() {
 
     if ( ! $.fn.DataTable.isDataTable('#tabla_usuarios')) {
 			  dtable = $("#tabla_usuarios").DataTable({
-          "scrollY": true,
 					"ajax": {
 					"url": "usua.php",
 					"type": "POST",
@@ -948,7 +954,6 @@ function GuardarUsuario() {
 
 if ( ! $.fn.DataTable.isDataTable('#tabla_usuarios_company')) {
     dtable2 = $("#tabla_usuarios_company").DataTable({
-      "scrollY": true,
       "ajax": {
       "url": "usuaCompany.php",
       "type": "POST",

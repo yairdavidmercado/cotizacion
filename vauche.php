@@ -30,8 +30,12 @@ session_start();
 <link href="assets/css/select2.min.css" rel="stylesheet">
 <link href="assets/css/bootstrap-datepicker.css" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/dataTables/dataTables.bootstrap4.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.bootstrap4.min.css">
+<link rel="stylesheet" href="assets/css/datatables-minimal.css">
 <link href="assets/css/gijgo.min.css" rel="stylesheet" type="text/css" />
 <link href="https://unpkg.com/gijgo@1.9.13/css/gijgo.min.css" rel="stylesheet" type="text/css" />
+
+<link href="assets/css/buttons-minimal.css" rel="stylesheet">
 
 <meta name="theme-color" content="#563d7c">
 
@@ -272,6 +276,9 @@ session_start();
 <script src="assets/js/bootstrap-datepicker.min.js"></script>
 <script src="assets/js/dataTables/jquery.dataTables.min.js"></script>
 <script src="assets/js/dataTables/dataTables.bootstrap4.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.2.3/js/responsive.bootstrap4.min.js"></script>
+<script src="assets/js/datatables-defaults.js"></script>
 <script src="assets/js/html2pdf.bundle.min.js"></script>
 <script src="https://www.google.com/recaptcha/api.js" async></script>
 <script src="https://unpkg.com/gijgo@1.9.13/js/gijgo.min.js" type="text/javascript"></script>
@@ -596,28 +603,25 @@ function GuardarVaucher() {
           //console.log(respuesta)
           $("#brn_modal_print").click()
           let obj = JSON.parse(respuesta)
-          let acomodo = obj["resultado"][0]["acomodo"]
-          let cod_vendedor = obj["resultado"][0]["cod_vendedor"]
-          let fecha_entrada = obj["resultado"][0]["fecha_entrada"]
-          let fecha_expedicion = obj["resultado"][0]["fecha_expedicion"]
-          let fecha_salida = obj["resultado"][0]["fecha_salida"]
-          
-          let nombre_plan = obj["resultado"][0]["nombre_plan"]
-          let descripcion_plan = obj["resultado"][0]["descripcion_plan"]
+          const resultados = obj["resultado"] || []
+          if (!Array.isArray(resultados) || resultados.length === 0) {
+            $(".loader").css("display", "none")
+            console.log('Sin resultado en traer_cotizacion', obj)
+            return
+          }
 
-          let n_adult_d = obj["resultado"][0]["n_adult_d"]
-          let n_adult_s = obj["resultado"][0]["n_adult_s"]
-          let n_adult_t_c = obj["resultado"][0]["n_adult_t_c"]
-          let n_child = obj["resultado"][0]["n_child"]
-          let n_infante = obj["resultado"][0]["n_infante"]
-          let noche = obj["resultado"][0]["noche"]
-          let tipo_servicio = obj["resultado"][0]["tipo_servicio"]
-          let nombre_motivo = obj["resultado"][0]["nombre_motivo"]
-          let terminos = obj["resultado"][0]["terminos"]
-          let deposito = obj["resultado"][0]["deposito"] == null ? 0 : obj["resultado"][0]["deposito"]
-          let fecha_vaucher = obj["resultado"][0]["vaucher_fecha_crea"]
-          let id_vaucher = obj["resultado"][0]["id_vaucher"]
-          let n_reserva = obj["resultado"][0]["n_reserva"]
+          const primera = resultados[0]
+          const cod_vendedor = primera.cod_vendedor || ''
+          const fecha_entrada = primera.fecha_entrada || ''
+          const fecha_salida = primera.fecha_salida || ''
+          const nombre_plan = primera.nombre_plan || ''
+          const descripcion_plan = primera.descripcion_plan || ''
+          const n_infante = parseInt(primera.n_infante || 0)
+          const nochePrimera = primera.noche
+          const deposito = primera.deposito == null ? 0 : parseInt(primera.deposito || 0)
+          const fecha_vaucher = primera.vaucher_fecha_crea || ''
+          const id_vaucher = primera.id_vaucher || ''
+          const n_reserva = primera.n_reserva || ''
 
             let cedula = ""
             let ciudad = ""
@@ -639,105 +643,243 @@ function GuardarVaucher() {
             telefono = val.telefono
 
           })
-            let tarifa_adult_d = 0
-            let tarifa_adult_s = 0
-            let tarifa_adult_t_c = 0
-            let tarifa_child = 0
-            let tarifa_nombre = ""
-
-          $.each(obj["info_tarifa"], function( index, val ) {
-            tarifa_adult_d = parseInt(val.adult_d)
-            tarifa_adult_s = parseInt(val.adult_s)
-            tarifa_adult_t_c = parseInt(val.adult_t_c)
-            tarifa_child = parseInt(val.child)
-            tarifa_nombre = val.nombre
-
-          })
-          let consumo = ""
-          let servicios = ""
-          $.each(obj["info_planes"], function( index, val ) {
-            if (val.tipo == "CONSUMO") {
-              consumo+= "* "+val.nombre+", ";
-            }else if (val.tipo == "SERVICIOS") {
-              servicios+=  "* "+val.nombre+"<br>";
+          const getTarifaForCot = (cot) => {
+            const tarifa = { adult_d: 0, adult_s: 0, adult_t_c: 0, child: 0 }
+            if (cot && cot.info_tarifa) {
+              tarifa.adult_d = parseInt(cot.info_tarifa.adult_d || 0)
+              tarifa.adult_s = parseInt(cot.info_tarifa.adult_s || 0)
+              tarifa.adult_t_c = parseInt(cot.info_tarifa.adult_t_c || 0)
+              tarifa.child = parseInt(cot.info_tarifa.child || 0)
+              return tarifa
             }
+            if (Array.isArray(obj["info_tarifa"]) && obj["info_tarifa"].length) {
+              const t = obj["info_tarifa"][0]
+              tarifa.adult_d = parseInt(t.adult_d || 0)
+              tarifa.adult_s = parseInt(t.adult_s || 0)
+              tarifa.adult_t_c = parseInt(t.adult_t_c || 0)
+              tarifa.child = parseInt(t.child || 0)
+            }
+            return tarifa
+          }
 
+          const getPlanesForCot = (cot) => {
+            if (cot && Array.isArray(cot.info_planes)) return cot.info_planes
+            if (Array.isArray(obj["info_planes"])) return obj["info_planes"]
+            return []
+          }
+
+          const tipoLabel = (t) => (t == '1' ? 'Alojamiento' : (t == '2' ? 'Tour' : 'Alquiler'))
+
+          const buildTbodyDetalle = (tipo_servicio, n_child, n_adult_s, n_adult_d, n_adult_t_c, tarifa) => {
+            const totalchild = n_child * tarifa.child
+            const totaladult_s = n_adult_s * tarifa.adult_s
+            const totaladult_d = n_adult_d * tarifa.adult_d
+            const totaladult_t_c = n_adult_t_c * tarifa.adult_t_c
+
+            if (tipo_servicio == '0') {
+              return `<tbody>
+                        <tr>
+                            <td class="center">1</td>
+                            <td class="left">Niños (3-11 Años)</td>
+                            <td class="center">${n_child}</td>
+                            <td style="text-align: right;">$${puntosDecimales(tarifa.child)}</td>
+                            <td style="text-align: right;">$${puntosDecimales(totalchild)}</td>
+                        </tr>
+                        <tr>
+                            <td class="center">2</td>
+                            <td class="left">Adultos</td>
+                            <td class="center">${n_adult_s}</td>
+                            <td style="text-align: right;">$${puntosDecimales(tarifa.adult_s)}</td>
+                            <td style="text-align: right;">$${puntosDecimales(totaladult_s)}</td>
+                        </tr>
+                      </tbody>`
+            }
+            if (tipo_servicio == '1') {
+              return `<tbody>
+                        <tr>
+                            <td class="center">1</td>
+                            <td class="left">Niños</td>
+                            <td class="center">${n_child}</td>
+                            <td style="text-align: right;">$${puntosDecimales(tarifa.child)}</td>
+                            <td style="text-align: right;">$${puntosDecimales(totalchild)}</td>
+                        </tr>
+                        <tr>
+                            <td class="center">2</td>
+                            <td class="left">Adultos normal</td>
+                            <td class="center">${n_adult_s}</td>
+                            <td style="text-align: right;">$${puntosDecimales(tarifa.adult_s)}</td>
+                            <td style="text-align: right;">$${puntosDecimales(totaladult_s)}</td>
+                        </tr>
+                        <tr>
+                            <td class="center">3</td>
+                            <td class="left">Adultos dobles</td>
+                            <td class="center">${n_adult_d}</td>
+                            <td style="text-align: right;">$${puntosDecimales(tarifa.adult_d)}</td>
+                            <td style="text-align: right;">$${puntosDecimales(totaladult_d)}</td>
+                        </tr>
+                        <tr>
+                            <td class="center">4</td>
+                            <td class="left">Adultos triple / Cuadruple</td>
+                            <td class="center">${n_adult_t_c}</td>
+                            <td style="text-align: right;">$${puntosDecimales(tarifa.adult_t_c)}</td>
+                            <td style="text-align: right;">$${puntosDecimales(totaladult_t_c)}</td>
+                        </tr>
+                      </tbody>`
+            }
+            if (tipo_servicio == '2') {
+              return `<tbody>
+                        <tr>
+                            <td class="center">1</td>
+                            <td class="left">N° Alquiler</td>
+                            <td class="center">${n_adult_s}</td>
+                            <td style="text-align: right;">$${puntosDecimales(tarifa.adult_s)}</td>
+                            <td style="text-align: right;">$${puntosDecimales(totaladult_s)}</td>
+                        </tr>
+                      </tbody>`
+            }
+            return `<tbody></tbody>`
+          }
+
+          let detalleCotizacionesHTML = ''
+          let planesCotizacionesHTML = ''
+          let terminosHTML = ''
+          let subtotalGeneral = 0
+          let totalGeneral = 0
+
+          resultados.forEach((cot, idx) => {
+            const cotId = cot.id || ''
+            const tipo_cotizacion = cot.tipo_cotizacion
+            const tipo_servicio = cot.tipo_servicio
+            const nombre_motivo = cot.nombre_motivo || ''
+
+            const n_child = parseInt(cot.n_child || 0)
+            const n_adult_s = parseInt(cot.n_adult_s || 0)
+            const n_adult_d = parseInt(cot.n_adult_d || 0)
+            const n_adult_t_c = parseInt(cot.n_adult_t_c || 0)
+
+            const tarifa = getTarifaForCot(cot)
+
+            const totalchild = n_child * tarifa.child
+            const totaladult_s = n_adult_s * tarifa.adult_s
+            const totaladult_d = n_adult_d * tarifa.adult_d
+            const totaladult_t_c = n_adult_t_c * tarifa.adult_t_c
+            const subtotal = totalchild + totaladult_s + totaladult_d + totaladult_t_c
+
+            const nocheRaw = cot.noche
+            const nocheInt = parseInt(nocheRaw)
+            const n_noches = (nocheRaw == "N/A" || isNaN(nocheInt) || nocheInt <= 0) ? 1 : nocheInt
+            const nocheLabel = (nocheRaw == "N/A" || isNaN(nocheInt) || nocheInt <= 0) ? '1 día' : `${nocheRaw} ${nocheInt === 1 ? 'noche' : 'noches'}`
+            const total = subtotal * n_noches
+
+            subtotalGeneral += subtotal
+            totalGeneral += total
+
+            const total_pasajero = n_child + n_adult_s + n_adult_d + n_adult_t_c
+
+            const tbodyDetalle = buildTbodyDetalle(tipo_servicio, n_child, n_adult_s, n_adult_d, n_adult_t_c, tarifa)
+
+            let consumo = ''
+            let servicios = ''
+            getPlanesForCot(cot).forEach((p) => {
+              if (p.tipo == 'CONSUMO') consumo += `* ${p.nombre}, `
+              if (p.tipo == 'SERVICIOS') servicios += `* ${p.nombre}<br>`
+            })
+
+            detalleCotizacionesHTML += `
+              <div class="col-sm-12 mt-3">
+                <h6>Detalle cotización #${cotId} ${tipo_cotizacion != null ? `- ${tipoLabel(tipo_cotizacion)}` : ''}</h6>
+                ${nombre_motivo ? `<div style="font-size:12px; margin-top:4px;"><b>Motivo:</b> ${nombre_motivo}</div>` : ''}
+              </div>
+              <div class="col-sm-12">
+                <div class="table-responsive-sm">
+                  <table width='100%' cellpadding='4' cellspacing='4' border='0' style="font-size:13px;">
+                    <tr>
+                      <td><b>FECHA INICIO</b></td>
+                      <td>${cot.fecha_entrada || ''}</td>
+                      <td><b>FECHA FIN</b></td>
+                      <td>${cot.fecha_salida || ''}</td>
+                      <td><b>DURACIÓN</b></td>
+                      <td>${nocheLabel}</td>
+                    </tr>
+                    <tr>
+                      <td><b>PLAN</b></td>
+                      <td colspan="5">${cot.nombre_plan || ''}</td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+              <div class="col-sm-12">
+                <div class="table-responsive-sm">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th class="center">#</th>
+                        <th>Item</th>
+                        <th class="center">Cantidad</th>
+                        <th style="text-align: right;">Valor unitario</th>
+                        <th style="text-align: right;">Total</th>
+                      </tr>
+                    </thead>
+                    ${tbodyDetalle}
+                  </table>
+                </div>
+              </div>
+              <div class="col-sm-12">
+                <div class="table-responsive-sm">
+                  <table class="table table-clear" style="width: 100%;">
+                    <tbody>
+                      <tr>
+                        <td class="left"><strong>Subtotal</strong></td>
+                        <td style="text-align: right;">$${puntosDecimales(subtotal)}</td>
+                      </tr>
+                      <tr>
+                        <td class="left"><strong>Total</strong></td>
+                        <td style="text-align: right;"><strong>$${puntosDecimales(total)}</strong></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="col-sm-12">
+                <div class="table-responsive-sm">
+                  <table class="table" style="font-size:14px;font-family: 'Helvetica', 'Arial', sans-serif;">
+                    <tbody>
+                      <tr>
+                        <td><b>Acomodación:</b></td>
+                        <td colspan="3">${cot.acomodo || ''}</td>
+                      </tr>
+                      <tr>
+                        <td><b>Descripción:</b></td>
+                        <td colspan="3">${cot.descripcion_plan || ''}</td>
+                      </tr>
+                      <tr>
+                        <td><b>Incluye:</b></td>
+                        <td colspan="3">${consumo}<br><br><strong>Servicios</strong><br>${servicios}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            `
+
+            planesCotizacionesHTML += `
+              <tr>
+                <td><b>#${cotId}</b></td>
+                <td>${cot.nombre_plan || ''}</td>
+                <td class="text-right">${tipo_cotizacion != null ? tipoLabel(tipo_cotizacion) : ''}</td>
+                <td class="text-right">$${puntosDecimales(total)}</td>
+              </tr>
+            `
+
+            if (cot.terminos) {
+              terminosHTML += `<p style="margin-bottom:16px;"><b>Términos cotización #${cotId}</b><br>${cot.terminos}</p>`
+            }
           })
 
-          let totalchild = parseInt( n_child )* parseInt( tarifa_child )
-          let totaladult_s = parseInt( n_adult_s )* parseInt( tarifa_adult_s )
-          let totaladult_d = parseInt( n_adult_d )* parseInt( tarifa_adult_d )
-          let totaladult_t_c = parseInt( n_adult_t_c )* parseInt( tarifa_adult_t_c )
-
-          let total_pasajero = parseInt( n_child )+parseInt( n_adult_s )+parseInt( n_adult_d )+parseInt( n_adult_t_c)
-
-          let subtotal = totalchild+totaladult_s+totaladult_d+totaladult_t_c
-          let n_noches = noche == "N/A" ? 1 : parseInt(noche)
-          let noche_tour = noche == "N/A" ? 'tour/alquiler' :'noches'
-          let total = subtotal * parseInt(n_noches)
-          let saldo = total-parseInt(deposito)
-
-
-          let content_fila = ''
-          if (tipo_servicio == '0') {
-            content_fila = `<tbody id="tbody_tarifa_modal">
-                              <tr>
-                                  <td class="center">1</td>
-                                  <td class="left">Niños (3-11 Años)</td>
-                                  <td class="center">${n_child}</td>
-                                  <td style="text-align: right;">$${puntosDecimales(tarifa_child)}</td>
-                                  <td style="text-align: right;">$${puntosDecimales(totalchild)}</td>
-                              </tr>
-                              <tr>
-                                  <td class="center">2</td>
-                                  <td class="left">Adultos</td>
-                                  <td class="center">${n_adult_s}</td>
-                                  <td style="text-align: right;">$${puntosDecimales(tarifa_adult_s)}</td>
-                                  <td style="text-align: right;">$${puntosDecimales(totaladult_s)}</td>
-                              </tr>
-                            </tbody>`
-          }else if (tipo_servicio == '1') {
-            content_fila = `<tbody id="tbody_tarifa_modal">
-                              <tr>
-                                  <td class="center">1</td>
-                                  <td class="left">Niños</td>
-                                  <td class="center">${n_child}</td>
-                                  <td style="text-align: right;">$${puntosDecimales(tarifa_child)}</td>
-                                  <td style="text-align: right;">$${puntosDecimales(totalchild)}</td>
-                              </tr>
-                              <tr>
-                                  <td class="center">2</td>
-                                  <td class="left">Adultos normal</td>
-                                  <td class="center">${n_adult_s}</td>
-                                  <td style="text-align: right;">$${puntosDecimales(tarifa_adult_s)}</td>
-                                  <td style="text-align: right;">$${puntosDecimales(totaladult_s)}</td>
-                              </tr>
-                              <tr>
-                                  <td class="center">3</td>
-                                  <td class="left">Adultos dobles</td>
-                                  <td class="center">${n_adult_d}</td>
-                                  <td style="text-align: right;">$${puntosDecimales( tarifa_adult_d)}</td>
-                                  <td style="text-align: right;">$${puntosDecimales(totaladult_d)}</td>
-                              </tr>
-                              <tr>
-                                  <td class="center">4</td>
-                                  <td class="left">Adultos triple / Cuadruple</td>
-                                  <td class="center">${n_adult_t_c}</td>
-                                  <td style="text-align: right;">$${puntosDecimales(tarifa_adult_t_c)}</td>
-                                  <td style="text-align: right;">$${puntosDecimales(totaladult_t_c)}</td>
-                              </tr>
-                            </tbody>`
-          }else if (tipo_servicio == '2') {
-            content_fila = `<tbody id="tbody_tarifa_modal">
-                              <tr>
-                                  <td class="center">1</td>
-                                  <td class="left">N° Alquiler</td>
-                                  <td class="center">${n_adult_s}</td>
-                                  <td style="text-align: right;">$${puntosDecimales(tarifa_adult_s)}</td>
-                                  <td style="text-align: right;">$${puntosDecimales(totaladult_s)}</td>
-                              </tr>
-                            </tbody>`
-          }
+          const saldoGeneral = totalGeneral - deposito
+          const nocheIntPrimera = parseInt(nochePrimera)
+          const nocheLabelPrimera = (nochePrimera == "N/A" || isNaN(nocheIntPrimera) || nocheIntPrimera <= 0) ? '1 día' : nochePrimera
+          const total_pasajero_primera = parseInt(primera.n_child || 0) + parseInt(primera.n_adult_s || 0) + parseInt(primera.n_adult_d || 0) + parseInt(primera.n_adult_t_c || 0)
 
           $("#btn_pdf").html(`<span onclick="imprimir_cotizacion('${id}')" style="text-align: right;font-size:28px;cursor:pointer;font-family: 'Helvetica', 'Arial', sans-serif;" class="mr-4"><i class="fas fa-print"></i></span>`)
               let fila = `<div class="row" style="background-color:#02317c;color:#fff">
@@ -793,7 +935,7 @@ function GuardarVaucher() {
                                     <td><b>FECHA DE ENTREGA</b></td>
                                     <td id="print_fecha_ini">${fecha_entrada}</td>
                                     <td><b>Nº NOCHE</b></td>
-                                    <td>${noche}</td>
+                                    <td>${nocheLabelPrimera}</td>
                                     <td><b>INFANTE</b></td>
                                     <td>${n_infante}</td>
                                   </tr>
@@ -801,81 +943,60 @@ function GuardarVaucher() {
                                     <td><b>FECHA DE SALIDA</b></td>
                                     <td id="print_fecha_fin">${fecha_salida}</td>
                                     <td><b>N° PERSONAS</b></td>
-                                    <td>${total_pasajero}</td>
-                                    <td><b>MOTIVO DE VIAJE</b></td>
-                                    <td>${nombre_motivo}</td>
+                                    <td>${total_pasajero_primera}</td>
+                                    <td><b>TOTAL GENERAL</b></td>
+                                    <td>$${puntosDecimales(totalGeneral)}</td>
                                   </tr>
                                   <tr>
                                     <td><b>DEPOSITO</b></td>
                                     <td><span style="color:green"><b>${puntosDecimales(deposito)}</b></span></td>
                                     <td><b>SALDO</b></td>
-                                    <td><span style="color:red" ><b>${puntosDecimales(saldo)}</b></span></td>
+                                    <td><span style="color:red" ><b>${puntosDecimales(saldoGeneral)}</b></span></td>
                                   </tr>
                                 </table>
                               </div>
                             </div>
-                            <div class="col-sm-12 mt-3">
-                              <h6>Detalles</h6>
-                            </div>
-                            <div class="col-sm-12">
-                              <div class="table-responsive-sm">
-                                <table class="table ">
-                                  <thead>
-                                      <tr>
-                                          <th class="center">#</th>
-                                          <th>Item</th>
-                                          <th class="center">Cantidad</th>
-                                          <th style="text-align: right;">Valor unitario</th>
-                                          <th style="text-align: right;">Total</th>
-                                      </tr>
-                                  </thead>
-
-                                  ${content_fila}
-                                </table>
-                              </div>
-                            </div>   
                           </div>
+                          <div class="row mt-2" style="font-size:14px;font-family: 'Helvetica', 'Arial', sans-serif;">
+                            ${detalleCotizacionesHTML}
+                          </div>
+
                           <div class="row">
                             <div class="col-lg-5 col-sm-5 ml-auto" style="font-size:14px;font-family: 'Helvetica', 'Arial', sans-serif;" id="content_subtotal">
                               <table class="table table-clear">
-                                  <tbody>
-                                      <tr>
-                                          <td class="left">
-                                              <strong>Valor ${noche_tour}</strong>
-                                          </td>
-                                          <td style="text-align: right;" id="subtotal">$${puntosDecimales(subtotal)}</td>
-                                      </tr>
-                                      <tr>
-                                          <td class="left">
-                                              <strong>Total ${noche_tour}</strong>
-                                          </td>
-                                          <td style="text-align: right;">
-                                              <strong>$${puntosDecimales(total)}</strong>
-                                          </td>
-                                      </tr>
-                                  </tbody>
+                                <tbody>
+                                  <tr>
+                                    <td class="left"><strong>Subtotal general</strong></td>
+                                    <td style="text-align: right;">$${puntosDecimales(subtotalGeneral)}</td>
+                                  </tr>
+                                  <tr>
+                                    <td class="left"><strong>Total general</strong></td>
+                                    <td style="text-align: right;"><strong>$${puntosDecimales(totalGeneral)}</strong></td>
+                                  </tr>
+                                </tbody>
                               </table>
-                                
                             </div>
                           </div>
+
                           <div class="row">
                             <div class="col-sm-12">
                               <div class="table-responsive-sm">
-                                <table class="table"  style="font-size:14px;font-family: 'Helvetica', 'Arial', sans-serif;">
+                                <table class="table" style="font-size:14px;font-family: 'Helvetica', 'Arial', sans-serif;">
                                   <tbody>
                                     <tr>
-                                      <td ><b>Plan: </b></td>
+                                      <td><b>Plan (principal): </b></td>
                                       <td id="print_nombre_plan">${nombre_plan}</td>
                                       <td class="text-right"><b>Descripción: </b></td>
                                       <td class="text-right">${descripcion_plan}</td>
                                     </tr>
                                     <tr>
-                                      <td><b>Acomodación: </b></td>
-                                      <td  colspan="2">${acomodo}</td>
-                                      <td class="text-right" >
-                                      ${consumo}<br><br>
-                                      <strong>Servicios</strong><br>
-                                      ${servicios}
+                                      <td><b>Resumen</b></td>
+                                      <td colspan="3">
+                                        <div class="table-responsive-sm">
+                                          <table width='100%' cellpadding='4' cellspacing='4' border='0'>
+                                            ${planesCotizacionesHTML}
+                                          </table>
+                                        </div>
                                       </td>
                                     </tr>
                                   </tbody>
@@ -885,7 +1006,7 @@ function GuardarVaucher() {
                           </div>
                           <div class="row" id="pageX" >
                             <div class="col-sm-12">
-                              <p style="font-size:12px;text-align:left; margin-top:200px;font-family: 'Helvetica', 'Arial', sans-serif;" >${terminos}</p>
+                              <div style="font-size:12px;text-align:left; margin-top:200px;font-family: 'Helvetica', 'Arial', sans-serif;" >${terminosHTML}</div>
                             </div>
                           </div>`
           $(".loader").css("display", "none")
@@ -956,7 +1077,6 @@ function GuardarVaucher() {
 
     if ( ! $.fn.DataTable.isDataTable('#tabla_vaucher')) {
 			  dtable = $("#tabla_vaucher").DataTable({
-          "scrollY": true,
 					"ajax": {
 					"url": "php/sel_recursos.php",
 					"type": "POST",

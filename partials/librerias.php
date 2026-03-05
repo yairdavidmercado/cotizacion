@@ -8,9 +8,13 @@
 <link href="assets/css/select2.min.css" rel="stylesheet">
 <link href="assets/css/bootstrap-datepicker.css" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/dataTables/dataTables.bootstrap4.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.bootstrap4.min.css">
+<link rel="stylesheet" href="assets/css/datatables-minimal.css">
 <link href="assets/css/gijgo.min.css" rel="stylesheet">
 <link href="https://unpkg.com/gijgo@1.9.13/css/gijgo.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
+
+<link href="assets/css/buttons-minimal.css" rel="stylesheet">
 
 <!-- ================= JS ================= -->
 <script src="assets/js/jquery.min.js"></script>
@@ -21,6 +25,9 @@
 
 <script src="assets/js/dataTables/jquery.dataTables.min.js"></script>
 <script src="assets/js/dataTables/dataTables.bootstrap4.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.2.3/js/responsive.bootstrap4.min.js"></script>
+<script src="assets/js/datatables-defaults.js"></script>
 
 <script src="assets/js/html2pdf.bundle.min.js"></script>
 

@@ -1,0 +1,158 @@
+/* Botones minimalistas (compatibles con Bootstrap 4)
+   Uso: <button class="btn btn-soft-slate">...</button>
+        <button class="btn btn-outline-teal">...</button>
+*/
+
+.btn-soft-slate {
+  color: #334155;
+  background-color: #f1f5f9;
+  border-color: #cbd5e1;
+}
+.btn-soft-slate:hover {
+  color: #1f2937;
+  background-color: #e2e8f0;
+  border-color: #94a3b8;
+}
+.btn-soft-slate:focus, .btn-soft-slate.focus {
+  box-shadow: 0 0 0 0.2rem rgba(148, 163, 184, 0.35);
+}
+
+.btn-soft-teal {
+  color: #065f46;
+  background-color: #ecfdf5;
+  border-color: #a7f3d0;
+}
+.btn-soft-teal:hover {
+  color: #064e3b;
+  background-color: #d1fae5;
+  border-color: #6ee7b7;
+}
+.btn-soft-teal:focus, .btn-soft-teal.focus {
+  box-shadow: 0 0 0 0.2rem rgba(110, 231, 183, 0.35);
+}
+
+.btn-soft-indigo {
+  color: #3730a3;
+  background-color: #eef2ff;
+  border-color: #c7d2fe;
+}
+.btn-soft-indigo:hover {
+  color: #312e81;
+  background-color: #e0e7ff;
+  border-color: #a5b4fc;
+}
+.btn-soft-indigo:focus, .btn-soft-indigo.focus {
+  box-shadow: 0 0 0 0.2rem rgba(165, 180, 252, 0.35);
+}
+
+.btn-soft-amber {
+  color: #92400e;
+  background-color: #fffbeb;
+  border-color: #fde68a;
+}
+.btn-soft-amber:hover {
+  color: #78350f;
+  background-color: #fef3c7;
+  border-color: #fcd34d;
+}
+.btn-soft-amber:focus, .btn-soft-amber.focus {
+  box-shadow: 0 0 0 0.2rem rgba(252, 211, 77, 0.35);
+}
+
+.btn-soft-rose {
+  color: #9f1239;
+  background-color: #fff1f2;
+  border-color: #fecdd3;
+}
+.btn-soft-rose:hover {
+  color: #881337;
+  background-color: #ffe4e6;
+  border-color: #fda4af;
+}
+.btn-soft-rose:focus, .btn-soft-rose.focus {
+  box-shadow: 0 0 0 0.2rem rgba(253, 164, 175, 0.35);
+}
+
+.btn-outline-slate {
+  color: #475569;
+  background-color: transparent;
+  border-color: #94a3b8;
+}
+.btn-outline-slate:hover {
+  color: #1f2937;
+  background-color: #f1f5f9;
+  border-color: #64748b;
+}
+.btn-outline-slate:focus, .btn-outline-slate.focus {
+  box-shadow: 0 0 0 0.2rem rgba(148, 163, 184, 0.35);
+}
+
+.btn-outline-teal {
+  color: #0f766e;
+  background-color: transparent;
+  border-color: #2dd4bf;
+}
+.btn-outline-teal:hover {
+  color: #115e59;
+  background-color: #ecfdf5;
+  border-color: #14b8a6;
+}
+.btn-outline-teal:focus, .btn-outline-teal.focus {
+  box-shadow: 0 0 0 0.2rem rgba(45, 212, 191, 0.35);
+}
+
+.btn-outline-indigo {
+  color: #4f46e5;
+  background-color: transparent;
+  border-color: #a5b4fc;
+}
+.btn-outline-indigo:hover {
+  color: #3730a3;
+  background-color: #eef2ff;
+  border-color: #818cf8;
+}
+.btn-outline-indigo:focus, .btn-outline-indigo.focus {
+  box-shadow: 0 0 0 0.2rem rgba(165, 180, 252, 0.35);
+}
+
+.btn-outline-amber {
+  color: #b45309;
+  background-color: transparent;
+  border-color: #fcd34d;
+}
+.btn-outline-amber:hover {
+  color: #92400e;
+  background-color: #fffbeb;
+  border-color: #f59e0b;
+}
+.btn-outline-amber:focus, .btn-outline-amber.focus {
+  box-shadow: 0 0 0 0.2rem rgba(252, 211, 77, 0.35);
+}
+
+.btn-outline-rose {
+  color: #e11d48;
+  background-color: transparent;
+  border-color: #fda4af;
+}
+.btn-outline-rose:hover {
+  color: #9f1239;
+  background-color: #fff1f2;
+  border-color: #fb7185;
+}
+.btn-outline-rose:focus, .btn-outline-rose.focus {
+  box-shadow: 0 0 0 0.2rem rgba(253, 164, 175, 0.35);
+}
+
+.btn-soft-slate.disabled, .btn-soft-slate:disabled,
+.btn-soft-teal.disabled, .btn-soft-teal:disabled,
+.btn-soft-indigo.disabled, .btn-soft-indigo:disabled,
+.btn-soft-amber.disabled, .btn-soft-amber:disabled,
+.btn-soft-rose.disabled, .btn-soft-rose:disabled,
+.btn-outline-slate.disabled, .btn-outline-slate:disabled,
+.btn-outline-teal.disabled, .btn-outline-teal:disabled,
+.btn-outline-indigo.disabled, .btn-outline-indigo:disabled,
+.btn-outline-amber.disabled, .btn-outline-amber:disabled,
+.btn-outline-rose.disabled, .btn-outline-rose:disabled {
+  opacity: 0.65;
+  box-shadow: none;
+}

@@ -254,12 +254,19 @@ if ($conn) {
 		$id_titular = '';
 		$id_tarifa = '';
 		$id_plan = '';
+		$parametro1 = intval($parametro1);
 		
-		// Primero obtener el id_principal de la cotización solicitada
-		$query_principal = mysqli_query($conn, "SELECT id_principal FROM cotizacion WHERE id = $parametro1");
+		// Determinar si el ID recibido corresponde a un master o a un detalle
 		$id_principal = 0;
-		if ($row_principal = mysqli_fetch_array($query_principal)) {
-			$id_principal = $row_principal['id_principal'];
+		$check_master = mysqli_query($conn, "SELECT id FROM cotizacion_master WHERE id = $parametro1 LIMIT 1");
+		if ($check_master && mysqli_num_rows($check_master) > 0) {
+			$id_principal = $parametro1;
+		} else {
+			// Primero obtener el id_principal de la cotización solicitada
+			$query_principal = mysqli_query($conn, "SELECT id_principal FROM cotizacion WHERE id = $parametro1");
+			if ($row_principal = mysqli_fetch_array($query_principal)) {
+				$id_principal = intval($row_principal['id_principal']);
+			}
 		}
 		
 		error_log("traer_cotizacion - ID solicitado: $parametro1, id_principal encontrado: $id_principal");
@@ -415,6 +422,7 @@ if ($conn) {
 
 										}
 										
+									$response["id_principal"] = $id_principal > 0 ? $id_principal : $parametro1;
 									$response["success"] = true;
 									echo json_encode($response);
 
@@ -425,53 +433,61 @@ if ($conn) {
 				echo json_encode($response);
 		}
 	}else if ($codigo == "traer_tabla_cotizacion") {//titulares
-		$result = mysqli_query($conn, 	"SELECT cotizacion.*, 
-										cotizacion_master.id_titular,
-										cotizacion_master.id_hotel,
-										cotizacion_master.cod_vendedor,
-										cotizacion_master.estado,
-										cotizacion_master.created_at as fecha_expedicion,
-										(SELECT CONCAT(nombre1, ' ', nombre2, ' ', apellido1, ' ', apellido2) FROM usuarios WHERE usuarios.id = cotizacion_master.id_titular) AS nombre_titular,
-										(SELECT cedula FROM usuarios WHERE usuarios.id = cotizacion_master.id_titular) AS cedula_titular,
-										(SELECT nombre FROM motivos WHERE motivos.id = cotizacion.id_motivo) AS nombre_motivo,
-										(SELECT nombre FROM planes WHERE planes.id = cotizacion.id_plan) AS nombre_plan
-										FROM cotizacion 
-										INNER JOIN cotizacion_master ON cotizacion.id_principal = cotizacion_master.id
-										WHERE cotizacion_master.id_hotel = $id_hotel $condicion");
-		$data = array();										
+		$condicion_master = '';
+		if ($id_perfil !== 'SUPERADMIN') {
+			$condicion_master = "AND cm.id_autor = $id_autor";
+		}
+		$result = mysqli_query($conn, 	"SELECT 
+								cm.id,
+								cm.id_titular,
+								cm.id_hotel,
+								cm.cod_vendedor,
+								cm.estado,
+								cm.id_autor,
+								cm.id_autor_at,
+								cm.created_at,
+								cm.update_at,
+								(SELECT CONCAT_WS(' ', nombre1, nombre2, apellido1, apellido2) 
+									FROM usuarios 
+									WHERE usuarios.id = cm.id_titular 
+									LIMIT 1) AS nombre_titular,
+								(SELECT CONCAT_WS(' ', nombre1, nombre2, apellido1, apellido2) 
+									FROM ".DB_NAME_GLOBAL.".usuarios 
+									WHERE ".DB_NAME_GLOBAL.".usuarios.id = cm.id_autor 
+									LIMIT 1) AS nombre_autor
+								FROM cotizacion_master cm
+								WHERE cm.id_hotel = $id_hotel $condicion_master
+								ORDER BY cm.created_at DESC");
+		$data = array();									
 		if(mysqli_num_rows($result) > 0)
 		{	
 									
 									while ($row = mysqli_fetch_array($result)) {
 									$datos = array();
-										
+									
 									$datos['id'] = $row["id"];
-									$datos['noche'] = $row["noche"];
-									$datos['nombre_titular'] = $row["nombre_titular"];
-									$datos['cedula_titular'] = $row["cedula_titular"];
-									$datos['fecha_expedicion'] = $row["fecha_expedicion"];
-									$datos['fecha_entrada'] = $row["fecha_entrada"];
-									$datos['fecha_salida'] = $row["fecha_salida"];
-									$datos['nombre_motivo'] = $row["nombre_motivo"];
-									$datos['nombre_plan'] = $row["nombre_plan"];
-										
-										
-									// push single product into final response array
+									$datos['cod_vendedor'] = $row["cod_vendedor"];
+							$datos['id_titular'] = $row["id_titular"];
+							$datos['nombre_titular'] = $row["nombre_titular"];
+									$datos['estado'] = $row["estado"];
+									$datos['id_autor'] = $row["id_autor"];
+							$datos['nombre_autor'] = $row["nombre_autor"];
+									$datos['created_at'] = $row["created_at"];
+									$datos['update_at'] = $row["update_at"];
+									
 									array_push($data, $datos);
-									}
-									$response = array("draw" => 1,
-								    "recordsTotal" => 0,
-								    "recordsFiltered" => 0,
-									"data" => $data);
-									//$response["success"] = true;
-									echo json_encode($response);
+								}
+								$response = array("draw" => 1,
+							    "recordsTotal" => 0,
+							    "recordsFiltered" => 0,
+								"data" => $data);
+								echo json_encode($response);
 
 		}else{
 			$response = array("draw" => 1,
 			"recordsTotal" => 0,
 			"recordsFiltered" => 0,
 			"data" => $data);
-			//$response["success"] = true;
 			echo json_encode($response);
 		}
 	}else if ($codigo == "traer_paises") {//activos
