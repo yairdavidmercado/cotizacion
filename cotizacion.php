@@ -348,6 +348,38 @@ session_start();
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
       }
+
+      /* ===== Tabla de búsqueda (DataTables) responsive ===== */
+      #tabla_cotizacion_container{
+        width: 100%;
+        max-width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        margin: 15px 0;
+      }
+      #tabla_cotizacion_container .dataTables_wrapper{
+        width: 100% !important;
+      }
+      #tabla_cotizacion{
+        width: 100% !important;
+        max-width: 100%;
+      }
+
+      /* Truncate para celdas largas (fallback en pantallas pequeñas) */
+      #tabla_cotizacion .dt-truncate{
+        display: inline-block;
+        max-width: 260px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        vertical-align: bottom;
+      }
+      @media (max-width: 768px){
+        #tabla_cotizacion .dt-truncate{ max-width: 140px; }
+      }
+      @media (max-width: 420px){
+        #tabla_cotizacion .dt-truncate{ max-width: 110px; }
+      }
       @media (max-width: 768px) {
         .cotizacion-table {
           font-size: 11px;
@@ -418,6 +450,116 @@ session_start();
         font-weight: 700;
         color: #1e293b;
         margin-bottom: 4px;
+      }
+
+      .nav-tabs {
+        border-bottom: none !important;
+      }
+
+      .btn-option {
+        background: transparent !important;
+        border-radius: 15px !important;
+        color: rgba(15,23,42,.65) !important;
+        font-weight: 600;
+      }
+
+      .btn-option.active {
+        color: #fff !important;
+        background: #2D7FF9 !important;
+        border: 0 !important;
+      }
+
+      .nav-options {
+        margin: 10px;
+      }
+
+      div.dataTables_wrapper div.dataTables_filter input {
+        margin-left: 0 !important;
+        border-radius: 0 12px 12px 0 !important;
+      }
+
+      .dataTables_wrapper.dt-minimal-wrap .dt-search-group .input-group-text {
+        border-radius: 12px 0 0 12px !important;
+      }
+
+      .dataTables_wrapper.dt-minimal-wrap .dt-length .custom-select, .dataTables_wrapper.dt-minimal-wrap .dt-length select {
+        border-radius: 12px !important;
+      }
+
+      /* LAYOUT DE MODAL DE CREACION DE TITULAR */
+            /* MODAL GLASS */
+      .crear_titular_modal .modal-content{
+          border-radius:12px;
+          border:none;
+          background:rgba(255,255,255,0.85);
+          backdrop-filter: blur(10px);
+          box-shadow:0 15px 40px rgba(0,0,0,0.15);
+      }
+
+      /* HEADER */
+      .crear_titular_modal .modal-header{
+          border-bottom:1px solid rgba(0,0,0,.05);
+          padding:18px 22px;
+      }
+
+      .crear_titular_modal .modal-title{
+          font-weight:600;
+          font-size:18px;
+      }
+
+      /* BODY */
+      .crear_titular_modal .modal-body{
+          padding:25px;
+      }
+
+      /* INPUTS */
+      .crear_titular_modal .form-control{
+          border-radius:10px;
+          border:1px solid #e5e7eb;
+          height:42px;
+          font-size:14px;
+      }
+
+      .crear_titular_modal .form-control:focus{
+          border-color:#3b82f6;
+          box-shadow:0 0 0 3px rgba(59,130,246,.15);
+      }
+
+      /* LABELS */
+      .crear_titular_modal label{
+          font-size:13px;
+          font-weight:600;
+          color:#6b7280;
+      }
+
+      /* INPUT ICON */
+      .input-icon{
+          position:relative;
+      }
+
+      .input-icon i{
+          position:absolute;
+          left:12px;
+          top:50%;
+          transform:translateY(-50%);
+          color:#9ca3af;
+      }
+
+      .input-icon input{
+          padding-left:35px;
+      }
+
+      /* BOTON */
+      .btn-save-user{
+          border-radius:10px;
+          padding:10px 28px;
+          font-weight:600;
+          background:#22c55e;
+          border:none;
+      }
+
+      .btn-save-user:hover{
+          background:#16a34a;
       }
     </style>
   </head>
@@ -757,12 +899,12 @@ session_start();
       <section class="cc-hero" aria-hidden="true">
         <div class="row">
           <div class="col-12">
-            <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <ul class="nav nav-tabs nav-options" id="myTab" role="tablist">
               <li class="nav-item">
-                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Previsualización</a>
+                <button class="btn btn-option active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Previsualización</button>
               </li>
               <li class="nav-item">
-                <a class="nav-link" onclick="show_traer_tabla_cotizacion()" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Buscar</a>
+                <button class="btn btn-option" onclick="show_traer_tabla_cotizacion()" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Buscar</button>
               </li>
               <!-- <li class="nav-item ml-auto">
                 
@@ -770,14 +912,14 @@ session_start();
             </ul>
             <div class="tab-content" id="myTabContent">
               <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                <div class="d-flex justify-content-end" style="margin: 8px 10px 10px;">
+                <div class="d-flex justify-content-end float-right" style="margin: 8px 10px 10px;">
                   <button type="button" class="cc-pdf-fab-btn cc-pdf-fab-btn--sm" onclick="previsualizarPDFBorrador()" title="Previsualizar" aria-label="Previsualizar" id="pdf">
                     <i class="fas fa-eye"></i>
                   </button>
                 </div>
                 <div class="cotizacion-preview-container" style="max-width: 900px; margin: 0 auto; padding: 1rem;">
                   <div id="logoGifWrap" style="display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; clear: both;">
-                    <p style="padding: 8rem;color:#e3e3e3">Genera la cotizacion a tu gusto y haz clic en "Previsualizar" para ver el resultado.</p>
+                    <p style="padding: 8rem;color:#e3e3e3">Genera la cotizacion a tu gusto y haz clic en "<i class="text-danger fas fa-eye"></i>" para ver el resultado.</p>
                     <!-- <img src="assets/img/logo-gif.gif" id="logoGif" style="width: 50%; height: auto; right: 55%;" alt="Imagen decorativa"> -->
                   </div>
                   <div class="cotizacion-section" id="content_info_titular" style="display:none">
@@ -920,12 +1062,12 @@ session_start();
                   </div>
                 </div>
               </div>
-              <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+              <div class="tab-pane fade dt-responsive" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                 <div class="container-fluid">
                   <div class="row">
                     <div class="col-sm-12">
-                      <div class="responsive">
-                        <table id="tabla_cotizacion" class="table table-striped table-bordered" style="width:100%">
+                      <div class="table-responsive" id="tabla_cotizacion_container">
+                        <table id="tabla_cotizacion" class="table table-striped dt-responsive" style="width:100%">
                           <thead>
                               <tr>
                                 <th>ID</th>
@@ -975,95 +1117,220 @@ session_start();
 
 <div class="modal fade crear_titular_modal" id="crear_titular_modal" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
+    
     <div class="modal-content">
+      
       <div class="modal-header">
         <h5 class="modal-title">Crear titular</h5>
-        <div id="btn_pdf_crear_titular">
 
-        </div>
+        <div id="btn_pdf_crear_titular"></div>
+
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">×</span>
         </button>
       </div>
+
       <div class="modal-body">
-        <div class="card mt-3">
+
+        <div class="card mt-3" style="border-radius:12px !important;">
           <div class="card-body">
-            <form role="form" onsubmit="event.preventDefault(); return GuardarUsuario();" id="form_guardar" class="needs-validation">
+
+            <form 
+              role="form"
+              onsubmit="event.preventDefault(); return GuardarUsuario();"
+              id="form_guardar"
+              class="needs-validation"
+            >
+
               <div class="row">
-                <div style="display:none" class="col-md-6 mb-3" >
-                  <label for="lastName">Código</label>
-                  <input type="text" autocomplete="off"  value="0" class="form-control " onkeypress="return isNumber(event)" name="codigo" id="codigo" placeholder="" required>                    
+
+                <div style="display:none" class="col-md-6 mb-3">
+                  <label for="codigo">Código</label>
+                  <input 
+                    type="text"
+                    autocomplete="off"
+                    value="0"
+                    class="form-control"
+                    onkeypress="return isNumber(event)"
+                    name="codigo"
+                    id="codigo"
+                    required
+                  >
                 </div>
-                <div class="col-md-3 mb-3" >
-                  <label for="lastName">Primer nombre</label>
-                  <input type="text" autocomplete="off" class="form-control  "  maxLength="255" name="nombre1" id="nombre1" placeholder="" required>                    
-                </div>
-                <div class="col-md-3 mb-3" >
-                  <label for="lastName">Segundo nombre</label>
-                  <input type="text" autocomplete="off" class="form-control "  maxLength="255" name="nombre2" id="nombre2" placeholder="" >                    
-                </div>
-                <div class="col-md-3 mb-3" >
-                  <label for="lastName">Primer Apellido</label>
-                  <input type="text" autocomplete="off" class="form-control "  maxLength="255" name="apellido1" id="apellido1" placeholder="" >                    
-                </div>
-                <div class="col-md-3 mb-3" >
-                  <label for="lastName">Segundo apellido</label>
-                  <input type="text" autocomplete="off" class="form-control "  maxLength="255" name="apellido2" id="apellido2" placeholder="" >                    
-                </div>
-                <div class="col-md-6 mb-3" >
-                  <label for="lastName">Cédula</label>
-                  <input type="text" autocomplete="off" class="form-control "  maxLength="11"  onkeypress="return isNumber(event)" name="cedula" id="cedula" placeholder="" >                    
-                </div>
-                <div class="col-md-6 mb-3">
-                  <label for="lastName">Email</label>
-                  <input type="email" autocomplete="off" class="form-control"  maxLength="100" name="email" id="email" placeholder="" >                   
-                </div>
-                <div class="col-md-6 mb-3">
-                  <label for="lastName">Teléfono</label>
-                  <input type="text" autocomplete="off" onkeypress="return isNumber(event)"  maxLength="15" class="form-control " name="telefono" id="telefono" placeholder="" required>                    
-                </div>
+
                 <div class="col-md-3 mb-3">
-                  <label for="firstName">Pais</label>
-                  <select style="width:100%" name="select_pais" onchange="traer_deptos(this.value)" required id="select_pais" class="form-control form-control-md paises">
+                  <label for="nombre1">Primer nombre</label>
+                  <input 
+                    type="text"
+                    autocomplete="off"
+                    class="form-control"
+                    maxlength="255"
+                    name="nombre1"
+                    id="nombre1"
+                    required
+                  >
+                </div>
+
+                <div class="col-md-3 mb-3">
+                  <label for="nombre2">Segundo nombre</label>
+                  <input 
+                    type="text"
+                    autocomplete="off"
+                    class="form-control"
+                    maxlength="255"
+                    name="nombre2"
+                    id="nombre2"
+                  >
+                </div>
+
+                <div class="col-md-3 mb-3">
+                  <label for="apellido1">Primer Apellido</label>
+                  <input 
+                    type="text"
+                    autocomplete="off"
+                    class="form-control"
+                    maxlength="255"
+                    name="apellido1"
+                    id="apellido1"
+                  >
+                </div>
+
+                <div class="col-md-3 mb-3">
+                  <label for="apellido2">Segundo apellido</label>
+                  <input 
+                    type="text"
+                    autocomplete="off"
+                    class="form-control"
+                    maxlength="255"
+                    name="apellido2"
+                    id="apellido2"
+                  >
+                </div>
+
+                <div class="col-md-6 mb-3">
+                  <label for="cedula">Cédula</label>
+                  <input 
+                    type="text"
+                    autocomplete="off"
+                    class="form-control"
+                    maxlength="11"
+                    onkeypress="return isNumber(event)"
+                    name="cedula"
+                    id="cedula"
+                  >
+                </div>
+
+                <div class="col-md-6 mb-3">
+                  <label for="email">Email</label>
+                  <input 
+                    type="email"
+                    autocomplete="off"
+                    class="form-control"
+                    maxlength="100"
+                    name="email"
+                    id="email"
+                  >
+                </div>
+
+                <div class="col-md-6 mb-3">
+                  <label for="telefono">Teléfono</label>
+                  <input 
+                    type="text"
+                    autocomplete="off"
+                    onkeypress="return isNumber(event)"
+                    maxlength="15"
+                    class="form-control"
+                    name="telefono"
+                    id="telefono"
+                    required
+                  >
+                </div>
+
+                <div class="col-md-3 mb-3">
+                  <label for="select_pais">Pais</label>
+                  <select 
+                    style="width:100%"
+                    name="select_pais"
+                    onchange="traer_deptos(this.value)"
+                    required
+                    id="select_pais"
+                    class="form-control form-control-md paises"
+                  >
                     <option value="">Seleccionar</option>
                   </select>
                 </div>
+
                 <div class="col-md-3 mb-3">
-                  <label for="firstName">Departamento</label>
-                  <select style="width:100%" name="select_deptos" id="select_deptos" class="form-control form-control-md deptos">
+                  <label for="select_deptos">Departamento</label>
+                  <select 
+                    style="width:100%"
+                    name="select_deptos"
+                    id="select_deptos"
+                    class="form-control form-control-md deptos"
+                  >
                     <option value="">Seleccionar</option>
                   </select>
                 </div>
+
                 <div class="col-md-6 mb-3">
-                  <label for="lastName">Ciudad</label>
-                  <input type="text" autocomplete="off" class="form-control "  maxLength="255" name="ciudad" id="ciudad" placeholder="" >                    
+                  <label for="ciudad">Ciudad</label>
+                  <input 
+                    type="text"
+                    autocomplete="off"
+                    class="form-control"
+                    maxlength="255"
+                    name="ciudad"
+                    id="ciudad"
+                  >
                 </div>
+
                 <div class="col-md-6 mb-3">
-                  <label for="lastName">Dirección</label>
-                  <input type="text" autocomplete="off" class="form-control "  maxLength="100" name="direccion" id="direccion" placeholder="">                    
+                  <label for="direccion">Dirección</label>
+                  <input 
+                    type="text"
+                    autocomplete="off"
+                    class="form-control"
+                    maxlength="100"
+                    name="direccion"
+                    id="direccion"
+                  >
                 </div>
+
                 <div class="col-md-6 mb-3" style="display:none">
-                  <label for="firstName">Perfil</label>
-                  <select style="width:100%" name="tipo" required id="tipo" class="form-control form-control-md terminos_condiciones">
+                  <label for="tipo">Perfil</label>
+                  <select 
+                    style="width:100%"
+                    name="tipo"
+                    required
+                    id="tipo"
+                    class="form-control form-control-md terminos_condiciones"
+                  >
                     <option value="TITULAR">Titular</option>
                   </select>
                 </div>
-                <div class="col-md-12 mb-3 d-flex justify-content-center">
-                  <button type="submit" class="btn btn-success mr-2">Guardar usuario</button>
-                  <!-- <div class="btn btn-warning text-white">Cancelar</div> -->
+
+                <div class="col-md-12 mb-3">
+                  <button type="submit" class="btn btn-success float-right">
+                    Guardar usuario
+                  </button>
                 </div>
+
               </div>
-              <div class="row">
-                
-              </div>
-              
+
+              <div class="row"></div>
+
             </form>
+
           </div>
         </div>
+
       </div>
+
     </div>
+
   </div>
 </div>
+
 <?php require 'partials/librerias.php'; ?>
 
 <script>
@@ -1879,71 +2146,41 @@ session_start();
             const totaladult_d = n_adult_d * tarifa_adult_d;
             const totaladult_t_c = n_adult_t_c * tarifa_adult_t_c;
 
+            const rows = [];
+            const pushRow = (label, qty, unit, total) => {
+              const q = parseInt(qty || 0) || 0;
+              const t = parseInt(total || 0) || 0;
+              if (q <= 0 || t <= 0) return;
+              rows.push({ label, qty: q, unit: parseInt(unit || 0) || 0, total: t });
+            };
+
             if (tipo_servicio == '0') {
-              return `<tbody>
-                        <tr>
-                            <td class="table-number">1</td>
-                            <td>Niños (3-11 Años)</td>
-                            <td style="text-align: center;">${n_child}</td>
-                            <td class="table-right">$${puntosDecimales(tarifa_child)}</td>
-                            <td class="table-right">$${puntosDecimales(totalchild)}</td>
-                        </tr>
-                        <tr>
-                            <td class="table-number">2</td>
-                            <td>Adultos</td>
-                            <td style="text-align: center;">${n_adult_s}</td>
-                            <td class="table-right">$${puntosDecimales(tarifa_adult_s)}</td>
-                            <td class="table-right">$${puntosDecimales(totaladult_s)}</td>
-                        </tr>
-                      </tbody>`;
+              pushRow('Niños (3-11 Años)', n_child, tarifa_child, totalchild);
+              pushRow('Adultos', n_adult_s, tarifa_adult_s, totaladult_s);
+            } else if (tipo_servicio == '1') {
+              pushRow('Niños', n_child, tarifa_child, totalchild);
+              pushRow('Adultos normal', n_adult_s, tarifa_adult_s, totaladult_s);
+              pushRow('Adultos dobles', n_adult_d, tarifa_adult_d, totaladult_d);
+              pushRow('Adultos triple / Cuadruple', n_adult_t_c, tarifa_adult_t_c, totaladult_t_c);
+            } else if (tipo_servicio == '2') {
+              pushRow('N° Alquiler', n_adult_s, tarifa_adult_s, totaladult_s);
             }
 
-            if (tipo_servicio == '1') {
-              return `<tbody>
-                        <tr>
-                            <td class="table-number">1</td>
-                            <td>Niños</td>
-                            <td style="text-align: center;">${n_child}</td>
-                            <td class="table-right">$${puntosDecimales(tarifa_child)}</td>
-                            <td class="table-right">$${puntosDecimales(totalchild)}</td>
-                        </tr>
-                        <tr>
-                            <td class="table-number">2</td>
-                            <td>Adultos normal</td>
-                            <td style="text-align: center;">${n_adult_s}</td>
-                            <td class="table-right">$${puntosDecimales(tarifa_adult_s)}</td>
-                            <td class="table-right">$${puntosDecimales(totaladult_s)}</td>
-                        </tr>
-                        <tr>
-                            <td class="table-number">3</td>
-                            <td>Adultos dobles</td>
-                            <td style="text-align: center;">${n_adult_d}</td>
-                            <td class="table-right">$${puntosDecimales(tarifa_adult_d)}</td>
-                            <td class="table-right">$${puntosDecimales(totaladult_d)}</td>
-                        </tr>
-                        <tr>
-                            <td class="table-number">4</td>
-                            <td>Adultos triple / Cuadruple</td>
-                            <td style="text-align: center;">${n_adult_t_c}</td>
-                            <td class="table-right">$${puntosDecimales(tarifa_adult_t_c)}</td>
-                            <td class="table-right">$${puntosDecimales(totaladult_t_c)}</td>
-                        </tr>
-                      </tbody>`;
-            }
+            if (rows.length === 0) return `<tbody></tbody>`;
 
-            if (tipo_servicio == '2') {
-              return `<tbody>
-                        <tr>
-                            <td class="table-number">1</td>
-                            <td>N° Alquiler</td>
-                            <td style="text-align: center;">${n_adult_s}</td>
-                            <td class="table-right">$${puntosDecimales(tarifa_adult_s)}</td>
-                            <td class="table-right">$${puntosDecimales(totaladult_s)}</td>
-                        </tr>
-                      </tbody>`;
-            }
-
-            return `<tbody></tbody>`;
+            let html = '<tbody>';
+            rows.forEach((r, idx) => {
+              html += `
+                <tr>
+                  <td class="table-number">${idx + 1}</td>
+                  <td>${r.label}</td>
+                  <td style="text-align: center;">${r.qty}</td>
+                  <td class="table-right">$${puntosDecimales(r.unit)}</td>
+                  <td class="table-right">$${puntosDecimales(r.total)}</td>
+                </tr>`;
+            });
+            html += '</tbody>';
+            return html;
           };
 
           // Render del modal: mostrar todas las cotizaciones (no solo la primera)
@@ -2471,13 +2708,13 @@ session_start();
                 ${resumenCotizacionesModalHTML}
 
                 <div class="cotizacion-footer">
-                  <div class="footer-thank-you">Gracias por elegir ${nombre_hotel}: Estamos listos para recibirte.</div>
                   <div class="footer-company">${nombre_hotel.toUpperCase()}</div>
                   <div class="footer-contact">
                     ${direccion_hotel} - ${pais_hotel}, ${depto_hotel} - Tel: ${telefono_hotel}
                   </div>
                 </div>
               </div>`
+              //<div class="footer-thank-you">Gracias por elegir ${nombre_hotel}: Estamos listos para recibirte.</div>
           $(".loader").css("display", "none")
 
           $("#print_cotizacion").html(fila)
@@ -2801,24 +3038,36 @@ session_start();
             {text: 'Total', style: 'tableHeader', alignment: 'right', fillColor: COLOR_TABLE_HDR}
           ]
         ];
-        
+
+        const detailRows = [];
+        const addDetailRow = (label, qty, unit, total) => {
+          const q = parseInt(qty || 0) || 0;
+          const t = parseInt(total || 0) || 0;
+          if (q <= 0 || t <= 0) return;
+          detailRows.push({ label, qty: q, unit: parseInt(unit || 0) || 0, total: t });
+        };
+
         if (cot.tipo_servicio == '0') {
-          tableBody.push(
-            ['1', 'Niños (3-11 Años)', {text: cot.n_child, alignment: 'center'}, {text: '$' + puntosDecimales(cot.tarifa_child), alignment: 'right'}, {text: '$' + puntosDecimales(cot.totalchild), alignment: 'right'}],
-            ['2', 'Adultos', {text: cot.n_adult_s, alignment: 'center'}, {text: '$' + puntosDecimales(cot.tarifa_adult_s), alignment: 'right'}, {text: '$' + puntosDecimales(cot.totaladult_s), alignment: 'right'}]
-          );
+          addDetailRow('Niños (3-11 Años)', cot.n_child, cot.tarifa_child, cot.totalchild);
+          addDetailRow('Adultos', cot.n_adult_s, cot.tarifa_adult_s, cot.totaladult_s);
         } else if (cot.tipo_servicio == '1') {
-          tableBody.push(
-            ['1', 'Niños', {text: cot.n_child, alignment: 'center'}, {text: '$' + puntosDecimales(cot.tarifa_child), alignment: 'right'}, {text: '$' + puntosDecimales(cot.totalchild), alignment: 'right'}],
-            ['2', 'Adultos normal', {text: cot.n_adult_s, alignment: 'center'}, {text: '$' + puntosDecimales(cot.tarifa_adult_s), alignment: 'right'}, {text: '$' + puntosDecimales(cot.totaladult_s), alignment: 'right'}],
-            ['3', 'Adultos dobles', {text: cot.n_adult_d, alignment: 'center'}, {text: '$' + puntosDecimales(cot.tarifa_adult_d), alignment: 'right'}, {text: '$' + puntosDecimales(cot.totaladult_d), alignment: 'right'}],
-            ['4', 'Adultos triple/Cuádruple', {text: cot.n_adult_t_c, alignment: 'center'}, {text: '$' + puntosDecimales(cot.tarifa_adult_t_c), alignment: 'right'}, {text: '$' + puntosDecimales(cot.totaladult_t_c), alignment: 'right'}]
-          );
+          addDetailRow('Niños', cot.n_child, cot.tarifa_child, cot.totalchild);
+          addDetailRow('Adultos normal', cot.n_adult_s, cot.tarifa_adult_s, cot.totaladult_s);
+          addDetailRow('Adultos dobles', cot.n_adult_d, cot.tarifa_adult_d, cot.totaladult_d);
+          addDetailRow('Adultos triple/Cuádruple', cot.n_adult_t_c, cot.tarifa_adult_t_c, cot.totaladult_t_c);
         } else if (cot.tipo_servicio == '2') {
-          tableBody.push(
-            ['1', 'N° Alquiler', {text: cot.n_adult_s, alignment: 'center'}, {text: '$' + puntosDecimales(cot.tarifa_adult_s), alignment: 'right'}, {text: '$' + puntosDecimales(cot.totaladult_s), alignment: 'right'}]
-          );
+          addDetailRow('N° Alquiler', cot.n_adult_s, cot.tarifa_adult_s, cot.totaladult_s);
         }
+
+        detailRows.forEach((r, idx2) => {
+          tableBody.push([
+            String(idx2 + 1),
+            r.label,
+            {text: String(r.qty), alignment: 'center'},
+            {text: '$' + puntosDecimales(r.unit), alignment: 'right'},
+            {text: '$' + puntosDecimales(r.total), alignment: 'right'}
+          ]);
+        });
         
         contentArray.push({
           table: {
@@ -2894,23 +3143,35 @@ session_start();
         ]
       ];
 
+      const legacyDetailRows = [];
+      const addLegacyRow = (label, qty, unit, total) => {
+        const q = parseInt(qty || 0) || 0;
+        const t = parseInt(total || 0) || 0;
+        if (q <= 0 || t <= 0) return;
+        legacyDetailRows.push({ label, qty: q, unit: parseInt(unit || 0) || 0, total: t });
+      };
+
       if (data.tipo_servicio == '0') {
-        tableBody.push(
-          ['1', 'Niños (3-11 Años)', {text: data.n_child, alignment: 'center'}, {text: '$' + puntosDecimales(data.tarifa_child), alignment: 'right'}, {text: '$' + puntosDecimales(data.totalchild), alignment: 'right'}],
-          ['2', 'Adultos', {text: data.n_adult_s, alignment: 'center'}, {text: '$' + puntosDecimales(data.tarifa_adult_s), alignment: 'right'}, {text: '$' + puntosDecimales(data.totaladult_s), alignment: 'right'}]
-        );
+        addLegacyRow('Niños (3-11 Años)', data.n_child, data.tarifa_child, data.totalchild);
+        addLegacyRow('Adultos', data.n_adult_s, data.tarifa_adult_s, data.totaladult_s);
       } else if (data.tipo_servicio == '1') {
-        tableBody.push(
-          ['1', 'Niños', {text: data.n_child, alignment: 'center'}, {text: '$' + puntosDecimales(data.tarifa_child), alignment: 'right'}, {text: '$' + puntosDecimales(data.totalchild), alignment: 'right'}],
-          ['2', 'Adultos normal', {text: data.n_adult_s, alignment: 'center'}, {text: '$' + puntosDecimales(data.tarifa_adult_s), alignment: 'right'}, {text: '$' + puntosDecimales(data.totaladult_s), alignment: 'right'}],
-          ['3', 'Adultos dobles', {text: data.n_adult_d, alignment: 'center'}, {text: '$' + puntosDecimales(data.tarifa_adult_d), alignment: 'right'}, {text: '$' + puntosDecimales(data.totaladult_d), alignment: 'right'}],
-          ['4', 'Adultos triple/Cuádruple', {text: data.n_adult_t_c, alignment: 'center'}, {text: '$' + puntosDecimales(data.tarifa_adult_t_c), alignment: 'right'}, {text: '$' + puntosDecimales(data.totaladult_t_c), alignment: 'right'}]
-        );
+        addLegacyRow('Niños', data.n_child, data.tarifa_child, data.totalchild);
+        addLegacyRow('Adultos normal', data.n_adult_s, data.tarifa_adult_s, data.totaladult_s);
+        addLegacyRow('Adultos dobles', data.n_adult_d, data.tarifa_adult_d, data.totaladult_d);
+        addLegacyRow('Adultos triple/Cuádruple', data.n_adult_t_c, data.tarifa_adult_t_c, data.totaladult_t_c);
       } else if (data.tipo_servicio == '2') {
-        tableBody.push(
-          ['1', 'N° Alquiler', {text: data.n_adult_s, alignment: 'center'}, {text: '$' + puntosDecimales(data.tarifa_adult_s), alignment: 'right'}, {text: '$' + puntosDecimales(data.totaladult_s), alignment: 'right'}]
-        );
+        addLegacyRow('N° Alquiler', data.n_adult_s, data.tarifa_adult_s, data.totaladult_s);
       }
+
+      legacyDetailRows.forEach((r, idx3) => {
+        tableBody.push([
+          String(idx3 + 1),
+          r.label,
+          {text: String(r.qty), alignment: 'center'},
+          {text: '$' + puntosDecimales(r.unit), alignment: 'right'},
+          {text: '$' + puntosDecimales(r.total), alignment: 'right'}
+        ]);
+      });
       
       // Contenido formato antiguo
       contentArray = [
@@ -3357,15 +3618,65 @@ session_start();
   function show_traer_tabla_cotizacion(){
     setTimeout(() => {
       traer_tabla_cotizacion()
-    }, 100);
+    }, 500);
   }
+
+  // Cuando se muestra el tab "Buscar", ajustar anchos (evita desbordes por inicialización en tabs)
+  (function bindTablaCotizacionAdjustOnTab(){
+    function bind(){
+      if (!window.jQuery) return;
+      $(document).on('shown.bs.tab', 'a[data-toggle="tab"][href="#profile"]', function () {
+        if ($.fn.DataTable.isDataTable('#tabla_cotizacion') && typeof dtable !== 'undefined') {
+          try {
+            dtable.columns.adjust();
+            if (dtable.responsive && dtable.responsive.recalc) {
+              dtable.responsive.recalc();
+            }
+          } catch (e) {}
+        }
+      });
+    }
+
+    if (window.jQuery) {
+      bind();
+    } else {
+      document.addEventListener('DOMContentLoaded', bind);
+    }
+  })();
 
   function traer_tabla_cotizacion(){
 
+      function escapeHtml(value) {
+        return String(value ?? '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
       if ( ! $.fn.DataTable.isDataTable('#tabla_cotizacion')) {
 			  dtable = $("#tabla_cotizacion").DataTable({
-          "scrollY": true,
-        "order": [[3, "desc"]],
+          "autoWidth": false,
+          "order": [[3, "desc"]],
+          "responsive": {
+            details: {
+              type: 'inline',
+              target: 'tr'
+            }
+          },
+
+          "initComplete": function(){
+            const api = this.api();
+            setTimeout(() => {
+              try {
+                api.columns.adjust();
+                if (api.responsive && api.responsive.recalc) {
+                  api.responsive.recalc();
+                }
+              } catch (e) {}
+            }, 0);
+          },
 					"ajax": {
 					"url": "php/sel_recursos.php",
 					"type": "POST",
@@ -3390,11 +3701,42 @@ session_start();
             { "data": ""}
           ],
 				 "columnDefs": [
+          {
+            targets: 0,
+            responsivePriority: 6
+          },
+          {
+            targets: 1,
+            responsivePriority: 2,
+            render: function(data, type){
+              if (type !== 'display') return data;
+              const safe = escapeHtml(data);
+              return `<span class="dt-truncate" title="${safe}">${safe}</span>`;
+            }
+          },
+          {
+            targets: 2,
+            responsivePriority: 4,
+            render: function(data, type){
+              if (type !== 'display') return data;
+              const safe = escapeHtml(data);
+              return `<span class="dt-truncate" title="${safe}">${safe}</span>`;
+            }
+          },
+          {
+            targets: 3,
+            responsivePriority: 3
+          },
+          {
+            targets: 4,
+            responsivePriority: 5
+          },
 					 {
             "targets": 5,
+            "responsivePriority": 1,
 						"data":"",
 						 render: function ( data, type, row ) {
-							return  `<button class="btn btn-link" onclick="traer_cotizacion(${row.id})"><i class="fa fa-eye" aria-hidden="true"></i></button>`;
+              return  `<button class="btn btn-link" onclick="event.stopPropagation(); traer_cotizacion(${row.id})"><i class="fa fa-eye" aria-hidden="true"></i></button>`;
 						 }
 					}],
 				});
@@ -3905,66 +4247,43 @@ session_start();
 
     function renderTablaDetalle(cot) {
       const tipoServicio = String(cot.tipo_servicio);
+
+      const rows = [];
+      const pushRow = (label, qty, unit, total) => {
+        const q = parseInt(qty || 0) || 0;
+        const t = parseInt(total || 0) || 0;
+        if (q <= 0 || t <= 0) return;
+        rows.push({ label, qty: q, unit: parseInt(unit || 0) || 0, total: t });
+      };
+
       if (tipoServicio === '0') {
-        return `<tbody>
-          <tr>
-            <td class="table-number">1</td>
-            <td>Niños</td>
-            <td style="text-align:center;">${cot.n_child}</td>
-            <td class="table-right">$${puntosDecimales(cot.tarifa_child)}</td>
-            <td class="table-right">$${puntosDecimales(cot.totalchild)}</td>
-          </tr>
-          <tr>
-            <td class="table-number">2</td>
-            <td>Adultos</td>
-            <td style="text-align:center;">${cot.n_adult_s}</td>
-            <td class="table-right">$${puntosDecimales(cot.tarifa_adult_s)}</td>
-            <td class="table-right">$${puntosDecimales(cot.totaladult_s)}</td>
-          </tr>
-        </tbody>`;
+        pushRow('Niños', cot.n_child, cot.tarifa_child, cot.totalchild);
+        pushRow('Adultos', cot.n_adult_s, cot.tarifa_adult_s, cot.totaladult_s);
+      } else if (tipoServicio === '1') {
+        pushRow('Niños', cot.n_child, cot.tarifa_child, cot.totalchild);
+        pushRow('Adultos individual', cot.n_adult_s, cot.tarifa_adult_s, cot.totaladult_s);
+        pushRow('Adultos doble', cot.n_adult_d, cot.tarifa_adult_d, cot.totaladult_d);
+        pushRow('Adultos triple/cuadruple', cot.n_adult_t_c, cot.tarifa_adult_t_c, cot.totaladult_t_c);
+      } else {
+        // tipo_servicio 2 (alquiler) u otros
+        pushRow('Valor', cot.n_adult_s, cot.tarifa_adult_s, cot.totaladult_s);
       }
-      if (tipoServicio === '1') {
-        return `<tbody>
+
+      if (rows.length === 0) return '<tbody></tbody>';
+
+      let html = '<tbody>';
+      rows.forEach((r, idx) => {
+        html += `
           <tr>
-            <td class="table-number">1</td>
-            <td>Niños</td>
-            <td style="text-align:center;">${cot.n_child}</td>
-            <td class="table-right">$${puntosDecimales(cot.tarifa_child)}</td>
-            <td class="table-right">$${puntosDecimales(cot.totalchild)}</td>
-          </tr>
-          <tr>
-            <td class="table-number">2</td>
-            <td>Adultos individual</td>
-            <td style="text-align:center;">${cot.n_adult_s}</td>
-            <td class="table-right">$${puntosDecimales(cot.tarifa_adult_s)}</td>
-            <td class="table-right">$${puntosDecimales(cot.totaladult_s)}</td>
-          </tr>
-          <tr>
-            <td class="table-number">3</td>
-            <td>Adultos doble</td>
-            <td style="text-align:center;">${cot.n_adult_d}</td>
-            <td class="table-right">$${puntosDecimales(cot.tarifa_adult_d)}</td>
-            <td class="table-right">$${puntosDecimales(cot.totaladult_d)}</td>
-          </tr>
-          <tr>
-            <td class="table-number">4</td>
-            <td>Adultos triple/cuadruple</td>
-            <td style="text-align:center;">${cot.n_adult_t_c}</td>
-            <td class="table-right">$${puntosDecimales(cot.tarifa_adult_t_c)}</td>
-            <td class="table-right">$${puntosDecimales(cot.totaladult_t_c)}</td>
-          </tr>
-        </tbody>`;
-      }
-      // tipo_servicio 2 (alquiler) u otros
-      return `<tbody>
-        <tr>
-          <td class="table-number">1</td>
-          <td>Valor</td>
-          <td style="text-align:center;">${cot.n_adult_s}</td>
-          <td class="table-right">$${puntosDecimales(cot.tarifa_adult_s)}</td>
-          <td class="table-right">$${puntosDecimales(cot.totaladult_s)}</td>
-        </tr>
-      </tbody>`;
+            <td class="table-number">${idx + 1}</td>
+            <td>${r.label}</td>
+            <td style="text-align:center;">${r.qty}</td>
+            <td class="table-right">$${puntosDecimales(r.unit)}</td>
+            <td class="table-right">$${puntosDecimales(r.total)}</td>
+          </tr>`;
+      });
+      html += '</tbody>';
+      return html;
     }
 
     function renderBulletsFromNewlines(texto) {
