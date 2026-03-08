@@ -13,7 +13,7 @@ session_start();
   if ($_SESSION['menu_general']['success']) {
     for ($i=0; $i < count($_SESSION['menu_general']['resultado']) ; $i++) { 
         if ($_SESSION['menu_general']['resultado'][$i]['nombre'] == 'usuarios') {
-          $usuarios = '<button type="button" class="btn btn-link btn-sm float-right" data-toggle="modal" data-target=".crear_titular_modal" >Crear titular</button>';
+          $usuarios = '<button type="button" class="btn btn-link btn-sm float-right" data-toggle="modal" data-target=".crear_titular_modal" >Crear Cliente</button>';
         }
     }
   }
@@ -598,7 +598,7 @@ session_start();
                 </div>
                 <div class="col-md-12 mb-3">
                   <?php echo $usuarios ?>
-                  <label for="firstName">Nombre del titular</label>
+                  <label for="firstName">Nombre del cliente</label>
                     <select style="width:100%" name="id_usuario" required id="id_usuario" onchange="detalle_titular(this.value)" class="form-control form-control-md id_usuarios">
                       <option value="">Seleccionar</option>
                     </select>
@@ -927,7 +927,7 @@ session_start();
                       <div class="section-icon">
                         <i class="fas fa-user"></i>
                       </div>
-                      <h2 class="section-title">Información del titular</h2>
+                      <h2 class="section-title">Información del cliente</h2>
                     </div>
                     <div class="info-grid">
                       <div class="info-item">
@@ -1116,12 +1116,12 @@ session_start();
 
 
 <div class="modal fade crear_titular_modal" id="crear_titular_modal" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
+  <div class="modal-dialog">
     
     <div class="modal-content">
       
       <div class="modal-header">
-        <h5 class="modal-title">Crear titular</h5>
+        <h5 class="modal-title">Crear Cliente</h5>
 
         <div id="btn_pdf_crear_titular"></div>
 
@@ -1158,7 +1158,7 @@ session_start();
                   >
                 </div>
 
-                <div class="col-md-3 mb-3">
+                <div class="col-md-12 mb-3">
                   <label for="nombre1">Primer nombre</label>
                   <input 
                     type="text"
@@ -1171,7 +1171,7 @@ session_start();
                   >
                 </div>
 
-                <div class="col-md-3 mb-3">
+                <div class="col-md-12 mb-3">
                   <label for="nombre2">Segundo nombre</label>
                   <input 
                     type="text"
@@ -1183,7 +1183,7 @@ session_start();
                   >
                 </div>
 
-                <div class="col-md-3 mb-3">
+                <div class="col-md-12 mb-3">
                   <label for="apellido1">Primer Apellido</label>
                   <input 
                     type="text"
@@ -1195,7 +1195,7 @@ session_start();
                   >
                 </div>
 
-                <div class="col-md-3 mb-3">
+                <div class="col-md-12 mb-3">
                   <label for="apellido2">Segundo apellido</label>
                   <input 
                     type="text"
@@ -1207,7 +1207,7 @@ session_start();
                   >
                 </div>
 
-                <div class="col-md-6 mb-3">
+                <div class="col-md-12 mb-3">
                   <label for="cedula">Cédula</label>
                   <input 
                     type="text"
@@ -1220,7 +1220,7 @@ session_start();
                   >
                 </div>
 
-                <div class="col-md-6 mb-3">
+                <div class="col-md-12 mb-3">
                   <label for="email">Email</label>
                   <input 
                     type="email"
@@ -1232,7 +1232,7 @@ session_start();
                   >
                 </div>
 
-                <div class="col-md-6 mb-3">
+                <div class="col-md-12 mb-3">
                   <label for="telefono">Teléfono</label>
                   <input 
                     type="text"
@@ -1246,7 +1246,7 @@ session_start();
                   >
                 </div>
 
-                <div class="col-md-3 mb-3">
+                <div class="col-md-12 mb-3">
                   <label for="select_pais">Pais</label>
                   <select 
                     style="width:100%"
@@ -1260,7 +1260,7 @@ session_start();
                   </select>
                 </div>
 
-                <div class="col-md-3 mb-3">
+                <div class="col-md-12 mb-3">
                   <label for="select_deptos">Departamento</label>
                   <select 
                     style="width:100%"
@@ -1272,7 +1272,7 @@ session_start();
                   </select>
                 </div>
 
-                <div class="col-md-6 mb-3">
+                <div class="col-md-12 mb-3">
                   <label for="ciudad">Ciudad</label>
                   <input 
                     type="text"
@@ -1284,7 +1284,7 @@ session_start();
                   >
                 </div>
 
-                <div class="col-md-6 mb-3">
+                <div class="col-md-12 mb-3">
                   <label for="direccion">Dirección</label>
                   <input 
                     type="text"
@@ -1296,7 +1296,7 @@ session_start();
                   >
                 </div>
 
-                <div class="col-md-6 mb-3" style="display:none">
+                <div class="col-md-12 mb-3" style="display:none">
                   <label for="tipo">Perfil</label>
                   <select 
                     style="width:100%"
@@ -1305,7 +1305,7 @@ session_start();
                     id="tipo"
                     class="form-control form-control-md terminos_condiciones"
                   >
-                    <option value="TITULAR">Titular</option>
+                    <option value="TITULAR">Cliente</option>
                   </select>
                 </div>
 
@@ -2681,7 +2681,7 @@ session_start();
                     <div class="section-icon">
                       <i class="fas fa-user"></i>
                     </div>
-                    <h2 class="section-title">Información del titular</h2>
+                    <h2 class="section-title">Información del Cliente</h2>
                   </div>
                   <div class="info-grid">
                     <div class="info-item">
@@ -3178,8 +3178,8 @@ session_start();
         // Línea separadora
         makeSeparator([0, 0, 0, 16]),
         
-        // Información del titular
-        makeSectionHeader('Información del Titular', [0, 0, 0, 10]),
+        // Información del cliente
+        makeSectionHeader('Información del Cliente', [0, 0, 0, 10]),
         {
           columns: [
             [
@@ -3404,9 +3404,9 @@ session_start();
         };
       },
       content: [
-        // Línea separadora y info del titular (solo para múltiples)
+        // Línea separadora y info del cliente (solo para múltiples)
         ...(cotizaciones.length > 0 ? [
-          makeSectionHeader('Información del Titular', [0, 0, 0, 10]),
+          makeSectionHeader('Información del Cliente', [0, 0, 0, 10]),
           {
             columns: [
               {
@@ -4005,7 +4005,7 @@ session_start();
       }
       if (!$("#id_usuario").val()) {
         const $el = $("#id_usuario");
-        mostrarErrorCampo($el, 'Selecciona un titular para la cotización');
+        mostrarErrorCampo($el, 'Selecciona un Cliente para la cotización');
         $el[0]?.scrollIntoView({ behavior: 'smooth', block: 'center' });
         return;
       }
@@ -4061,9 +4061,9 @@ session_start();
   }
 
   function previsualizarPDFBorrador() {
-    // Validar que haya un titular seleccionado
+    // Validar que haya un cliente seleccionado
     if (!$("#id_usuario").val()) {
-      ccAlert('Debes seleccionar un titular antes de previsualizar el PDF', 'error');
+      ccAlert('Debes seleccionar un cliente antes de previsualizar el PDF', 'error');
       return;
     }
 
@@ -4423,7 +4423,7 @@ session_start();
         </div>
 
         <div class="cotizacion-section">
-          <div class="section-header"><h2 class="section-title">Titular</h2></div>
+          <div class="section-header"><h2 class="section-title">Cliente</h2></div>
           <div class="info-grid">
             <div class="info-item"><span class="info-label">Nombre</span><span class="info-value">${titularNombre}</span></div>
             <div class="info-item"><span class="info-label">Email</span><span class="info-value">${titularEmail}</span></div>
