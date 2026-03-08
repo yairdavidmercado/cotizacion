@@ -9,7 +9,7 @@ session_start();
     header ("Location:welcome.php"); 
   }
 
-  $usuarios = '<button type="button" class="btn btn-link btn-sm float-right" data-toggle="modal" data-target=".crear_titular_modal" >Crear titular</button>';
+  $usuarios = '<button type="button" class="btn btn-link btn-sm float-right" data-toggle="modal" data-target=".crear_titular_modal" >Crear Cliente</button>';
   if ($_SESSION['menu_general']['success']) {
     for ($i=0; $i < count($_SESSION['menu_general']['resultado']) ; $i++) { 
         if ($_SESSION['menu_general']['resultado'][$i]['nombre'] == 'usuarios') {
@@ -147,7 +147,7 @@ session_start();
         filter: brightness(1.05);
       }
 
-      /* Botón "Crear titular" como link pill */
+      /* Botón "Crear Cliente" como link pill */
       .cc-panel .btn-link{
         color: #2d7ff9 !important;
         font-weight: 700;
