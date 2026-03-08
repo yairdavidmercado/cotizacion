@@ -901,17 +901,17 @@ session_start();
           <div class="col-12">
             <ul class="nav nav-tabs nav-options" id="myTab" role="tablist">
               <li class="nav-item">
-                <button class="btn btn-option active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Previsualización</button>
+                <button class="btn btn-option active" onclick="show_traer_tabla_cotizacion()" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Buscar</button>
               </li>
               <li class="nav-item">
-                <button class="btn btn-option" onclick="show_traer_tabla_cotizacion()" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Buscar</button>
+                <button class="btn btn-option" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Previsualización</button>
               </li>
               <!-- <li class="nav-item ml-auto">
                 
               </li> -->
             </ul>
             <div class="tab-content" id="myTabContent">
-              <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+              <div class="tab-pane fade" id="home" role="tabpanel" aria-labelledby="home-tab">
                 <div class="d-flex justify-content-end float-right" style="margin: 8px 10px 10px;">
                   <button type="button" class="cc-pdf-fab-btn cc-pdf-fab-btn--sm" onclick="previsualizarPDFBorrador()" title="Previsualizar" aria-label="Previsualizar" id="pdf">
                     <i class="fas fa-eye"></i>
@@ -1062,7 +1062,7 @@ session_start();
                   </div>
                 </div>
               </div>
-              <div class="tab-pane fade dt-responsive" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+              <div class="tab-pane fade show active dt-responsive" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                 <div class="container-fluid">
                   <div class="row">
                     <div class="col-sm-12">
@@ -1358,7 +1358,7 @@ session_start();
   }
 
   $(function() {
-
+    show_traer_tabla_cotizacion();
     $('#DateRange, #DateRange_tour, #DateRange_alq').daterangepicker({
       autoUpdateInput: false,
       locale: {
