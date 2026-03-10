@@ -582,64 +582,115 @@ if ($conn) {
 				// echo no users JSON
 				echo json_encode($response);
 		}
-	}else if ($codigo == "traer_tabla_vaucher") {//titulares
-		$result = mysqli_query($conn, 	"SELECT cotizacion.*, 
-										cotizacion_master.id_titular,
-										cotizacion_master.id_hotel,
-										cotizacion_master.cod_vendedor,
-										cotizacion_master.estado,
-										cotizacion_master.created_at as fecha_expedicion,
-										(SELECT CONCAT(nombre1, ' ', nombre2, ' ', apellido1, ' ', apellido2) FROM usuarios WHERE usuarios.id = cotizacion_master.id_titular) AS nombre_titular,
-										(SELECT cedula FROM usuarios WHERE usuarios.id = cotizacion_master.id_titular) AS cedula_titular,
-										(SELECT nombre FROM motivos WHERE motivos.id = cotizacion.id_motivo) AS nombre_motivo,
-										(SELECT nombre FROM planes WHERE planes.id = cotizacion.id_plan) AS nombre_plan,
-										(SELECT reserva FROM vaucher  WHERE vaucher.id_cotizacion = cotizacion.id AND vaucher.activo = true LIMIT 1) as n_voucher,
-										(SELECT COUNT(vaucher.id) FROM vaucher  WHERE vaucher.id_cotizacion = cotizacion.id AND vaucher.activo = true) as total_vaucher,
-										(SELECT SUM(vaucher.deposito) FROM vaucher  WHERE vaucher.id_cotizacion = cotizacion.id AND vaucher.activo = true) as deposito,
-										(SELECT id FROM vaucher WHERE vaucher.id_cotizacion = cotizacion.id AND vaucher.activo = true order by id desc limit 1) as id_vaucher,
-										(SELECT fecha_crea FROM vaucher WHERE vaucher.id_cotizacion = cotizacion.id AND vaucher.activo = true order by id desc limit 1) as vaucher_fecha_crea
-										FROM cotizacion 
-										INNER JOIN cotizacion_master ON cotizacion.id_principal = cotizacion_master.id
-										WHERE cotizacion_master.id_hotel = $id_hotel $condicion");
-		$data = array();										
+	}else if ($codigo == "traer_tabla_voucher") {//titulares
+		$condicion_master = '';
+		if ($id_perfil !== 'SUPERADMIN') {
+			$condicion_master = "AND cm.id_autor = $id_autor";
+		}
+		$result = mysqli_query($conn, 	
+								"SELECT 
+								cm.id,
+								cm.id_titular,
+								cm.id_hotel,
+								cm.cod_vendedor,
+								cm.estado,
+								cm.id_autor,
+								cm.id_autor_at,
+								cm.created_at,
+								cm.update_at,
+
+								(
+									SELECT CONCAT_WS(' ', u.nombre1, u.nombre2, u.apellido1, u.apellido2)
+									FROM usuarios u
+									WHERE u.id = cm.id_titular
+									LIMIT 1
+								) AS nombre_titular,
+
+								(
+									SELECT CONCAT_WS(' ', ug.nombre1, ug.nombre2, ug.apellido1, ug.apellido2)
+									FROM ".DB_NAME_GLOBAL.".usuarios ug
+									WHERE ug.id = cm.id_autor
+									LIMIT 1
+								) AS nombre_autor,
+
+								COALESCE(ct.total_general, 0) AS total,
+								COALESCE(vt.total_abono, 0) AS total_abono,
+								(COALESCE(ct.total_general, 0) - COALESCE(vt.total_abono, 0)) AS saldo_total
+
+							FROM cotizacion_master cm
+
+							LEFT JOIN (
+								SELECT 
+									c.id_principal,
+									SUM(
+										(
+											COALESCE(c.n_child, 0)    * COALESCE(t.child, 0) +
+											COALESCE(c.n_adult_s, 0)  * COALESCE(t.adult_s, 0) +
+											COALESCE(c.n_adult_d, 0)  * COALESCE(t.adult_d, 0) +
+											COALESCE(c.n_adult_t_c, 0)* COALESCE(t.adult_t_c, 0)
+										) *
+										(
+											CASE
+												WHEN c.noche IS NULL OR c.noche = '' OR c.noche = 'N/A' THEN 1
+												WHEN c.noche REGEXP '^[0-9]+$' THEN CAST(c.noche AS UNSIGNED)
+												ELSE 1
+											END
+										)
+									) AS total_general
+								FROM cotizacion c
+								LEFT JOIN tarifas t 
+									ON t.id = c.id_tarifa
+								WHERE c.activo = 1
+								GROUP BY c.id_principal
+							) ct ON ct.id_principal = cm.id
+
+							LEFT JOIN (
+								SELECT 
+									c.id_principal,
+									SUM(COALESCE(v.deposito, 0)) AS total_abono
+								FROM cotizacion c
+								INNER JOIN vaucher v 
+									ON v.id_cotizacion = c.id
+								AND v.activo = 1
+								WHERE c.activo = 1
+								GROUP BY c.id_principal
+							) vt ON vt.id_principal = cm.id
+
+							WHERE cm.id_hotel = $id_hotel $condicion_master
+							ORDER BY cm.created_at DESC;");
+		$data = array();									
 		if(mysqli_num_rows($result) > 0)
 		{	
 									
 									while ($row = mysqli_fetch_array($result)) {
 									$datos = array();
-										
+									
 									$datos['id'] = $row["id"];
-									$datos['noche'] = $row["noche"];
+									$datos['cod_vendedor'] = $row["cod_vendedor"];
+									$datos['id_titular'] = $row["id_titular"];
 									$datos['nombre_titular'] = $row["nombre_titular"];
-									$datos['cedula_titular'] = $row["cedula_titular"];
-									$datos['fecha_expedicion'] = $row["fecha_expedicion"];
-									$datos['fecha_entrada'] = $row["fecha_entrada"];
-									$datos['fecha_salida'] = $row["fecha_salida"];
-									$datos['nombre_motivo'] = $row["nombre_motivo"];
-									$datos['nombre_plan'] = $row["nombre_plan"];
-									$datos['n_voucher'] = $row["n_voucher"];
-									$datos['total_vaucher'] = $row["total_vaucher"];
-									$datos['deposito'] = $row["deposito"];
-									$datos['id_vaucher'] = $row["id_vaucher"];
-									$datos['vaucher_fecha_crea'] = $row["vaucher_fecha_crea"];
-										
-										
-									// push single product into final response array
+									$datos['estado'] = $row["estado"];
+									$datos['id_autor'] = $row["id_autor"];
+									$datos['nombre_autor'] = $row["nombre_autor"];
+									$datos['created_at'] = $row["created_at"];
+									$datos['update_at'] = $row["update_at"];
+									$datos['total'] = $row["total"];
+									$datos['total_abono'] = $row["total_abono"];
+									$datos['saldo_total'] = $row["saldo_total"];
+									
 									array_push($data, $datos);
-									}
-									$response = array("draw" => 1,
-								    "recordsTotal" => 0,
-								    "recordsFiltered" => 0,
-									"data" => $data);
-									//$response["success"] = true;
-									echo json_encode($response);
+								}
+								$response = array("draw" => 1,
+							    "recordsTotal" => 0,
+							    "recordsFiltered" => 0,
+								"data" => $data);
+								echo json_encode($response);
 
 		}else{
 			$response = array("draw" => 1,
 			"recordsTotal" => 0,
 			"recordsFiltered" => 0,
 			"data" => $data);
-			//$response["success"] = true;
 			echo json_encode($response);
 		}
 	}else if ($codigo == "traer_menu_acciones") {//titulares
