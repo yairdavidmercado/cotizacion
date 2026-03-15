@@ -901,167 +901,13 @@ session_start();
           <div class="col-12">
             <ul class="nav nav-tabs nav-options" id="myTab" role="tablist">
               <li class="nav-item">
-                <button class="btn btn-option active" onclick="show_traer_tabla_voucher()" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Buscar</button>
-              </li>
-              <li class="nav-item">
-                <button class="btn btn-option" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Previsualización</button>
+                <button class="btn btn-option active" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Buscar</button>
               </li>
               <!-- <li class="nav-item ml-auto">
                 
               </li> -->
             </ul>
             <div class="tab-content" id="myTabContent">
-              <div class="tab-pane fade" id="home" role="tabpanel" aria-labelledby="home-tab">
-                <div class="d-flex justify-content-end float-right" style="margin: 8px 10px 10px;">
-                  <button type="button" class="cc-pdf-fab-btn cc-pdf-fab-btn--sm" onclick="previsualizarPDFBorrador()" title="Previsualizar" aria-label="Previsualizar" id="pdf">
-                    <i class="fas fa-eye"></i>
-                  </button>
-                </div>
-                <div class="cotizacion-preview-container" style="max-width: 900px; margin: 0 auto; padding: 1rem;">
-                  <div id="logoGifWrap" style="display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; clear: both;">
-                    <p style="padding: 8rem;color:#e3e3e3">Genera la cotizacion a tu gusto y haz clic en "<i class="text-danger fas fa-eye"></i>" para ver el resultado.</p>
-                    <!-- <img src="assets/img/logo-gif.gif" id="logoGif" style="width: 50%; height: auto; right: 55%;" alt="Imagen decorativa"> -->
-                  </div>
-                  <div class="cotizacion-section" id="content_info_titular" style="display:none">
-                    <div class="section-header">
-                      <div class="section-icon">
-                        <i class="fas fa-user"></i>
-                      </div>
-                      <h2 class="section-title">Información del cliente</h2>
-                    </div>
-                    <div class="info-grid">
-                      <div class="info-item">
-                        <span class="info-label">Nombre</span>
-                        <span class="info-value" id="txt_nombre_titular"></span>
-                      </div>
-                      <div class="info-item">
-                        <span class="info-label">Email</span>
-                        <span class="info-value" id="txt_email_titular"></span>
-                      </div>
-                      <div class="info-item">
-                        <span class="info-label">Cédula</span>
-                        <span class="info-value" id="txt_cedula_titular"></span>
-                      </div>
-                      <div class="info-item">
-                        <span class="info-label">Teléfono</span>
-                        <span class="info-value" id="txt_telefono_titular"></span>
-                      </div>
-                      <div class="info-item" style="grid-column: 1 / -1;">
-                        <span class="info-label">Dirección</span>
-                        <span class="info-value" id="txt_direccion_titular"></span>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="cotizacion-section" id="content_info_planes" style="display:none">
-                    <div class="section-header">
-                      <div class="section-icon">
-                        <i class="fas fa-bed"></i>
-                      </div>
-                      <h2 class="section-title">Acomodación</h2>
-                    </div>
-                    <div class="acomodacion-box">
-                      <div id="content_detalles_plan"></div>
-                      <div id="descripcion_servicios" style="margin-top: 1rem;"></div>
-                      <div id="content_servicios_incluidos" style="margin-top: 1rem; color: #64748b; font-size: 11px;"></div>
-                    </div>
-                  </div>
-                  <div class="cotizacion-section" id="content_info_tarifa" style="display:none">
-                    <div class="section-header">
-                      <div class="section-icon">
-                        <i class="fas fa-list-ul"></i>
-                      </div>
-                      <h2 class="section-title">Detalles - Alojamiento</h2>
-                    </div>
-                    <div class="info-grid" id="detalle_tarifa" style="margin-bottom: 1rem;"></div>
-                    <div class="table-wrapper">
-                      <table class="cotizacion-table">
-                        <thead>
-                          <tr>
-                            <th>Item</th>
-                            <th style="width: 100px; text-align: center;">Cantidad</th>
-                            <th style="width: 140px; text-align: right;">Valor unitario</th>
-                            <th style="width: 120px; text-align: right;">Total</th>
-                          </tr>
-                        </thead>
-                        <tbody id="tbody_tarifa"></tbody>
-                      </table>
-                    </div>
-                    <div class="totals-section" id="content_subtotal"></div>
-                  </div>
-                  <div class="cotizacion-section" id="content_info_planes_tour" style="display:none">
-                    <div class="section-header">
-                      <div class="section-icon">
-                        <i class="fas fa-route"></i>
-                      </div>
-                      <h2 class="section-title">Descripción del Plan - Tour</h2>
-                    </div>
-                    <div class="acomodacion-box">
-                      <div id="content_detalles_plan_tour"></div>
-                      <div id="descripcion_servicios_tour" style="margin-top: 1rem;"></div>
-                      <div id="content_servicios_incluidos_tour" style="margin-top: 1rem; color: #64748b; font-size: 11px;"></div>
-                    </div>
-                  </div>
-                  <div class="cotizacion-section" id="content_info_tarifa_tour" style="display:none">
-                    <div class="section-header">
-                      <div class="section-icon">
-                        <i class="fas fa-route"></i>
-                      </div>
-                      <h2 class="section-title">Detalles - Tour</h2>
-                    </div>
-                    <div class="info-grid" id="detalle_tarifa_tour" style="margin-bottom: 1rem;"></div>
-                    <div class="table-wrapper">
-                      <table class="cotizacion-table">
-                        <thead>
-                          <tr>
-                            <th>Item</th>
-                            <th style="width: 100px; text-align: center;">Cantidad</th>
-                            <th style="width: 140px; text-align: right;">Valor unitario</th>
-                            <th style="width: 120px; text-align: right;">Total</th>
-                          </tr>
-                        </thead>
-                        <tbody id="tbody_tarifa_tour"></tbody>
-                      </table>
-                    </div>
-                    <div class="totals-section" id="content_subtotal_tour"></div>
-                  </div>
-                  <div class="cotizacion-section" id="content_info_planes_alq" style="display:none">
-                    <div class="section-header">
-                      <div class="section-icon">
-                        <i class="fas fa-car"></i>
-                      </div>
-                      <h2 class="section-title">Descripción del Plan - Alquiler</h2>
-                    </div>
-                    <div class="acomodacion-box">
-                      <div id="content_detalles_plan_alq"></div>
-                      <div id="descripcion_servicios_alq" style="margin-top: 1rem;"></div>
-                      <div id="content_servicios_incluidos_alq" style="margin-top: 1rem; color: #64748b; font-size: 11px;"></div>
-                    </div>
-                  </div>
-                  <div class="cotizacion-section" id="content_info_tarifa_alq" style="display:none">
-                    <div class="section-header">
-                      <div class="section-icon">
-                        <i class="fas fa-car"></i>
-                      </div>
-                      <h2 class="section-title">Detalles - Alquiler</h2>
-                    </div>
-                    <div class="info-grid" id="detalle_tarifa_alq" style="margin-bottom: 1rem;"></div>
-                    <div class="table-wrapper">
-                      <table class="cotizacion-table">
-                        <thead>
-                          <tr>
-                            <th>Item</th>
-                            <th style="width: 100px; text-align: center;">Cantidad</th>
-                            <th style="width: 140px; text-align: right;">Valor unitario</th>
-                            <th style="width: 120px; text-align: right;">Total</th>
-                          </tr>
-                        </thead>
-                        <tbody id="tbody_tarifa_alq"></tbody>
-                      </table>
-                    </div>
-                    <div class="totals-section" id="content_subtotal_alq"></div>
-                  </div>
-                </div>
-              </div>
               <div class="tab-pane fade show active dt-responsive" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                 <div class="container-fluid">
                   <div class="row">
@@ -1072,9 +918,10 @@ session_start();
                             <tr>
                               <th>ID</th>
                               <th>Cliente</th>
+                              <th>Cantidad</th>
                               <th>Total</th>
-                              <th>Total abono</th>
-                              <th>Saldo total</th>
+                              <th>Total Abono</th>
+                              <th>Saldo Total</th>
                               <th></th>
                             </tr>
                           </thead>
@@ -3697,6 +3544,7 @@ session_start();
         "columns": [
           { "data": "id" },
           { "data": "nombre_titular" },
+          { "data": "total_cotizaciones" },
           { "data": "total" },
           { "data": "total_abono" },
           { "data": "saldo_total" },
@@ -3706,11 +3554,16 @@ session_start();
         "columnDefs": [
           {
             targets: 0,
-            responsivePriority: 2
+            responsivePriority: 1,
+            render: function (data, type) {
+              if (type !== 'display') return data;
+              const safe = escapeHtml(data);
+              return `<button class="btn btn-sm btn-link" onclick="ver_detalle_voucher('${safe}')">${safe}</button>`;
+            }
           },
           {
             targets: 1,
-            responsivePriority: 1,
+            responsivePriority: 2,
             render: function (data, type) {
               if (type !== 'display') return data;
               const safe = escapeHtml(data);
@@ -3718,7 +3571,7 @@ session_start();
             }
           },
           {
-            targets: 2,
+            targets: 3,
             responsivePriority: 3,
             className: 'text-right',
             render: function (data, type) {
@@ -3727,7 +3580,7 @@ session_start();
             }
           },
           {
-            targets: 3,
+            targets: 4,
             responsivePriority: 4,
             className: 'text-right',
             render: function (data, type) {
@@ -3736,7 +3589,7 @@ session_start();
             }
           },
           {
-            targets: 4,
+            targets: 5,
             responsivePriority: 5,
             className: 'text-right',
             render: function (data, type, row) {
@@ -3749,7 +3602,7 @@ session_start();
             }
           },
           {
-            "targets": 5,
+            "targets": 6,
             "responsivePriority": 1,
             "data": null,
             "orderable": false,
@@ -5192,6 +5045,10 @@ session_start();
       calcularTarifa();
     }
   });
+
+  function ver_detalle_voucher(id) {
+    
+  }
 
 </script>
 </body>

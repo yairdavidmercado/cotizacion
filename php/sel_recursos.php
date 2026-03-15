@@ -612,7 +612,7 @@ if ($conn) {
 									WHERE ug.id = cm.id_autor
 									LIMIT 1
 								) AS nombre_autor,
-
+								ct.total_cotizaciones,
 								COALESCE(ct.total_general, 0) AS total,
 								COALESCE(vt.total_abono, 0) AS total_abono,
 								(COALESCE(ct.total_general, 0) - COALESCE(vt.total_abono, 0)) AS saldo_total
@@ -622,6 +622,7 @@ if ($conn) {
 							LEFT JOIN (
 								SELECT 
 									c.id_principal,
+									COUNT(c.id) AS total_cotizaciones,
 									SUM(
 										(
 											COALESCE(c.n_child, 0)    * COALESCE(t.child, 0) +
@@ -677,12 +678,12 @@ if ($conn) {
 									$datos['total'] = $row["total"];
 									$datos['total_abono'] = $row["total_abono"];
 									$datos['saldo_total'] = $row["saldo_total"];
-									
+									$datos['total_cotizaciones'] = $row["total_cotizaciones"];
 									array_push($data, $datos);
 								}
 								$response = array("draw" => 1,
-							    "recordsTotal" => 0,
-							    "recordsFiltered" => 0,
+							    "recordsTotal" => count($data),
+							    "recordsFiltered" => count($data),
 								"data" => $data);
 								echo json_encode($response);
 
