@@ -766,10 +766,10 @@ session_start();
 
                     <div class="row" id="iniciartarifas_tour"></div>
 
-                    <div class="row">
+                    <div class="row" style="display:none">
                       <div class="col-md-12 mb-3">
-                        <label for="id_acomodacion_tour">Acomodación</label>
-                        <textarea style="width:100%" name="id_acomodacion_tour" required id="id_acomodacion_tour"
+                        <label for="id_acomodacion_tour">Descripción</label>
+                        <textarea style="width:100%" name="id_acomodacion_tour" id="id_acomodacion_tour"
                                   class="form-control form-control-md id_acomodacion_tour"></textarea>
                       </div>
                     </div>
@@ -865,10 +865,10 @@ session_start();
 
                     <div class="row" id="iniciartarifas_alq"></div>
 
-                    <div class="row">
+                    <div class="row" style="display:none">
                       <div class="col-md-12 mb-3">
-                        <label for="id_acomodacion_alq">Acomodación</label>
-                        <textarea style="width:100%" name="id_acomodacion_alq" required id="id_acomodacion_alq"
+                        <label for="id_acomodacion_alq">Descripción</label>
+                        <textarea style="width:100%" name="id_acomodacion_alq" id="id_acomodacion_alq"
                                   class="form-control form-control-md id_acomodacion_alq"></textarea>
                       </div>
                     </div>

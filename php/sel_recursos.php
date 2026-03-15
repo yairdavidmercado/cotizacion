@@ -432,6 +432,180 @@ if ($conn) {
 				// echo no users JSON
 				echo json_encode($response);
 		}
+	}else if ($codigo == "traer_abonos_voucher") {//abonos reales por cotizacion master
+		$parametro1 = intval($parametro1);
+		$id_principal = 0;
+
+		$check_master = mysqli_query($conn, "SELECT id FROM cotizacion_master WHERE id = $parametro1 LIMIT 1");
+		if ($check_master && mysqli_num_rows($check_master) > 0) {
+			$id_principal = $parametro1;
+		} else {
+			$query_principal = mysqli_query($conn, "SELECT id_principal FROM cotizacion WHERE id = $parametro1 LIMIT 1");
+			if ($query_principal && ($row_principal = mysqli_fetch_array($query_principal))) {
+				$id_principal = intval($row_principal['id_principal']);
+			}
+		}
+
+		$where_cotizacion = $id_principal > 0 ? "c.id_principal = $id_principal" : "c.id = $parametro1";
+
+		$id_master = $id_principal > 0 ? $id_principal : $parametro1;
+		$info_query = mysqli_query($conn, "SELECT 
+									cm.id,
+									cm.created_at,
+									(SELECT CONCAT_WS(' ', u.nombre1, u.nombre2, u.apellido1, u.apellido2)
+									 FROM usuarios u
+									 WHERE u.id = cm.id_titular
+									 LIMIT 1) AS nombre_titular,
+									(SELECT CONCAT_WS(' ', ug.nombre1, ug.nombre2, ug.apellido1, ug.apellido2)
+									 FROM ".DB_NAME_GLOBAL.".usuarios ug
+									 WHERE ug.id = cm.id_autor
+									 LIMIT 1) AS nombre_autor,
+									COALESCE((
+										SELECT SUM(
+											(
+												COALESCE(c.n_child,0) * COALESCE(t.child,0) +
+												COALESCE(c.n_adult_s,0) * COALESCE(t.adult_s,0) +
+												COALESCE(c.n_adult_d,0) * COALESCE(t.adult_d,0) +
+												COALESCE(c.n_adult_t_c,0) * COALESCE(t.adult_t_c,0)
+											) *
+											(CASE
+												WHEN c.noche IS NULL OR c.noche = 0 OR c.noche = 'N/A' THEN 1
+												WHEN c.noche REGEXP '^[0-9]+$' THEN CAST(c.noche AS UNSIGNED)
+												ELSE 1
+											END)
+										)
+										FROM cotizacion c
+										LEFT JOIN tarifas t ON t.id = c.id_tarifa
+										WHERE c.id_principal = cm.id AND c.activo = 1
+									), 0) AS total_cotizacion,
+									COALESCE((
+										SELECT SUM(v2.deposito)
+										FROM vaucher v2
+										INNER JOIN cotizacion c2 ON c2.id = v2.id_cotizacion
+										WHERE c2.id_principal = cm.id AND c2.activo = 1 AND v2.activo = 1
+									), 0) AS total_abono
+								FROM cotizacion_master cm
+								WHERE cm.id = $id_master
+								LIMIT 1");
+
+		$response["info"] = array(
+			"id" => $id_master,
+			"created_at" => "",
+			"nombre_titular" => "",
+			"nombre_autor" => "",
+			"total_cotizacion" => 0,
+			"total_abono" => 0,
+			"saldo_total" => 0
+		);
+
+		if ($info_query && mysqli_num_rows($info_query) > 0) {
+			$info_row = mysqli_fetch_array($info_query);
+			$total_cotizacion_info = floatval($info_row['total_cotizacion']);
+			$total_abono_info = floatval($info_row['total_abono']);
+
+			$response["info"] = array(
+				"id" => $info_row['id'],
+				"created_at" => $info_row['created_at'],
+				"nombre_titular" => $info_row['nombre_titular'],
+				"nombre_autor" => $info_row['nombre_autor'],
+				"total_cotizacion" => $total_cotizacion_info,
+				"total_abono" => $total_abono_info,
+				"saldo_total" => ($total_cotizacion_info - $total_abono_info)
+			);
+		}
+
+		$result = mysqli_query($conn, "SELECT 
+									v.id AS id_vaucher,
+									v.id_cotizacion,
+									v.reserva,
+									v.deposito,
+									v.id_metodo_pago,
+									v.fecha_crea,
+									c.id_principal,
+									c.tipo_cotizacion,
+									c.id_titular
+								FROM vaucher v
+								INNER JOIN cotizacion c ON c.id = v.id_cotizacion
+								WHERE $where_cotizacion
+								AND c.activo = 1
+								AND v.activo = 1
+								ORDER BY v.id DESC");
+
+		$cotizaciones_result = mysqli_query($conn, "SELECT
+									c.id,
+									c.tipo_cotizacion,
+									COALESCE(COUNT(v.id), 0) AS total_abonos,
+									COALESCE(SUM(v.deposito), 0) AS total_abonado,
+									(SELECT CONCAT_WS(' ', u.nombre1, u.nombre2, u.apellido1, u.apellido2)
+									 FROM usuarios u
+									 WHERE u.id = c.id_titular
+									 LIMIT 1) AS titular
+								FROM cotizacion c
+								LEFT JOIN vaucher v ON v.id_cotizacion = c.id AND v.activo = 1
+								WHERE $where_cotizacion
+								AND c.activo = 1
+								GROUP BY c.id, c.tipo_cotizacion, c.id_titular
+								ORDER BY c.id ASC");
+
+		$response['cotizaciones'] = array();
+		if ($cotizaciones_result) {
+			while ($row_cot = mysqli_fetch_array($cotizaciones_result)) {
+				$tipo_label = 'Cotización';
+				if ($row_cot['tipo_cotizacion'] == '1') {
+					$tipo_label = 'Alojamiento';
+				} else if ($row_cot['tipo_cotizacion'] == '2') {
+					$tipo_label = 'Tour';
+				} else if ($row_cot['tipo_cotizacion'] == '3') {
+					$tipo_label = 'Alquiler';
+				}
+
+				$response['cotizaciones'][] = array(
+					'id' => $row_cot['id'],
+					'tipo_cotizacion' => $row_cot['tipo_cotizacion'],
+					'tipo_label' => $tipo_label,
+					'label' => '#' . $row_cot['id'] . ' - ' . $tipo_label,
+					'titular' => $row_cot['titular'],
+					'total_abonos' => intval($row_cot['total_abonos']),
+					'total_abonado' => floatval($row_cot['total_abonado'])
+				);
+			}
+		}
+
+		if ($result && mysqli_num_rows($result) > 0)
+		{
+			$response["resultado"] = array();
+			$total_abonos = 0;
+
+			while ($row = mysqli_fetch_array($result)) {
+				$datos = array();
+				$datos['id_vaucher'] = $row['id_vaucher'];
+				$datos['id_cotizacion'] = $row['id_cotizacion'];
+				$datos['reserva'] = $row['reserva'];
+				$datos['deposito'] = $row['deposito'];
+				$datos['id_metodo_pago'] = $row['id_metodo_pago'];
+				$datos['fecha_crea'] = $row['fecha_crea'];
+				$datos['id_principal'] = $row['id_principal'];
+				$datos['tipo_cotizacion'] = $row['tipo_cotizacion'];
+				$datos['id_titular'] = $row['id_titular'];
+
+				$total_abonos += floatval($row['deposito']);
+				array_push($response["resultado"], $datos);
+			}
+
+			$response['total_abonos'] = $total_abonos;
+			$response['total_abono'] = $total_abonos;
+			$response['id_principal'] = $id_principal > 0 ? $id_principal : $parametro1;
+			$response["success"] = true;
+			echo json_encode($response);
+		}else{
+			$response["success"] = true;
+			$response["message"] = "No se encontraron abonos";
+			$response['resultado'] = array();
+			$response['total_abonos'] = 0;
+			$response['total_abono'] = 0;
+			$response['id_principal'] = $id_principal > 0 ? $id_principal : $parametro1;
+			echo json_encode($response);
+		}
 	}else if ($codigo == "traer_tabla_cotizacion") {//titulares
 		$condicion_master = '';
 		if ($id_perfil !== 'SUPERADMIN') {

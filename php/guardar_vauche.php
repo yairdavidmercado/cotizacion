@@ -1,47 +1,72 @@
 <?php
-    session_start();
-   include 'conexion.php';
+session_start();
+include 'conexion.php';
 
-   $id_reserva = $_POST["id_reserva"];
-   $id_cotizacion = $_POST["id_cotizacion"];
-   $deposito = $_POST["deposito"];
-   $id_metodo_pago = $_POST["id_metodo_pago"];
-   $id_hotel = $_POST["id_hotel"];
-   $id_autor = $_SESSION['id'];
-         
-        $response = [];
-        $con = mysqli_connect(DB_HOST,DB_USER, DB_PASS, DB_NAME);
+$id_cotizacion = isset($_POST["id_cotizacion"]) ? intval($_POST["id_cotizacion"]) : 0;
+$deposito_raw = isset($_POST["deposito"]) ? $_POST["deposito"] : "0";
+$id_hotel = isset($_POST["id_hotel"]) ? intval($_POST["id_hotel"]) : 0;
+$id_autor = isset($_SESSION['id']) ? intval($_SESSION['id']) : 0;
+$reserva_input = isset($_POST["id_reserva"]) ? trim($_POST["id_reserva"]) : "";
 
-        if (mysqli_connect_errno()) {
-        echo "Failed to connect to MySQL: " . mysqli_connect_error();
-        exit;
-        }
-        // Insert some values
-        try{
-             $result = mysqli_query($con, "INSERT INTO vaucher (reserva, id_cotizacion, deposito, id_metodo_pago, id_hotel, id_autor)
-                                                            VALUES ($id_reserva, $id_cotizacion ,$deposito,$id_metodo_pago ,$id_hotel,$id_autor);");
+$response = [];
+$con = mysqli_connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 
-                //var_dump($result);
-                mysqli_query($con, $result);
-                if (mysqli_insert_id($con) > 0) {
-                    $response["success"] = true;
-                    $response["id"] = mysqli_insert_id($con);
-                    $response["message"] = "Commiting transaction.";
-                echo json_encode($response);
-                } else {
-                    $response["success"] = false;
-                    $response["id"] = mysqli_insert_id($con);
-                    $response["message"] = "Rolling back transaction.";
-                echo json_encode($response);
-                }
-            }catch(Exception $e){
-                $response["success"] = false;
-                $response["message"] = $e->getMessage();
-                echo json_encode($response);
-            }
+if (mysqli_connect_errno()) {
+    echo json_encode([
+        "success" => false,
+        "message" => "Failed to connect to MySQL: " . mysqli_connect_error()
+    ]);
+    exit;
+}
 
-        
+try {
+    $deposito = intval(preg_replace('/\D/', '', (string)$deposito_raw));
+    if ($id_cotizacion <= 0) {
+        throw new Exception("Cotización inválida");
+    }
+    if ($deposito <= 0) {
+        throw new Exception("El monto del voucher debe ser mayor a 0");
+    }
 
-        // Close connection
-        mysqli_close($con);
+    $count_stmt = mysqli_prepare($con, "SELECT COUNT(*) FROM vaucher WHERE id_cotizacion = ? AND activo = 1");
+    mysqli_stmt_bind_param($count_stmt, "i", $id_cotizacion);
+    mysqli_stmt_execute($count_stmt);
+    mysqli_stmt_bind_result($count_stmt, $total_abonos_actuales);
+    mysqli_stmt_fetch($count_stmt);
+    mysqli_stmt_close($count_stmt);
+
+    $es_primer_abono = intval($total_abonos_actuales) === 0;
+    $reserva = $es_primer_abono ? $reserva_input : "";
+
+    if ($es_primer_abono && $reserva === "") {
+        throw new Exception("Debes ingresar número de reserva para el primer abono");
+    }
+
+    $codigo = "";
+    $id_metodo_pago = 0;
+
+    $stmt = mysqli_prepare($con, "INSERT INTO vaucher (id_cotizacion, codigo, deposito, id_metodo_pago, id_hotel, id_autor, reserva) VALUES (?, ?, ?, ?, ?, ?, ?)");
+    mysqli_stmt_bind_param($stmt, "isdiiis", $id_cotizacion, $codigo, $deposito, $id_metodo_pago, $id_hotel, $id_autor, $reserva);
+    mysqli_stmt_execute($stmt);
+
+    if (mysqli_stmt_affected_rows($stmt) > 0) {
+        $response["success"] = true;
+        $response["id"] = mysqli_insert_id($con);
+        $response["message"] = "Voucher guardado correctamente";
+    } else {
+        $response["success"] = false;
+        $response["id"] = 0;
+        $response["message"] = "No se pudo guardar el voucher";
+    }
+
+    mysqli_stmt_close($stmt);
+    echo json_encode($response);
+} catch (Exception $e) {
+    echo json_encode([
+        "success" => false,
+        "message" => $e->getMessage()
+    ]);
+}
+
+mysqli_close($con);
 ?>

@@ -44,9 +44,15 @@ session_start();
       .cc-shell{
         min-height: 0;
         display: grid;
-        grid-template-columns: 520px 1fr;
+        grid-template-columns: var(--cc-panel-width, 520px) 1fr;
         gap: 28px;
         padding: 50px 48px 48px; /* deja espacio al menú fixed-top */
+        transition: grid-template-columns .45s ease, gap .45s ease;
+      }
+
+      .cc-shell.cc-panel-hidden{
+        --cc-panel-width: 0px;
+        gap: 0;
       }
 
       /* Panel flotante */
@@ -57,6 +63,18 @@ session_start();
         box-shadow: 0 18px 60px rgba(15,23,42,.12);
         padding: 18px;
         backdrop-filter: blur(6px);
+        transition: transform .45s ease, opacity .45s ease, margin .45s ease, border .25s ease, box-shadow .25s ease, padding .25s ease;
+      }
+
+      .cc-shell.cc-panel-hidden .cc-panel{
+        transform: translateX(-56px);
+        opacity: 0;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        box-shadow: none;
+        pointer-events: none;
+        overflow: hidden;
       }
 
       /* Imagen derecha */
@@ -67,6 +85,10 @@ session_start();
         background-size: cover;
         background-position: center;
         box-shadow: inset 0 0 0 1px rgba(15,23,42,.06);
+      }
+
+      .cc-shell.cc-panel-hidden .cc-hero{
+        min-height: calc(100vh - 120px);
       }
 
       /* ===== Ajustes visuales de Bootstrap dentro del panel ===== */
@@ -222,6 +244,12 @@ session_start();
           height: calc(100% / 0.85);
         }
 
+        .cc-shell-wrap.hero-only{
+          transform: none;
+          width: 100%;
+          height: auto;
+        }
+
         .select2-dropdown {
           /* transform: scale(0.85);
           transform-origin: top left; */
@@ -235,6 +263,17 @@ session_start();
           transform: none;
           width: 100%;
           height: auto;
+        }
+
+        .cc-shell.cc-panel-hidden .cc-hero{
+          min-height: calc(100vh - 110px);
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce){
+        .cc-shell,
+        .cc-panel{
+          transition: none !important;
         }
       }
       .field-error {
@@ -496,6 +535,66 @@ session_start();
           box-shadow:0 15px 40px rgba(0,0,0,0.15);
       }
 
+        .crear_voucher .modal-content{
+          border-radius:14px;
+          border:none;
+          box-shadow:0 20px 40px rgba(15,23,42,.16);
+        }
+        .crear_voucher .modal-header{
+          border-bottom:1px solid rgba(15,23,42,.08);
+          padding:14px 18px;
+        }
+        .crear_voucher .modal-title{
+          width:100%;
+          text-align:center;
+          font-size:30px;
+          font-weight:700;
+          color:#4b5563;
+        }
+        .crear_voucher .close{
+          position:absolute;
+          top:10px;
+          right:12px;
+          width:24px;
+          height:24px;
+          border-radius:999px;
+          background:#e5e7eb;
+          opacity:1;
+          text-shadow:none;
+          font-size:16px;
+          line-height:24px;
+          padding:0;
+          margin:0;
+        }
+        .crear_voucher .modal-body{
+          padding:16px 18px 18px;
+        }
+        .voucher-label{
+          font-size:13px;
+          font-weight:600;
+          color:#4b5563;
+          margin-bottom:6px;
+        }
+        .voucher-hint{
+          background:#f3f4f6;
+          border-radius:10px;
+          padding:10px 12px;
+          margin-top:12px;
+          color:#374151;
+          font-weight:600;
+        }
+        .voucher-actions{
+          display:flex;
+          justify-content:flex-end;
+          gap:8px;
+          margin-top:14px;
+        }
+        .voucher-actions .btn{
+          min-width:110px;
+          border-radius:8px;
+          font-weight:600;
+        }
+
       /* HEADER */
       .crear_titular_modal .modal-header{
           border-bottom:1px solid rgba(0,0,0,.05);
@@ -561,6 +660,24 @@ session_start();
       .btn-save-user:hover{
           background:#16a34a;
       }
+
+      .table-active, .table-active>td, .table-active>th {
+        background-color: rgba(151, 213, 255, 0.15) !important;
+      }
+
+      .modal-header .close {
+        padding: 0 !important;
+      }
+
+      #crear_voucher .modal-content {
+        background: rgba(255, 255, 255, .92);
+        border: 1px solid rgba(15, 23, 42, .08);
+        border-radius: 18px;
+        box-shadow: 0 18px 60px rgba(15, 23, 42, .12);
+        padding: 18px;
+        backdrop-filter: blur(6px);
+        transition: transform .45s ease, opacity .45s ease, margin .45s ease, border .25s ease, box-shadow .25s ease, padding .25s ease;
+      }
     </style>
   </head>
   <body class="cc-page">
@@ -568,315 +685,25 @@ session_start();
   <div class="loader"></div>
   <br>
   <br>
-  <main class="cc-shell-wrap"> 
-    <main class="cc-shell">
+  <main class="cc-shell-wrap hero-only"> 
+    <main class="cc-shell cc-panel-hidden">
       <section class="cc-panel">
         <div class="row">
           <div class="col-12">
             <div class="card mt-3">
               <div class="card-body">
-                
-              <div class="row">
-                <div class="col-md-12 mb-3">
-                    <label><span >Tipo de Cotización</span></label>
-                    <br>
-                    <div class="form-check-inline">
-                      <label class="form-check-label" style='font-size:12px'>
-                        <input type="checkbox" name="tipo_cotizacion[]" required value="1" onclick="showFormCotizacion(1, this.checked)" class="form-check-input">Alojamiento
-                      </label>
-                    </div>
-                    <div class="form-check-inline">
-                      <label class="form-check-label" style='font-size:12px'>
-                        <input type="checkbox" name="tipo_cotizacion[]" required value="2" onclick="showFormCotizacion(2, this.checked)" class="form-check-input">Tour
-                      </label>
-                    </div>
-                    <div class="form-check-inline">
-                      <label class="form-check-label" style='font-size:12px'>
-                        <input type="checkbox" name="tipo_cotizacion[]" required value="3" onclick="showFormCotizacion(3, this.checked)" class="form-check-input">Alquiler
-                      </label>
-                    </div>
+                <div class="row" id="content_voucher">
                 </div>
-                <div class="col-md-12 mb-3">
-                  <?php echo $usuarios ?>
-                  <label for="firstName">Nombre del cliente</label>
-                    <select style="width:100%" name="id_usuario" required id="id_usuario" onchange="detalle_titular(this.value)" class="form-control form-control-md id_usuarios">
-                      <option value="">Seleccionar</option>
-                    </select>
-                  </div>
-                </div>
-
               </div>
             </div>
           </div>
           <div class="col-12">
-            <form role="form" onsubmit="event.preventDefault(); return GuardarTodoCotizaciones();" style="display:none" id="form_alojamiento" class="needs-validation">
-              <div class="card mt-3">
-                <h5 class="card-header d-flex justify-content-between align-items-center"
-                data-toggle="collapse"
-                data-target="#collapseCotizacion"
-                aria-expanded="true"
-                style="cursor:pointer;">
-                Cotización de alojamiento</h5>
-                <div id="collapseCotizacion" class="collapse show">
-                  <div class="card-body">
-                    <input type="hidden" name="id_titular" class="id_titular_hidden" value="">
-                    <div class="row">
-                      <div class="col-md-12 mb-3">
-                        <label for="firstName">Motivo de viaje</label>
-                        <select style="width:100%" name="id_motivo" required id="id_motivo" class="form-control form-control-md id_motivos">
-                          <option value="">Seleccionar</option>
-                        </select>
-                      </div>
-                      <div class="col-md-12 mb-3">
-                        <label for="firstName">Planes</label>
-                        <select style="width:100%" name="id_planes" onchange="traer_productos(this.value, '')" required id="id_planes" class="form-control form-control-md id_planess">
-                          <option value="">Seleccionar</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-md-12 mb-3">
-                        <label><span >Tipo de servicio</span></label>
-                        <br>
-                        <div class="form-check-inline">
-                          <label class="form-check-label" style='font-size:12px'>
-                            <input type="radio" name="tipo_viaje" onclick="traer_tarifas(0, '')" required value="0" class="form-check-input" value="">Pasadía
-                          </label>
-                        </div>
-                        <div class="form-check-inline">
-                          <label class="form-check-label" style='font-size:12px'>
-                            <input type="radio" name="tipo_viaje" onclick="traer_tarifas(1, '')" required value="1" class="form-check-input" value="">Noches
-                          </label>
-                        </div>
-                        <div class="form-check-inline" style="display:none">
-                          <label class="form-check-label" style='font-size:12px'>
-                            <input type="radio" name="tipo_viaje" onclick="traer_tarifas(2, '')" required value="2" class="form-check-input" value="">Alquiler
-                          </label>
-                        </div>
-                      </div>
-                      <div class="col-md-12 mb-3">
-                        <label for="firstName">Tarifa</label>
-                        <select style="width:100%" name="id_tarifa" disabled required id="id_tarifa" class="form-control form-control-md id_tarifas">
-                            <option value="">Seleccionar</option>
-                        </select>
-                      </div>
-                      <div class="col-md-12 mb-3" id="content_dateRange">
-                        <label for="lastName">Fecha</label>
-                        <div class="input-group">
-                            <input id="DateRange" required disabled name="DateRange" autocomplete="off" placeholder="Seleccionar rango de fechas" class="form-control datarange" />
-                            <input type="hidden" autocomplete="off" class="form-control datarange " name="startDate" id="startDate" placeholder="" required>
-                            <input type="hidden" autocomplete="off" class="form-control datarange" name="endDate" id="endDate" placeholder="" required>                  
-                            <div class="input-group-append">
-                              <span class="input-group-text"><i class="fa fa-calendar"></i></span>
-                            </div>
-                          </div>
-                      </div>
-                      <!-- <div class="col-md-12 mb-3" id="content_startDate">
-                        <label for="lastName">Fecha entrada</label>
-                        <input type="text" autocomplete="off" disabled class="form-control datarange " name="startDate" id="startDate" placeholder="" required>  
-                      </div>
-                      <div class="col-md-12 mb-3" id="content_endDate">
-                        <label for="lastName">Fecha salida</label>
-                        <input type="text" autocomplete="off" disabled class="form-control datarange" name="endDate" id="endDate" placeholder="" required>
-                        <input type="hidden" value="0" name="count_noches" id="count_noches">                    
-                      </div> -->
-                    </div>
-                    <div class="row" id="iniciartarifas">
-                      
-                    </div>
-                    <div class="row">
-                      <div class="col-md-12 mb-3">
-                        <label for="firstName">Acomodación</label>
-                        <textarea style="width:100%" name="id_acomodacion" required id="id_acomodacion" class="form-control form-control-md id_acomodacion"></textarea>
-                      </div>
-                    </div>
-                  </div>
-
-                </div>    
-              </div>  
-            </form>
-            <form role="form" onsubmit="event.preventDefault(); return GuardarTodoCotizaciones();" style="display:none" id="form_tour" class="needs-validation">
-              <div class="card mt-3">
-                <h5 class="card-header d-flex justify-content-between align-items-center"
-                    data-toggle="collapse"
-                    data-target="#collapseCotizacionTour"
-                    aria-expanded="true"
-                    style="cursor:pointer;">
-                  Cotización de Tours
-                </h5>
-
-                <div id="collapseCotizacionTour" class="collapse show">
-                  <div class="card-body">
-                    <input type="hidden" name="id_titular" class="id_titular_hidden" value="">
-                    <div class="row">
-
-                      <div class="col-md-12 mb-3">
-                        <label for="id_motivo_tour">Motivo de viaje</label>
-                        <select style="width:100%" name="id_motivo_tour" required id="id_motivo_tour"
-                                class="form-control form-control-md id_motivos_tour">
-                          <option value="">Seleccionar</option>
-                        </select>
-                      </div>
-
-                      <div class="col-md-12 mb-3">
-                        <label for="id_planes_tour">Planes</label>
-                        <select style="width:100%" name="id_planes_tour" onchange="traer_productos(this.value, '_tour')" required
-                                id="id_planes_tour" class="form-control form-control-md id_planess_tour">
-                          <option value="">Seleccionar</option>
-                        </select>
-                      </div>
-                    </div>
-
-                    <div class="row">
-                      <div class="col-md-12 mb-3" style="display:none">
-                        <label><span>Tipo de servicio</span></label>
-                        <br>
-
-                        <div class="form-check-inline">
-                          <label class="form-check-label" style="font-size:12px">
-                            <input type="radio" name="tipo_viaje_tour" onclick="traer_tarifas(0, '_tour')" required value="0" class="form-check-input">
-                            Tour
-                          </label>
-                        </div>
-                      </div>
-
-                      <div class="col-md-12 mb-3">
-                        <label for="id_tarifa_tour">Tarifa</label>
-                        <select style="width:100%" name="id_tarifa_tour" disabled required id="id_tarifa_tour"
-                                class="form-control form-control-md id_tarifas_tour">
-                          <option value="">Seleccionar</option>
-                        </select>
-                      </div>
-
-                      <div class="col-md-12 mb-3" id="content_dateRange_tour">
-                        <label for="DateRange_tour">Fecha</label>
-                        <div class="input-group">
-                          <input id="DateRange_tour" disabled name="DateRange_tour" autocomplete="off"
-                                placeholder="Seleccionar rango de fechas" class="form-control datarange_tour" />
-                          <input type="hidden" autocomplete="off" disabled class="form-control datarange_tour"
-                                name="startDate_tour" id="startDate_tour" required>
-                          <input type="hidden" autocomplete="off" disabled class="form-control datarange_tour"
-                                name="endDate_tour" id="endDate_tour" required>
-                          <div class="input-group-append">
-                            <span class="input-group-text"><i class="fa fa-calendar"></i></span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="row" id="iniciartarifas_tour"></div>
-
-                    <div class="row" style="display:none">
-                      <div class="col-md-12 mb-3">
-                        <label for="id_acomodacion_tour">Acomodación</label>
-                        <textarea style="width:100%" name="id_acomodacion_tour" id="id_acomodacion_tour"
-                                  class="form-control form-control-md id_acomodacion_tour"></textarea>
-                      </div>
-                    </div>
-
-                  </div>
+            <div class="card mt-3">
+              <div class="card-body">
+                <div class="row" id="detail_content_voucher">
                 </div>
               </div>
-            </form>
-            <form role="form" onsubmit="event.preventDefault(); return GuardarTodoCotizaciones();" style="display:none" id="form_alquiler" class="needs-validation">
-              <div class="card mt-3">
-                <h5 class="card-header d-flex justify-content-between align-items-center"
-                    data-toggle="collapse"
-                    data-target="#collapseCotizacionAlq"
-                    aria-expanded="true"
-                    style="cursor:pointer;">
-                  Cotización de Alquileres
-                </h5>
-
-                <div id="collapseCotizacionAlq" class="collapse show">
-                  <div class="card-body">
-                    <input type="hidden" name="id_titular" class="id_titular_hidden" value="">
-                    <div class="row">
-
-                      <div class="col-md-12 mb-3">
-                        <label for="id_motivo_alq">Motivo de viaje</label>
-                        <select style="width:100%" name="id_motivo_alq" required id="id_motivo_alq"
-                                class="form-control form-control-md id_motivos_alq">
-                          <option value="">Seleccionar</option>
-                        </select>
-                      </div>
-
-                      <div class="col-md-12 mb-3">
-                        <label for="id_planes_alq">Planes</label>
-                        <select style="width:100%" name="id_planes_alq" onchange="traer_productos(this.value, '_alq')" required
-                                id="id_planes_alq" class="form-control form-control-md id_planess_alq">
-                          <option value="">Seleccionar</option>
-                        </select>
-                      </div>
-                    </div>
-
-                    <div class="row">
-                      <div class="col-md-12 mb-3" style="display:none">
-                        <label><span>Tipo de servicio</span></label>
-                        <br>
-
-                        <!-- En alquiler normalmente tendría sentido dejar solo “Alquiler” visible -->
-                        <div class="form-check-inline">
-                          <label class="form-check-label" style="font-size:12px">
-                            <input type="radio" name="tipo_viaje_alq" onclick="traer_tarifas(2, '_alq')" required value="2" class="form-check-input">
-                            Alquiler
-                          </label>
-                        </div>
-
-                        <!-- Si quieres mantener las otras opciones, quita el display:none -->
-                        <div class="form-check-inline" style="display:none">
-                          <label class="form-check-label" style="font-size:12px">
-                            <input type="radio" name="tipo_viaje_alq" onclick="traer_tarifas(0, '_alq')" required value="0" class="form-check-input">
-                            Pasadía
-                          </label>
-                        </div>
-
-                        <div class="form-check-inline" style="display:none">
-                          <label class="form-check-label" style="font-size:12px">
-                            <input type="radio" name="tipo_viaje_alq" onclick="traer_tarifas(1, '_alq')" required value="1" class="form-check-input">
-                            Noches
-                          </label>
-                        </div>
-                      </div>
-
-                      <div class="col-md-12 mb-3">
-                        <label for="id_tarifa_alq">Tarifa</label>
-                        <select style="width:100%" name="id_tarifa_alq" disabled required id="id_tarifa_alq"
-                                class="form-control form-control-md id_tarifas_alq">
-                          <option value="">Seleccionar</option>
-                        </select>
-                      </div>
-
-                      <div class="col-md-12 mb-3" id="content_dateRange_alq">
-                        <label for="DateRange_alq">Fecha</label>
-                        <div class="input-group">
-                          <input id="DateRange_alq" disabled name="DateRange_alq" autocomplete="off"
-                                placeholder="Seleccionar rango de fechas" class="form-control datarange_alq" />
-                          <input type="hidden" autocomplete="off" disabled class="form-control datarange_alq"
-                                name="startDate_alq" id="startDate_alq" required>
-                          <input type="hidden" autocomplete="off" disabled class="form-control datarange_alq"
-                                name="endDate_alq" id="endDate_alq" required>
-                          <div class="input-group-append">
-                            <span class="input-group-text"><i class="fa fa-calendar"></i></span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="row" id="iniciartarifas_alq"></div>
-
-                    <div class="row" style="display:none">
-                      <div class="col-md-12 mb-3">
-                        <label for="id_acomodacion_alq">Acomodación</label>
-                        <textarea style="width:100%" name="id_acomodacion_alq" required id="id_acomodacion_alq"
-                                  class="form-control form-control-md id_acomodacion_alq"></textarea>
-                      </div>
-                    </div>
-
-                  </div>
-                </div>
-              </div>
-            </form>
+            </div>
           </div>
           <div class="col-12">
             <div class="card mt-3">
@@ -884,8 +711,8 @@ session_start();
                 
                 <div class="row">
                   <div class="col-md-12 mb-3">
-                    <button type="button" class="btn btn-success btn-block" onclick="GuardarTodoCotizaciones()">
-                      <i class="fas fa-save"></i> Guardar cotización
+                    <button type="button" class="btn btn-success btn-block" onclick="abrirModalCrearVoucher()">
+                      <i class="fas fa-plus"></i> Generar Voucher
                     </button>
                   </div>
                 </div>
@@ -893,16 +720,15 @@ session_start();
               </div>
             </div>
           </div>
-
         </div>
       </section>
       <section class="cc-hero" aria-hidden="true">
         <div class="row">
           <div class="col-12">
             <ul class="nav nav-tabs nav-options" id="myTab" role="tablist">
-              <li class="nav-item">
+              <!-- <li class="nav-item">
                 <button class="btn btn-option active" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Buscar</button>
-              </li>
+              </li> -->
               <!-- <li class="nav-item ml-auto">
                 
               </li> -->
@@ -948,7 +774,7 @@ session_start();
   <div class="modal-dialog modal-xl" style="max-width: 95%;">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Previsualización de cotización</h5>
+        <h5 class="modal-title">Previsualización de voucher</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">×</span>
         </button>
@@ -962,213 +788,56 @@ session_start();
 </div>
 
 
-<div class="modal fade crear_titular_modal" id="crear_titular_modal" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+<div class="modal fade crear_voucher" id="crear_voucher" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     
     <div class="modal-content">
       
       <div class="modal-header">
-        <h5 class="modal-title">Crear Cliente</h5>
-
-        <div id="btn_pdf_crear_titular"></div>
-
+        <h5 class="modal-title">Generar Voucher</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">×</span>
         </button>
       </div>
 
-      <div class="modal-body">
+      <div class="row">
+        <div class="col-md-12">
+          <input type="hidden" id="voucher_id_metodo_pago" value="0">
 
-        <div class="card mt-3" style="border-radius:12px !important;">
-          <div class="card-body">
-
-            <form 
-              role="form"
-              onsubmit="event.preventDefault(); return GuardarUsuario();"
-              id="form_guardar"
-              class="needs-validation"
-            >
-
-              <div class="row">
-
-                <div style="display:none" class="col-md-6 mb-3">
-                  <label for="codigo">Código</label>
-                  <input 
-                    type="text"
-                    autocomplete="off"
-                    value="0"
-                    class="form-control"
-                    onkeypress="return isNumber(event)"
-                    name="codigo"
-                    id="codigo"
-                    required
-                  >
-                </div>
-
-                <div class="col-md-12 mb-3">
-                  <label for="nombre1">Primer nombre</label>
-                  <input 
-                    type="text"
-                    autocomplete="off"
-                    class="form-control"
-                    maxlength="255"
-                    name="nombre1"
-                    id="nombre1"
-                    required
-                  >
-                </div>
-
-                <div class="col-md-12 mb-3">
-                  <label for="nombre2">Segundo nombre</label>
-                  <input 
-                    type="text"
-                    autocomplete="off"
-                    class="form-control"
-                    maxlength="255"
-                    name="nombre2"
-                    id="nombre2"
-                  >
-                </div>
-
-                <div class="col-md-12 mb-3">
-                  <label for="apellido1">Primer Apellido</label>
-                  <input 
-                    type="text"
-                    autocomplete="off"
-                    class="form-control"
-                    maxlength="255"
-                    name="apellido1"
-                    id="apellido1"
-                  >
-                </div>
-
-                <div class="col-md-12 mb-3">
-                  <label for="apellido2">Segundo apellido</label>
-                  <input 
-                    type="text"
-                    autocomplete="off"
-                    class="form-control"
-                    maxlength="255"
-                    name="apellido2"
-                    id="apellido2"
-                  >
-                </div>
-
-                <div class="col-md-12 mb-3">
-                  <label for="cedula">Cédula</label>
-                  <input 
-                    type="text"
-                    autocomplete="off"
-                    class="form-control"
-                    maxlength="11"
-                    onkeypress="return isNumber(event)"
-                    name="cedula"
-                    id="cedula"
-                  >
-                </div>
-
-                <div class="col-md-12 mb-3">
-                  <label for="email">Email</label>
-                  <input 
-                    type="email"
-                    autocomplete="off"
-                    class="form-control"
-                    maxlength="100"
-                    name="email"
-                    id="email"
-                  >
-                </div>
-
-                <div class="col-md-12 mb-3">
-                  <label for="telefono">Teléfono</label>
-                  <input 
-                    type="text"
-                    autocomplete="off"
-                    onkeypress="return isNumber(event)"
-                    maxlength="15"
-                    class="form-control"
-                    name="telefono"
-                    id="telefono"
-                    required
-                  >
-                </div>
-
-                <div class="col-md-12 mb-3">
-                  <label for="select_pais">Pais</label>
-                  <select 
-                    style="width:100%"
-                    name="select_pais"
-                    onchange="traer_deptos(this.value)"
-                    required
-                    id="select_pais"
-                    class="form-control form-control-md paises"
-                  >
-                    <option value="">Seleccionar</option>
-                  </select>
-                </div>
-
-                <div class="col-md-12 mb-3">
-                  <label for="select_deptos">Departamento</label>
-                  <select 
-                    style="width:100%"
-                    name="select_deptos"
-                    id="select_deptos"
-                    class="form-control form-control-md deptos"
-                  >
-                    <option value="">Seleccionar</option>
-                  </select>
-                </div>
-
-                <div class="col-md-12 mb-3">
-                  <label for="ciudad">Ciudad</label>
-                  <input 
-                    type="text"
-                    autocomplete="off"
-                    class="form-control"
-                    maxlength="255"
-                    name="ciudad"
-                    id="ciudad"
-                  >
-                </div>
-
-                <div class="col-md-12 mb-3">
-                  <label for="direccion">Dirección</label>
-                  <input 
-                    type="text"
-                    autocomplete="off"
-                    class="form-control"
-                    maxlength="100"
-                    name="direccion"
-                    id="direccion"
-                  >
-                </div>
-
-                <div class="col-md-12 mb-3" style="display:none">
-                  <label for="tipo">Perfil</label>
-                  <select 
-                    style="width:100%"
-                    name="tipo"
-                    required
-                    id="tipo"
-                    class="form-control form-control-md terminos_condiciones"
-                  >
-                    <option value="TITULAR">Cliente</option>
-                  </select>
-                </div>
-
-                <div class="col-md-12 mb-3">
-                  <button type="submit" class="btn btn-success float-right">
-                    Guardar usuario
-                  </button>
-                </div>
-
-              </div>
-
-              <div class="row"></div>
-
-            </form>
+          <div style="display:none;" class="voucher-label">Cotización seleccionada</div>
+          <select style="display:none;" id="voucher_id_cotizacion" class="form-control mb-3"></select>
+          <div id="list-cotizaciones" class="voucher-label">
 
           </div>
+        </div>
+      </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <div class="voucher-label">Fecha del Voucher</div>
+            <input type="date" id="voucher_fecha" class="form-control" />
+          </div>
+          <div class="col-md-6 mb-3">
+            <div class="voucher-label">Monto del Voucher</div>
+            <input type="text" id="voucher_monto" class="form-control" placeholder="$0" />
+          </div>
+        </div>
+
+        <div class="row" id="voucher_reserva_wrap" style="display:none;">
+          <div class="col-md-12 mb-2">
+            <div class="voucher-label">N° Reserva</div>
+            <input type="text" id="voucher_reserva" maxlength="11" class="form-control" placeholder="Ingresa número de reserva" />
+          </div>
+        </div>
+
+        <div class="voucher-hint">
+          <i class="fa fa-info-circle"></i>
+          Saldo total actual: <span id="voucher_saldo_actual">$0</span>
+        </div>
+
+        <div class="voucher-actions">
+          <button type="button" class="btn btn-light" data-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-success" onclick="guardarVoucherDesdeModal()">Guardar Voucher</button>
         </div>
 
       </div>
@@ -1192,6 +861,8 @@ session_start();
   var avatar_hotel = "<?php echo $_SESSION['avatar_hotel'] ?>";
 
   var cod_vendedor = "<?php echo $_SESSION['codigo'] ?>";
+  window.voucherDetalleActual = null;
+  window.voucherMetodoPagoDefault = 1;
 
   function shouldHideLogoGif() {
     var hasTipoCotizacion = $('input[type="checkbox"][name="tipo_cotizacion[]"]:checked').length > 0;
@@ -1204,7 +875,25 @@ session_start();
     $('#logoGifWrap').toggle(!hide);
   }
 
+  function activarVistaHeroCompleta() {
+    $('.cc-shell-wrap').addClass('hero-only');
+    $('.cc-shell').addClass('cc-panel-hidden');
+  }
+
+  function mostrarPanelConAnimacion() {
+    var $wrap = $('.cc-shell-wrap');
+    var $shell = $('.cc-shell');
+
+    $wrap.removeClass('hero-only');
+
+    requestAnimationFrame(function() {
+      $shell.removeClass('cc-panel-hidden');
+    });
+  }
+
   $(function() {
+    activarVistaHeroCompleta();
+
     show_traer_tabla_voucher();
     $('#DateRange, #DateRange_tour, #DateRange_alq').daterangepicker({
       autoUpdateInput: false,
@@ -1237,6 +926,161 @@ session_start();
 
     $(".loader").css("display", "none")
 
+  });
+
+  function montoToNumber(value) {
+    const num = parseFloat(value || 0);
+    return isNaN(num) ? 0 : num;
+  }
+
+  function parseMontoEntero(value) {
+    const digits = String(value || '').replace(/\D/g, '');
+    return digits ? parseInt(digits, 10) : 0;
+  }
+
+  function formatMontoInput(value) {
+    const monto = parseMontoEntero(value);
+    return monto > 0 ? puntosDecimales(monto) : '';
+  }
+
+  function actualizarReservaCampoVoucher() {
+    const $opt = $('#voucher_id_cotizacion option:selected');
+    const totalAbonos = parseInt($opt.attr('data-abonos') || '0', 10);
+    const requiereReserva = totalAbonos === 0;
+    $('#voucher_reserva_wrap').toggle(requiereReserva);
+    if (!requiereReserva) {
+      $('#voucher_reserva').val('');
+    }
+  }
+
+  function getTodayISODate() {
+    const now = new Date();
+    const y = now.getFullYear();
+    const m = String(now.getMonth() + 1).padStart(2, '0');
+    const d = String(now.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  }
+
+  function abrirModalCrearVoucher() {
+    const data = window.voucherDetalleActual;
+    if (!data || !data.idPrincipal) {
+      ccAlert('Primero selecciona una cotización desde la tabla de la derecha.', 'error');
+      return;
+    }
+
+    const cotizaciones = Array.isArray(data.cotizaciones) && data.cotizaciones.length > 0
+      ? data.cotizaciones
+      : [{ id: data.idPrincipal, label: `#${data.idPrincipal} - ${data.nombreTitular || '-'}`, total_abonos: 0 }];
+
+    let options = '';
+    let options_list = '';
+    cotizaciones.forEach((cot) => {
+      const label = cot.label || `#${cot.id}`;
+      const totalAbonos = parseInt(cot.total_abonos || 0, 10);
+      options += `<option value="${cot.id}" data-abonos="${totalAbonos}">${label}</option>`;
+      options_list += `<div class="custom-control custom-radio">
+                          <label class="custom-control-label" for="cot_${cot.id}">${label}</label>
+                        </div>`;
+    });
+    $('#list-cotizaciones').html(options_list);
+    $('#voucher_id_cotizacion').html(options);
+    $('#voucher_fecha').val(getTodayISODate());
+    $('#voucher_monto').val('');
+    $('#voucher_reserva').val('');
+    $('#voucher_saldo_actual').text(`$${puntosDecimales(montoToNumber(data.saldoTotal))}`);
+    $('#voucher_id_metodo_pago').val(0);
+
+    actualizarReservaCampoVoucher();
+
+    $('#crear_voucher').modal('show');
+  }
+
+  function guardarVoucherDesdeModal() {
+    const data = window.voucherDetalleActual;
+    if (!data || !data.idPrincipal) {
+      ccAlert('No hay cotización seleccionada.', 'error');
+      return;
+    }
+
+    const idCotizacion = parseInt($('#voucher_id_cotizacion').val() || data.idPrincipal, 10);
+    const fechaVoucher = $('#voucher_fecha').val();
+    const monto = parseMontoEntero($('#voucher_monto').val());
+    const saldoActual = montoToNumber(data.saldoTotal);
+    const idMetodoPago = 0;
+    const reserva = String($('#voucher_reserva').val() || '').trim();
+    const totalAbonosCot = parseInt($('#voucher_id_cotizacion option:selected').attr('data-abonos') || '0', 10);
+    const requiereReserva = totalAbonosCot === 0;
+
+    if (!fechaVoucher) {
+      ccAlert('Selecciona la fecha del voucher.', 'error');
+      return;
+    }
+
+    if (monto <= 0) {
+      ccAlert('El monto del voucher debe ser mayor a 0.', 'error');
+      return;
+    }
+
+    if (monto > saldoActual) {
+      ccAlert('El monto no puede ser mayor al saldo total actual.', 'error');
+      return;
+    }
+
+    if (requiereReserva && !reserva) {
+      ccAlert('Debes ingresar N° Reserva para el primer abono.', 'error');
+      return;
+    }
+
+    $.ajax({
+      type: 'POST',
+      url: 'php/guardar_vauche.php',
+      data: {
+        id_reserva: reserva,
+        id_cotizacion: idCotizacion,
+        deposito: monto,
+        id_metodo_pago: idMetodoPago,
+        id_hotel: id_hotel
+      },
+      beforeSend: function() {
+        $('.loader').css('display', 'inline-block');
+      },
+      success: function(respuesta) {
+        let obj = {};
+        try {
+          obj = JSON.parse(respuesta);
+        } catch (e) {
+          ccAlert('No se pudo procesar la respuesta al guardar voucher.', 'error');
+          return;
+        }
+
+        if (!obj.success) {
+          ccAlert(obj.message || 'No se pudo guardar el voucher.', 'error');
+          return;
+        }
+
+        ccAlert('Voucher guardado correctamente.', 'success');
+        $('#crear_voucher').modal('hide');
+        ver_detalle_voucher(data.idPrincipal);
+
+        if ($.fn.DataTable && $.fn.DataTable.isDataTable('#tabla_voucher')) {
+          dtable.ajax.reload(null, false);
+        }
+      },
+      error: function() {
+        ccAlert('No se pudo guardar el voucher.', 'error');
+      },
+      complete: function() {
+        $('.loader').css('display', 'none');
+      }
+    });
+  }
+
+  $(document).on('input', '#voucher_monto', function() {
+    this.value = formatMontoInput(this.value);
+  });
+
+  $(document).on('change', '#voucher_id_cotizacion', function() {
+    actualizarReservaCampoVoucher();
   });
 
   function mostrarOpciones(id, suffix) {
@@ -1931,8 +1775,8 @@ session_start();
               tipo_cotizacion: cotizacion.tipo_cotizacion,
               tipo_servicio: cotizacion.tipo_servicio,
               nombre_plan: cotizacion.nombre_plan,
-              descripcion_plan: cotizacion.descripcion_plan || '',
               nombre_motivo: cotizacion.nombre_motivo,
+              descripcion_plan: cotizacion.descripcion_plan || '',
               fecha_entrada: cotizacion.fecha_entrada,
               fecha_salida: cotizacion.fecha_salida,
               acomodo: cotizacion.acomodo ? cotizacion.acomodo.replace(/<br\s*\/?>/gi, '\n') : '',
@@ -1956,6 +1800,16 @@ session_start();
               total: total
             });
           });
+
+          const totalGeneralVoucher = cotizaciones_para_pdf.reduce((acc, c) => acc + (parseInt(c.total || 0) || 0), 0);
+          const totalAbonadoVoucher = (obj["resultado"] || []).reduce((acc, cotizacion) => {
+            return acc + (parseInt(cotizacion.deposito || 0) || 0);
+          }, 0);
+          const saldoPendienteVoucher = totalGeneralVoucher - totalAbonadoVoucher;
+          const numeroReservaVoucher = (() => {
+            const cotizacionConReserva = (obj["resultado"] || []).find((cotizacion) => String(cotizacion.n_reserva || '').trim() !== '');
+            return cotizacionConReserva ? String(cotizacionConReserva.n_reserva).trim() : '0';
+          })();
           
           console.log('Total cotizaciones para PDF:', cotizaciones_para_pdf.length, cotizaciones_para_pdf)
           
@@ -1975,6 +1829,8 @@ session_start();
             pais: info_titular_comun ? info_titular_comun.pais : '',
             depto: info_titular_comun ? info_titular_comun.depto : '',
             ciudad: info_titular_comun ? info_titular_comun.ciudad : '',
+            numero_reserva: numeroReservaVoucher,
+            saldo_pendiente: saldoPendienteVoucher,
             cotizaciones: cotizaciones_para_pdf  // Array de cotizaciones
           };
 
@@ -1985,6 +1841,8 @@ session_start();
           let ciudad = info_titular_comun ? info_titular_comun.ciudad : '';
           let depto = info_titular_comun ? info_titular_comun.depto : '';
           let pais = info_titular_comun ? info_titular_comun.pais : '';
+          let numero_reserva = numeroReservaVoucher;
+          let saldo_pendiente = saldoPendienteVoucher;
 
           const tipoLabelResumen = (t) => (t == '1' ? 'Alojamiento' : (t == '2' ? 'Tour' : 'Alquiler'));
           const buildDetallesTarifaTbody = (tipo_servicio, n_child, n_adult_s, n_adult_d, n_adult_t_c, tarifa_child, tarifa_adult_s, tarifa_adult_d, tarifa_adult_t_c) => {
@@ -2075,7 +1933,7 @@ session_start();
               <div class="cotizacion-section">
                 <div class="section-header">
                   <div class="section-icon"><i class="fas fa-clipboard-list"></i></div>
-                  <h2 class="section-title">Cotización #${id_primera} - ${tipoLabelResumen(tipoCot)}${nombre_motivo ? ` (${nombre_motivo})` : ''}</h2>
+                  <h2 class="section-title">Voucher #${numero_reserva} - ${tipoLabelResumen(tipoCot)}${nombre_motivo ? ` (${nombre_motivo})` : ''}</h2>
                 </div>
                 <div class="info-grid">
                   <div class="info-item">
@@ -2293,11 +2151,27 @@ session_start();
                 .cotizacion-number {
                   text-align: right;
                 }
+                .cotizacion-meta-label {
+                  font-size: 11px;
+                  color: #64748b;
+                  text-transform: uppercase;
+                  letter-spacing: 0.5px;
+                  font-weight: 600;
+                }
                 .cotizacion-id {
                   font-size: 32px;
                   font-weight: 700;
                   color: #1e293b;
                   margin: 0;
+                }
+                .cotizacion-balance {
+                  margin-top: 10px;
+                }
+                .cotizacion-balance-value {
+                  font-size: 18px;
+                  font-weight: 700;
+                  color: #1e40af;
+                  margin-top: 2px;
                 }
                 .cotizacion-date {
                   font-size: 11px;
@@ -2514,11 +2388,16 @@ session_start();
                     ${avatar_hotel && avatar_hotel !== '' ? `<img src="${avatar_hotel}" alt="${nombre_hotel}">` : nombre_hotel}
                   </div>
                   <div class="cotizacion-title-section">
-                    <h1 class="cotizacion-title">COTIZACIÓN</h1>
-                    <p class="cotizacion-subtitle">Cotización válida por 24 HRS</p>
+                    <h1 class="cotizacion-title">VOUCHER</h1>
+                    <p class="cotizacion-subtitle">Documento de reserva</p>
                   </div>
                   <div class="cotizacion-number">
-                    <div class="cotizacion-id">#${id_primera || id}</div>
+                    <div class="cotizacion-meta-label">N° Reserva</div>
+                    <div class="cotizacion-id">#${numero_reserva}</div>
+                    <div class="cotizacion-balance">
+                      <div class="cotizacion-meta-label">Saldo pendiente</div>
+                      <div class="cotizacion-balance-value">$${puntosDecimales(saldo_pendiente)}</div>
+                    </div>
                     <div class="cotizacion-date">Fecha de emisión: ${fecha_expedicion_comun || ''}</div>
                   </div>
                 </div>
@@ -3213,14 +3092,17 @@ session_start();
           {
             width: '*',
             stack: [
-              {text: 'COTIZACIÓN', style: 'headerTitle', alignment: 'center', margin: [0, 18, 0, 2]},
-              {text: 'Cotización válida por 24 HRS', style: 'headerSubtitle', alignment: 'center', margin: [0, 0, 0, 0]}
+              {text: 'VOUCHER', style: 'headerTitle', alignment: 'center', margin: [0, 18, 0, 2]},
+              {text: 'Documento de reserva', style: 'headerSubtitle', alignment: 'center', margin: [0, 0, 0, 0]}
             ]
           },
           {
             width: 170,
             stack: [
-              {text: '#' + (id || 'BORRADOR'), style: 'headerNumber', alignment: 'right', margin: [0, 18, 50, 4]},
+              {text: 'N° Reserva:', style: 'headerMetaLabel', alignment: 'right', margin: [0, 14, 50, 2]},
+              {text: '#' + safe(data.numero_reserva || 0), style: 'headerNumber', alignment: 'right', margin: [0, 0, 50, 4]},
+              {text: 'Saldo pendiente:', style: 'headerMetaLabel', alignment: 'right', margin: [0, 0, 50, 2]},
+              {text: '$' + puntosDecimales(parseInt(data.saldo_pendiente || 0) || 0), style: 'headerBalance', alignment: 'right', margin: [0, 0, 50, 4]},
               {text: 'Fecha de emisión:', style: 'headerDateLabel', alignment: 'right', margin: [0, 0, 50, 2]},
               {text: safe(data.fecha_expedicion), style: 'headerDate', alignment: 'right', margin: [0, 0, 50, 0]}
             ]
@@ -3229,14 +3111,17 @@ session_start();
           {
             width: '*',
             stack: [
-              {text: 'COTIZACIÓN', style: 'headerTitle', alignment: 'center', margin: [0, 18, 0, 2]},
-              {text: 'Cotización válida por 24 HRS', style: 'headerSubtitle', alignment: 'center', margin: [0, 0, 0, 0]}
+              {text: 'VOUCHER', style: 'headerTitle', alignment: 'center', margin: [0, 18, 0, 2]},
+              {text: 'Documento de reserva', style: 'headerSubtitle', alignment: 'center', margin: [0, 0, 0, 0]}
             ]
           },
           {
             width: 170,
             stack: [
-              {text: '#' + (id || 'BORRADOR'), style: 'headerNumber', alignment: 'right', margin: [0, 18, 50, 4]},
+              {text: 'N° Reserva:', style: 'headerMetaLabel', alignment: 'right', margin: [0, 14, 50, 2]},
+              {text: '#' + safe(data.numero_reserva || 0), style: 'headerNumber', alignment: 'right', margin: [0, 0, 50, 4]},
+              {text: 'Saldo pendiente:', style: 'headerMetaLabel', alignment: 'right', margin: [0, 0, 50, 2]},
+              {text: '$' + puntosDecimales(parseInt(data.saldo_pendiente || 0) || 0), style: 'headerBalance', alignment: 'right', margin: [0, 0, 50, 4]},
               {text: 'Fecha de emisión:', style: 'headerDateLabel', alignment: 'right', margin: [0, 0, 50, 2]},
               {text: safe(data.fecha_expedicion), style: 'headerDate', alignment: 'right', margin: [0, 0, 50, 0]}
             ]
@@ -3329,9 +3214,18 @@ session_start();
           fontSize: 8,
           color: COLOR_MUTED
         },
+        headerMetaLabel: {
+          fontSize: 8,
+          color: COLOR_MUTED
+        },
         headerDate: {
           fontSize: 8,
           color: COLOR_TEXT
+        },
+        headerBalance: {
+          fontSize: 11,
+          bold: true,
+          color: COLOR_BLUE
         },
         footerHotelName: {
           fontSize: PDF_BASE_FONT_SIZE,
@@ -3410,7 +3304,7 @@ session_start();
       }
     };
 
-    const filename = esBorrador ? 'Cotizacion_Borrador.pdf' : 'Cotizacion_' + id + '.pdf';
+    const filename = esBorrador ? 'Voucher_Borrador.pdf' : 'Voucher_' + id + '.pdf';
     pdfMake.createPdf(docDefinition).download(filename);
   }
 
@@ -5047,7 +4941,183 @@ session_start();
   });
 
   function ver_detalle_voucher(id) {
-    
+    mostrarPanelConAnimacion();
+
+    const panel = document.querySelector('.cc-panel');
+    if (panel) {
+      panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    const escapeHtml = (value) => String(value ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+
+    const formatMoney = (value) => {
+      const num = parseFloat(value || 0);
+      return `$${puntosDecimales(num)}`;
+    };
+
+    const formatDate = (value) => {
+      if (!value) return '-';
+      const raw = String(value).trim();
+      const onlyDate = raw.split(' ')[0];
+      const parts = onlyDate.split('-');
+      if (parts.length === 3) {
+        return `${parts[2]}-${parts[1]}-${parts[0]}`;
+      }
+      return raw;
+    };
+
+    const values = {
+      codigo: 'traer_abonos_voucher',
+      parametro1: id,
+      parametro2: ''
+    };
+
+    $.ajax({
+      type: 'POST',
+      data: values,
+      url: 'php/sel_recursos.php',
+      beforeSend: function() {
+        $(".loader").css("display", "inline-block");
+      },
+      success: function(respuesta) {
+        let obj = {};
+        try {
+          obj = JSON.parse(respuesta);
+        } catch (e) {
+          $("#content_voucher").html(`
+            <div class="col-12">
+              <div class="alert alert-danger mb-0">No se pudo procesar la información del voucher.</div>
+            </div>
+          `);
+          $("#detail_content_voucher").html('');
+          return;
+        }
+
+        if (!obj.success || !Array.isArray(obj.resultado)) {
+          $("#content_voucher").html(`
+            <div class="col-12">
+              <div class="alert alert-warning mb-0">No se pudo cargar el detalle de abonos para la cotización #${escapeHtml(id)}.</div>
+            </div>
+          `);
+          $("#detail_content_voucher").html('');
+          return;
+        }
+
+        let rows = '';
+        const info = obj.info || {};
+        const totalCotizacion = parseFloat(info.total_cotizacion || 0);
+        const totalAbonos = parseFloat((obj.total_abonos ?? info.total_abono) || 0);
+        const saldoTotal = totalCotizacion - totalAbonos;
+
+        const createdAt = info.created_at ? String(info.created_at) : '';
+        const createdAtLabel = createdAt ? createdAt.replace(' ', ' ') : '-';
+        const nombreTitular = info.nombre_titular || '-';
+        const nombreAutor = info.nombre_autor || '-';
+        const idPrincipal = info.id || obj.id_principal || id;
+
+        window.voucherDetalleActual = {
+          idPrincipal: idPrincipal,
+          nombreTitular: nombreTitular,
+          saldoTotal: saldoTotal,
+          totalCotizacion: totalCotizacion,
+          totalAbonos: totalAbonos,
+          cotizaciones: Array.isArray(obj.cotizaciones) ? obj.cotizaciones : []
+        };
+
+        obj.resultado.forEach((item, index) => {
+          const monto = parseFloat(item.deposito || 0);
+
+          const estadoHtml = monto > 0
+            ? '<span class="badge badge-success">Abonado</span>'
+            : '<span class="badge badge-warning text-white">Pendiente</span>';
+
+          const idVoucherMostrar = item.id_vaucher && String(item.id_vaucher).trim() !== ''
+            ? escapeHtml(item.id_vaucher)
+            : '-';
+
+          rows += `
+            <tr>
+              <td>${idVoucherMostrar}</td>
+              <td>${escapeHtml(formatDate(item.fecha_crea))}</td>
+              <td class="text-right">${escapeHtml(formatMoney(monto))}</td>
+            </tr>
+          `;
+        });
+
+        if (!rows) {
+          rows = `
+            <tr>
+              <td colspan="4" class="text-center text-muted">No hay abonos registrados para esta cotización.</td>
+            </tr>
+          `;
+        }
+
+        $("#content_voucher").html(`
+          <div class="col-12 mb-3">
+            <h5 class="mb-2">Cotización: #${escapeHtml(idPrincipal)}</h5>
+            <div class="mb-1"><strong>Cliente:</strong> ${escapeHtml(nombreTitular)}</div>
+            <div class="mb-2"><strong>Autor:</strong> ${escapeHtml(nombreAutor)}</div>
+            <span class="badge badge-light" style="padding:8px 12px; border-radius: 10px;">Fecha de creación: ${escapeHtml(createdAtLabel)}</span>
+          </div>
+
+          <div class="col-12">
+            <div class="table-responsive">
+              <table class="table table-sm table-striped mb-0">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Fecha</th>
+                    <th class="text-right">Monto</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${rows}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `);
+
+        $("#detail_content_voucher").html(`
+          <div class="col-12">
+            <div class="table-responsive">
+              <table class="table table-sm mb-0">
+                <tbody>
+                  <tr>
+                    <th scope="row" class="border-top-0">Total abono</th>
+                    <td class="text-right border-top-0">${escapeHtml(formatMoney(totalAbonos))}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Total</th>
+                    <td class="text-right">${escapeHtml(formatMoney(totalCotizacion))}</td>
+                  </tr>
+                  <tr class="table-active">
+                    <th scope="row" class="font-weight-bold">Saldo total</th>
+                    <td class="text-right font-weight-bold">${escapeHtml(formatMoney(saldoTotal))}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `);
+      },
+      error: function() {
+        $("#content_voucher").html(`
+          <div class="col-12">
+            <div class="alert alert-danger mb-0">No se pudo obtener la información del voucher.</div>
+          </div>
+        `);
+        $("#detail_content_voucher").html('');
+      },
+      complete: function() {
+        $(".loader").css("display", "none");
+      }
+    });
   }
 
 </script>
