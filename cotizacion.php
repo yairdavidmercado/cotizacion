@@ -112,7 +112,7 @@ session_start();
 
       /* Inputs compactos */
       .cc-panel .form-control,
-      .cc-panel .select2-selection{
+      .cc-panel .ts-control{
         border-radius: 12px !important;
         border: 1px solid rgba(15,23,42,.12) !important;
         height: 40px;
@@ -122,17 +122,19 @@ session_start();
         min-height: 90px;
       }
 
-      /* Select2 dentro del panel */
-      .select2-container--default .select2-selection--single{
-        height: 40px !important;
+      /* Tom Select dentro del panel */
+      .ts-wrapper.single .ts-control{
+        min-height: 40px !important;
         border-radius: 12px !important;
         border: 1px solid rgba(15,23,42,.12) !important;
+        padding: 7px 10px !important;
       }
-      .select2-container--default .select2-selection--single .select2-selection__rendered{
-        line-height: 40px !important;
+      .ts-wrapper.single .ts-control .item{
+        line-height: 24px !important;
       }
-      .select2-container--default .select2-selection--single .select2-selection__arrow{
-        height: 40px !important;
+      .ts-dropdown{
+        border-radius: 12px !important;
+        border: 1px solid rgba(15,23,42,.12) !important;
       }
 
       /* Botón principal como mockup */
@@ -222,7 +224,7 @@ session_start();
           height: calc(100% / 0.85);
         }
 
-        .select2-dropdown {
+        .ts-dropdown {
           /* transform: scale(0.85);
           transform-origin: top left; */
           width: calc(100% / 0.85);
@@ -241,7 +243,7 @@ session_start();
         border-color: #dc3545 !important;
       }
 
-      .select2-selection.field-error {
+      .ts-control.field-error {
         border-color: #dc3545 !important;
       }
 
@@ -1333,6 +1335,12 @@ session_start();
 
 <?php require 'partials/librerias.php'; ?>
 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.bootstrap4.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
+
 <script>
   var id_hotel = "<?php echo $_SESSION['id_hotel'] ?>";
   var nombre_hotel = "<?php echo $_SESSION['nombre_hotel'] ?>";
@@ -1345,6 +1353,111 @@ session_start();
   var avatar_hotel = "<?php echo $_SESSION['avatar_hotel'] ?>";
 
   var cod_vendedor = "<?php echo $_SESSION['codigo'] ?>";
+  var flatpickrInstances = {};
+
+  function formatDateDisplay(date) {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
+  }
+
+  function formatDateISO(date) {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${year}-${month}-${day}`;
+  }
+
+  function clearDateRangeFields(suffix) {
+    $('#DateRange' + suffix).val('');
+    $('#startDate' + suffix).val('').trigger('change');
+    $('#endDate' + suffix).val('').trigger('change');
+  }
+
+  function destroyFlatpickrInstance(suffix) {
+    if (flatpickrInstances[suffix]) {
+      flatpickrInstances[suffix].destroy();
+      delete flatpickrInstances[suffix];
+    }
+  }
+
+  function initFlatpickrDateRange(esUnaFecha, suffix) {
+    suffix = suffix || '';
+    const input = document.getElementById('DateRange' + suffix);
+    if (!input || typeof flatpickr === 'undefined') return;
+
+    destroyFlatpickrInstance(suffix);
+
+    flatpickrInstances[suffix] = flatpickr(input, {
+      mode: esUnaFecha ? 'single' : 'range',
+      dateFormat: 'd-m-Y',
+      locale: flatpickr.l10ns.es,
+      disableMobile: true,
+      allowInput: false,
+      conjunction: ' - ',
+      onChange: function(selectedDates, dateStr, instance) {
+        if (esUnaFecha) {
+          if (selectedDates.length === 1) {
+            const start = selectedDates[0];
+            instance.input.value = formatDateDisplay(start);
+            $('#startDate' + suffix).val(formatDateISO(start)).trigger('change');
+            $('#endDate' + suffix).val(formatDateISO(start)).trigger('change');
+          } else {
+            clearDateRangeFields(suffix);
+          }
+          return;
+        }
+
+        if (selectedDates.length < 2) {
+          clearDateRangeFields(suffix);
+          return;
+        }
+
+        const start = selectedDates[0];
+        const end = selectedDates[1];
+        const diffDays = Math.floor((end - start) / (1000 * 60 * 60 * 24));
+
+        if (diffDays < 1) {
+          ccAlert('Para el modo "Noches" debe seleccionar al menos 1 día de diferencia entre la fecha de entrada y salida', 'error');
+          instance.clear();
+          clearDateRangeFields(suffix);
+          return;
+        }
+
+        instance.input.value = `${formatDateDisplay(start)} - ${formatDateDisplay(end)}`;
+        $('#startDate' + suffix).val(formatDateISO(start)).trigger('change');
+        $('#endDate' + suffix).val(formatDateISO(end)).trigger('change');
+      }
+    });
+  }
+
+  function initTomSelect(selector, options) {
+    if (typeof TomSelect === 'undefined') return;
+
+    $(selector).each(function () {
+      if (this.tomselect) {
+        this.tomselect.destroy();
+      }
+
+      new TomSelect(this, Object.assign({
+        create: false,
+        allowEmptyOption: true,
+        dropdownParent: 'body'
+      }, options || {}));
+    });
+  }
+
+  function rebuildTomSelectOptions(selector, optionsHtml, options) {
+    $(selector).each(function () {
+      if (this.tomselect) {
+        this.tomselect.destroy();
+      }
+      $(this).html(optionsHtml);
+    });
+
+    initTomSelect(selector, options);
+  }
 
   function shouldHideLogoGif() {
     var hasTipoCotizacion = $('input[type="checkbox"][name="tipo_cotizacion[]"]:checked').length > 0;
@@ -1359,21 +1472,10 @@ session_start();
 
   $(function() {
     show_traer_tabla_cotizacion();
-    $('#DateRange, #DateRange_tour, #DateRange_alq').daterangepicker({
-      autoUpdateInput: false,
-      locale: {
-        format: 'DD/MM/YYYY',
-        applyLabel: 'Aplicar',
-        cancelLabel: 'Cancelar',
-        daysOfWeek: ['Do','Lu','Ma','Mi','Ju','Vi','Sa'],
-        monthNames: [
-          'Enero','Febrero','Marzo','Abril','Mayo','Junio',
-          'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'
-        ],
-        firstDay: 1
-      },
-      //minDate: moment(), // 👈 hoy o fechas futuras
-    });
+    initTomSelect('#id_usuario, #id_motivo, #id_motivo_tour, #id_motivo_alq, #id_planes, #id_planes_tour, #id_planes_alq, #id_tarifa, #id_tarifa_tour, #id_tarifa_alq, #select_pais, #select_deptos');
+    initFlatpickrDateRange(false, '');
+    initFlatpickrDateRange(false, '_tour');
+    initFlatpickrDateRange(false, '_alq');
     $("#menu_inicio").removeClass("active");
     //traer_hotel()
     traer_titulares()
@@ -1716,7 +1818,7 @@ session_start();
               fila += `<option value='${val.id}'>${val.paisnombre}</option>`
             });
 
-            $("#select_pais").html('<option value="">Seleccionar</option>'+fila)
+            rebuildTomSelectOptions('#select_pais', '<option value="">Seleccionar</option>'+fila);
             
           },
           error: function() {
@@ -1725,18 +1827,12 @@ session_start();
           }
         });
 
-        /* $("#select_pais").select2({
-            dropdownParent: $('#crear_titular_modal')
-        }); */
-      
   }
 
   function traer_deptos(id) {
 
     if ( id.length < 1) {
-      $("#select_deptos").html('<option value="">Seleccionar</option>').select2({
-        dropdownParent: $('#crear_titular_modal')
-      });
+      rebuildTomSelectOptions('#select_deptos', '<option value="">Seleccionar</option>');
       return false
     }
     let values = { 
@@ -1760,7 +1856,7 @@ session_start();
           fila += `<option value='${val.id}'>${val.estadonombre}</option>`
         });
 
-        $("#select_deptos").html('<option value="">Seleccionar</option>'+fila)
+        rebuildTomSelectOptions('#select_deptos', '<option value="">Seleccionar</option>'+fila);
         
       },
       error: function() {
@@ -1768,11 +1864,6 @@ session_start();
         ccAlert("No se ha podido obtener la información", 'error');
       }
     });
-
-    /* $("#select_deptos").select2({
-          dropdownParent: $('#crear_titular_modal')
-    }); */
-
   }
 
   function detalle_titular(value) {
@@ -1819,7 +1910,7 @@ session_start();
             fila += `<option value='${val.id}' nombre='${val.nombre1} ${val.apellido1} ${val.apellido2}' pais='${val.pais}' depto='${val.depto}' telefono='${val.telefono}' ciudad='${val.ciudad}' email='${val.email}' cedula='${val.cedula}'>${val.cedula} - ${val.nombre1} ${val.nombre2} ${val.apellido1} ${val.apellido2}</option>`
           });
 
-          $("#id_usuario").html('<option value="">Seleccionar</option>'+fila)
+          rebuildTomSelectOptions('#id_usuario', '<option value="">Seleccionar</option>'+fila);
           
         },
         error: function() {
@@ -1827,11 +1918,6 @@ session_start();
           console.log("No se ha podido obtener la información");
         }
       });
-
-      $("#id_usuario").select2({
-        dropdownParent: $('.cc-page')
-      });
-    
   }
 
   function traer_motivos() {
@@ -1856,7 +1942,7 @@ session_start();
             fila += `<option value='${val.id}'>${val.nombre}</option>`
           });
 
-          $("#id_motivo, #id_motivo_tour, #id_motivo_alq").html('<option value="">Seleccionar</option>'+fila)
+          rebuildTomSelectOptions('#id_motivo, #id_motivo_tour, #id_motivo_alq', '<option value="">Seleccionar</option>'+fila);
           
         },
         error: function() {
@@ -1864,11 +1950,6 @@ session_start();
           console.log("No se ha podido obtener la información");
         }
       });
-
-      $("#id_motivo, #id_motivo_tour, #id_motivo_alq").select2({
-        dropdownParent: $('.cc-page')
-      });
-    
   }
 
     function traer_planes(id_hotel, id_tipo_plan, suffix) {
@@ -1896,14 +1977,7 @@ session_start();
             });
           }
 
-          $(selectId).html('<option value="">Seleccionar</option>'+fila)
-
-            if ($(selectId).hasClass('select2-hidden-accessible')) {
-              $(selectId).select2('destroy');
-            }
-            $(selectId).select2({
-              dropdownParent: $('.cc-page')
-            });
+          rebuildTomSelectOptions(selectId, '<option value="">Seleccionar</option>'+fila);
           
         },
         error: function() {
@@ -2809,7 +2883,7 @@ session_start();
           });
 
           // Solo actualizar el select del formulario correspondiente
-          $("#id_tarifa" + suffix).html('<option value="">Seleccionar</option>'+fila)
+          rebuildTomSelectOptions('#id_tarifa' + suffix, '<option value="">Seleccionar</option>'+fila);
           
         },
         error: function() {
@@ -2817,12 +2891,6 @@ session_start();
           console.log("No se ha podido obtener la información");
         }
       });
-
-      // Solo inicializar select2 para el select correspondiente
-      $("#id_tarifa" + suffix).select2({
-        dropdownParent: $('.cc-page')
-      });
-    
   }
 
   function isNumber(evt) {
@@ -3580,12 +3648,16 @@ session_start();
       $("#id_motivo").val("").change()
       $("#cantidad_noches").text("")
       $("#id_acomodacion").val("")
+      $("#DateRange").val("").prop('disabled',true)
       $("#startDate").val("").prop('disabled',true)
       $("#endDate").val("").prop('disabled',true)
       $("#tbody_tarifa").html("")
       $("#content_subtotal").html("")
       $("#content_info_tarifa").hide()
       $("#content_info_planes").hide()
+      if (flatpickrInstances['']) {
+        flatpickrInstances[''].clear();
+      }
   }
 
   function validar_plan(suffix){
@@ -3598,10 +3670,14 @@ session_start();
       $("#adult_t_c" + suffix).val("0").prop('disabled',true)
       $("#id_tarifa" + suffix).val("").change().prop('disabled',true)
       $("#cantidad_noches" + suffix).text("")
+      $("#DateRange" + suffix).val("").prop('disabled',true)
       $("#startDate" + suffix).val("").prop('disabled',true)
       $("#endDate" + suffix).val("").prop('disabled',true)
       $("#tbody_tarifa" + suffix).html("")
       $("#content_subtotal" + suffix).html("")
+      if (flatpickrInstances[suffix]) {
+        flatpickrInstances[suffix].clear();
+      }
       
       // Ocultar los contenedores de previsualización correspondientes
       if (suffix === '') {
@@ -3615,6 +3691,68 @@ session_start();
         $("#content_info_planes_alq").hide()
       }
   }
+
+  function restaurarFormularioCotizacionInicial() {
+    limpiarErrores(document.body);
+
+    $('input[type="checkbox"][name="tipo_cotizacion[]"]').prop('checked', false);
+    $("#id_usuario").val("").trigger('change');
+    $("#content_info_titular").hide();
+
+    limpiar_formulario();
+
+    ['_tour', '_alq'].forEach(function(suffix) {
+      validar_plan(suffix);
+
+      $("#id_planes" + suffix).val("").trigger('change');
+      $("#id_motivo" + suffix).val("").trigger('change');
+      $("#id_tarifa" + suffix).val("").trigger('change').prop('disabled', true);
+      $("#id_acomodacion" + suffix).val("");
+
+      $("#detalle_tarifa" + suffix).html("");
+      $("#content_detalles_plan" + suffix).html("");
+      $("#content_servicios_incluidos" + suffix).html("");
+      $("#iniciartarifas" + suffix).html("");
+    });
+
+    $("#content_detalles_plan").html("");
+    $("#content_servicios_incluidos").html("");
+    $("#iniciartarifas").html("");
+    $("#detalle_tarifa").html("");
+
+    $("#form_alojamiento, #form_tour, #form_alquiler").hide();
+    $("#content_info_planes, #content_info_tarifa, #content_info_planes_tour, #content_info_tarifa_tour, #content_info_planes_alq, #content_info_tarifa_alq").hide();
+
+    updateLogoGifVisibility();
+  }
+
+  function actualizarTablaCotizaciones() {
+    if ($.fn.DataTable.isDataTable('#tabla_cotizacion') && typeof dtable !== 'undefined') {
+      dtable.ajax.reload(null, false);
+      return;
+    }
+
+    traer_tabla_cotizacion();
+  }
+
+  function irATabBuscar() {
+    const $tabBuscar = $("#profile-tab");
+
+    if (!$tabBuscar.length) {
+      actualizarTablaCotizaciones();
+      return;
+    }
+
+    try {
+      if (typeof $tabBuscar.tab === 'function') {
+        $tabBuscar.tab('show');
+      }
+      $tabBuscar.trigger('click');
+    } catch (e) {
+      $tabBuscar.trigger('click');
+    }
+  }
+
   function show_traer_tabla_cotizacion(){
     setTimeout(() => {
       traer_tabla_cotizacion()
@@ -3768,67 +3906,8 @@ session_start();
     $('#DateRange' + suffix).prop('disabled', false).prop('required', true);
     $('#startDate' + suffix + ', #endDate' + suffix).prop('disabled', false); // 👈 clave
 
-    // Destruir el daterangepicker anterior si existe
-    const $picker = $('#DateRange' + suffix);
-    if ($picker.data('daterangepicker')) {
-      $picker.data('daterangepicker').remove();
-      $picker.removeData('daterangepicker');
-    }
-
-    const config = {
-      singleDatePicker: esUnaFecha,
-      showDropdowns: true,
-      autoUpdateInput: false,
-      //minDate: moment(),
-      locale: {
-        format: "YYYY-MM-DD",
-        applyLabel: "Aplicar",
-        cancelLabel: "Cancelar",
-        fromLabel: "Desde",
-        toLabel: "Hasta",
-        customRangeLabel: "Personalizado",
-        weekLabel: "S",
-        daysOfWeek: ["Do","Lu","Ma","Mi","Ju","Vi","Sa"],
-        monthNames: ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"],
-      }
-    };
-
-    // Si es rango (noches), requerir al menos 1 día de diferencia
-    if (!esUnaFecha) {
-      config.minSpan = {
-        days: 1
-      };
-    }
-
-    $picker.daterangepicker(config);
-
-    $('#DateRange' + suffix).off('apply.daterangepicker').on('apply.daterangepicker', function(ev, picker) {
-      // Validación adicional para modo rango (noches): debe haber al menos 1 día de diferencia
-      if (!esUnaFecha) {
-        const diffDays = picker.endDate.diff(picker.startDate, 'days');
-        if (diffDays < 1) {
-          ccAlert('Para el modo "Noches" debe seleccionar al menos 1 día de diferencia entre la fecha de entrada y salida', 'error');
-          $(this).val('');
-          $('#startDate' + suffix).val('');
-          $('#endDate' + suffix).val('');
-          return false;
-        }
-        // Modo rango - mostrar ambas fechas
-        $(this).val(picker.startDate.format('DD-MM-YYYY') + ' - ' + picker.endDate.format('DD-MM-YYYY'));
-      } else {
-        // Modo una sola fecha - mostrar solo la fecha inicial
-        $(this).val(picker.startDate.format('DD-MM-YYYY'));
-      }
-      
-      $('#startDate' + suffix).val(picker.startDate.format('YYYY-MM-DD')).trigger('change');
-      $('#endDate' + suffix).val(picker.endDate.format('YYYY-MM-DD')).trigger('change');
-    });
-
-    $('#DateRange' + suffix).off('cancel.daterangepicker').on('cancel.daterangepicker', function() {
-      $(this).val('');
-      $('#startDate' + suffix).val('').trigger('change');
-      $('#endDate' + suffix).val('').trigger('change');
-    });
+    clearDateRangeFields(suffix);
+    initFlatpickrDateRange(esUnaFecha, suffix);
   }
 
   function showFormCotizacion(tipo, estado) {
@@ -4033,11 +4112,31 @@ session_start();
         return;
       }
 
+      const confirmacion = await Swal.fire({
+        title: '¿Confirmar guardado?',
+        text: cotizaciones.length > 1
+          ? `Se guardarán ${cotizaciones.length} cotizaciones.`
+          : 'Se guardará la cotización actual.',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Confirmar',
+        cancelButtonText: 'Cancelar',
+        reverseButtons: true,
+        focusCancel: true
+      });
+
+      if (!confirmacion.isConfirmed) {
+        return;
+      }
+
       const result = await GuardarCotizacionFetch(cotizaciones);
       
       const mensajeCotizaciones = cotizaciones.length > 1 
         ? `Se guardaron ${cotizaciones.length} cotizaciones (${cotizaciones.map(c => c.tipo_cotizacion == 1 ? 'Alojamiento' : c.tipo_cotizacion == 2 ? 'Tour' : 'Alquiler').join(' + ')})`
         : 'Cotización guardada correctamente';
+
+      restaurarFormularioCotizacionInicial();
+      irATabBuscar();
       
       ccAlert(mensajeCotizaciones, "success");
 
@@ -4045,15 +4144,6 @@ session_start();
       console.log('id_principal:', result.id_principal);
       console.log('ids_detalle:', result.ids_detalle);
       console.log('Total cotizaciones guardadas:', cotizaciones.length);
-      
-      // Verificar que se guardó correctamente trayendo las cotizaciones guardadas
-      if (result.ids_detalle && result.ids_detalle.length > 0) {
-        console.log('Abriendo cotización recién guardada con ID:', result.ids_detalle[0]);
-        ccAlert(`Abriendo PDF con ${result.ids_detalle.length} cotización(es)...`, "info");
-        setTimeout(() => {
-          traer_cotizacion(result.ids_detalle[0]);
-        }, 1000);
-      }
 
     } catch (e) {
       ccAlert(e.message || "Ocurrió un error al guardar.", "error");
@@ -4457,23 +4547,24 @@ session_start();
     $(scope).find('.invalid-feedback').remove();
   }
 
-  // Inserta error después del control (o después de select2)
+  // Inserta error después del control (o después de Tom Select)
   function mostrarErrorCampo(el, mensaje) {
     const $el = $(el);
+    const isTomSelect = !!($el[0] && $el[0].tomselect);
 
     // marca el control
     $el.addClass('field-error');
 
-    // si es select2, marcar también el contenedor visible
-    if ($el.hasClass('select2-hidden-accessible')) {
-      $el.next('.select2').find('.select2-selection').addClass('field-error');
+    // si es Tom Select, marcar también el contenedor visible
+    if (isTomSelect) {
+      $el.next('.ts-wrapper').find('.ts-control').addClass('field-error');
     }
 
     // evita duplicados cerca
-    // (para select2 el error lo ponemos después de .select2)
-    if ($el.hasClass('select2-hidden-accessible')) {
-      $el.next('.select2').next('.invalid-feedback').remove();
-      $el.next('.select2').after(`<div class="invalid-feedback" style="display: block !important; color: #dc3545;">${mensaje}</div>`);
+    // (para Tom Select el error lo ponemos después de .ts-wrapper)
+    if (isTomSelect) {
+      $el.next('.ts-wrapper').next('.invalid-feedback').remove();
+      $el.next('.ts-wrapper').after(`<div class="invalid-feedback" style="display: block !important; color: #dc3545;">${mensaje}</div>`);
     } else {
       $el.next('.invalid-feedback').remove();
       $el.after(`<div class="invalid-feedback" style="display: block !important; color: #dc3545;">${mensaje}</div>`);
@@ -5081,16 +5172,17 @@ session_start();
     }
   }
 
-    // Limpia error cuando cambian (incluye select2)
+    // Limpia error cuando cambian (incluye Tom Select)
   $(document).on('input change', 'input, select, textarea', function () {
     const $el = $(this);
+    const isTomSelect = !!($el[0] && $el[0].tomselect);
     $el.removeClass('field-error');
     $el.next('.invalid-feedback').remove();
 
-    // limpiar select2 visible
-    if ($el.hasClass('select2-hidden-accessible')) {
-      $el.next('.select2').find('.select2-selection').removeClass('field-error');
-      $el.next('.select2').next('.invalid-feedback').remove();
+    // limpiar contenedor visible de Tom Select
+    if (isTomSelect) {
+      $el.next('.ts-wrapper').find('.ts-control').removeClass('field-error');
+      $el.next('.ts-wrapper').next('.invalid-feedback').remove();
     }
   });
 
