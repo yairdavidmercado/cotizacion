@@ -631,7 +631,7 @@ if ($conn) {
 										) *
 										(
 											CASE
-												WHEN c.noche IS NULL OR c.noche = '' OR c.noche = 'N/A' THEN 1
+												WHEN c.noche IS NULL OR c.noche = 0 OR c.noche = 'N/A' THEN 1
 												WHEN c.noche REGEXP '^[0-9]+$' THEN CAST(c.noche AS UNSIGNED)
 												ELSE 1
 											END
