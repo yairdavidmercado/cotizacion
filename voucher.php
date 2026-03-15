@@ -747,7 +747,7 @@ session_start();
                               <th>Cantidad</th>
                               <th>Total</th>
                               <th>Total Abono</th>
-                              <th>Saldo Total</th>
+                              <th>Saldo Pendiente</th>
                               <th></th>
                             </tr>
                           </thead>
@@ -5097,7 +5097,7 @@ session_start();
                     <td class="text-right">${escapeHtml(formatMoney(totalCotizacion))}</td>
                   </tr>
                   <tr class="table-active">
-                    <th scope="row" class="font-weight-bold">Saldo total</th>
+                    <th scope="row" class="font-weight-bold">Saldo pendiente</th>
                     <td class="text-right font-weight-bold">${escapeHtml(formatMoney(saldoTotal))}</td>
                   </tr>
                 </tbody>
