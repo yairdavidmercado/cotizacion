@@ -7,7 +7,7 @@
             <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
             <meta name="generator" content="Jekyll v3.8.5">
             <title>Registrate</title>
-            <link rel="icon" type="image/ico" href="/cotizacion/assets/img/ideas.ico">
+            <link rel="icon" type="image/ico" href="assets/img/ideas.ico">
             <link rel="canonical" href="https://getbootstrap.com/docs/4.3/examples/sign-in/">
             <link rel="stylesheet" href="assets/css/ajax/bootstrap.css">
             <link rel="stylesheet" href="assets/css/buttons-minimal.css">

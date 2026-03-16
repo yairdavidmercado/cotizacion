@@ -1,6 +1,44 @@
 <?php
+function cc_base_path() {
+  static $basePath = null;
+  if ($basePath !== null) return $basePath;
+
+  $docRoot = isset($_SERVER['DOCUMENT_ROOT']) ? str_replace('\\', '/', rtrim($_SERVER['DOCUMENT_ROOT'], '/')) : '';
+  $menuDir = str_replace('\\', '/', __DIR__);
+
+  if ($docRoot !== '' && strpos($menuDir, $docRoot) === 0) {
+    $basePath = substr($menuDir, strlen($docRoot));
+  } else {
+    $basePath = '/' . basename($menuDir);
+  }
+
+  $basePath = '/' . trim($basePath, '/');
+  return $basePath;
+}
+
+function cc_menu_url($url) {
+  $url = trim((string)$url);
+  if ($url === '') return '#';
+
+  if (preg_match('/^(https?:)?\/\//i', $url) || preg_match('/^(mailto:|tel:|javascript:|#)/i', $url)) {
+    return $url;
+  }
+
+  $base = cc_base_path();
+
+  if (strpos($url, $base . '/') === 0 || $url === $base) {
+    return $url;
+  }
+
+  if ($url[0] === '/') {
+    return $base . $url;
+  }
+
+  return $base . '/' . ltrim($url, '/');
+}
+
  if (!isset($_SESSION['id'])) {
-    header ("Location:/index.php"); 
+  header ("Location:" . cc_menu_url('/index.php')); 
  }
 $menu_general = '';
 $menu_config = '';
@@ -10,6 +48,7 @@ if ($_SESSION['menu_general']['success']) {
         if ($_SESSION['menu_general']['resultado'][$i]['tipo'] == 'GENERAL') {
             $nombre = $_SESSION['menu_general']['resultado'][$i]['nombre'];
             $url = $_SESSION['menu_general']['resultado'][$i]['url'];
+          $url = cc_menu_url($url);
             $menu_general .= '<li class="nav-item">
                                     <a class="nav-link menu_principal" id="menu_'.$nombre.'" href="'.$url.'">'.$nombre.'</a>
                                 </li>';
@@ -18,6 +57,7 @@ if ($_SESSION['menu_general']['success']) {
         if ($_SESSION['menu_general']['resultado'][$i]['tipo'] == 'CONFIG') {
             $nombre = $_SESSION['menu_general']['resultado'][$i]['nombre'];
             $url = $_SESSION['menu_general']['resultado'][$i]['url'];
+          $url = cc_menu_url($url);
             $menu_config .= '<a class="dropdown-item menu_principal" id="menu_'.$i.'" href="'.$url.'">'.$nombre.'</a>
             <div class="dropdown-divider"></div>';
         }
@@ -25,6 +65,7 @@ if ($_SESSION['menu_general']['success']) {
         if ($_SESSION['menu_general']['resultado'][$i]['tipo'] == 'SESION') {
             $nombre = $_SESSION['menu_general']['resultado'][$i]['nombre'];
             $url = $_SESSION['menu_general']['resultado'][$i]['url'];
+          $url = cc_menu_url($url);
             $panel_control = '<a class="dropdown-item" href="'.$url.'">'.$nombre.'</a>';
         }
     }
@@ -182,7 +223,7 @@ if ($_SESSION['menu_general']['success']) {
 <nav class="navbar navbar-expand-lg fixed-top navbar-dark cc-nav">
   <div class="container">
 
-    <a class="navbar-brand" href="/welcome.php">
+    <a class="navbar-brand" href="<?php echo cc_menu_url('/welcome.php'); ?>">
       <img src="assets/img/logos.png" alt="COTICLICK">
     </a>
 
@@ -236,7 +277,7 @@ if ($_SESSION['menu_general']['success']) {
           <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
             <?php echo $panel_control; ?>
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="/php/cerrar_sesion.php">
+            <a class="dropdown-item" href="<?php echo cc_menu_url('/php/cerrar_sesion.php'); ?>">
               <i class="fas fa-sign-out-alt mr-2" style="opacity:.85;"></i>
               Cerrar sesión
             </a>

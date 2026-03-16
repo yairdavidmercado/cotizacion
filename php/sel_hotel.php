@@ -1,7 +1,7 @@
 <?php 
 SESSION_START(); 
 if (!isset($_SESSION['id'])) {
-    header ("Location:/cotizacion/index.php"); 
+     header ("Location:../index.php"); 
 }
 $parametro1 = $_POST["parametro1"];
 $parametro2 = $_POST["parametro2"];

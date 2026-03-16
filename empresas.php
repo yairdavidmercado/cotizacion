@@ -7,7 +7,7 @@
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Jekyll v3.8.5">
     <title>Iniciar sesión</title>
-    <link rel="icon" type="image/ico" href="/cotizacion/assets/img/ideas.ico">
+    <link rel="icon" type="image/ico" href="assets/img/ideas.ico">
     <link rel="canonical" href="https://getbootstrap.com/docs/4.3/examples/sign-in/">
     <link href="assets/css/select2.min.css" rel="stylesheet">
     <link href="assets/css/cropper.min.css" rel="stylesheet">

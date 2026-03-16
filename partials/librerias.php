@@ -1,5 +1,5 @@
 <!-- ================= CSS ================= -->
-<link rel="icon" type="image/ico" href="/gestion_pqrsdf/assets/img/ideas.ico">
+<link rel="icon" type="image/ico" href="assets/img/ideas.ico">
 
 <link href="assets/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css">
