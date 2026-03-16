@@ -355,7 +355,7 @@ session_start();
       #tabla_cotizacion_container{
         width: 100%;
         max-width: 100%;
-        overflow-x: auto;
+        overflow-x: hidden;
         -webkit-overflow-scrolling: touch;
         margin: 15px 0;
       }
@@ -365,6 +365,10 @@ session_start();
       #tabla_cotizacion{
         width: 100% !important;
         max-width: 100%;
+      }
+      #tabla_cotizacion th,
+      #tabla_cotizacion td{
+        white-space: nowrap;
       }
 
       /* Truncate para celdas largas (fallback en pantallas pequeñas) */
@@ -382,6 +386,27 @@ session_start();
       @media (max-width: 420px){
         #tabla_cotizacion .dt-truncate{ max-width: 110px; }
       }
+
+      /* Fallback: ocultar columnas por ancho si Responsive no entra */
+      @media (max-width: 1200px){
+        #tabla_cotizacion th:nth-child(5),
+        #tabla_cotizacion td:nth-child(5){
+          display: none;
+        }
+      }
+      @media (max-width: 992px){
+        #tabla_cotizacion th:nth-child(3),
+        #tabla_cotizacion td:nth-child(3){
+          display: none;
+        }
+      }
+      @media (max-width: 768px){
+        #tabla_cotizacion th:nth-child(4),
+        #tabla_cotizacion td:nth-child(4){
+          display: none;
+        }
+      }
+
       @media (max-width: 768px) {
         .cotizacion-table {
           font-size: 11px;
@@ -1068,16 +1093,16 @@ session_start();
                 <div class="container-fluid">
                   <div class="row">
                     <div class="col-sm-12">
-                      <div class="table-responsive" id="tabla_cotizacion_container">
-                        <table id="tabla_cotizacion" class="table table-striped dt-responsive" style="width:100%">
+                      <div id="tabla_cotizacion_container" >
+                        <table id="tabla_cotizacion" class="table table-striped dt-responsive nowrap" style="width:100%">
                           <thead>
                               <tr>
-                                <th>ID</th>
-                                <th>Cliente</th>
-                                <th>Autor</th>
-                                <th>Fecha creación</th>
-                                <th>Fecha actualización</th>
-                                <th></th>
+                                <th class="all">ID</th>
+                                <th class="all">Cliente</th>
+                                <th class="min-tablet-l">Autor</th>
+                                <th class="min-tablet-p">Fecha creación</th>
+                                <th class="min-desktop">Fecha actualización</th>
+                                <th class="all"></th>
                               </tr>
                           </thead>
                           <tbody id="body_table_cotizacion">
@@ -3809,6 +3834,9 @@ session_start();
             setTimeout(() => {
               try {
                 api.columns.adjust();
+                if (api.responsive && api.responsive.rebuild) {
+                  api.responsive.rebuild();
+                }
                 if (api.responsive && api.responsive.recalc) {
                   api.responsive.recalc();
                 }
@@ -3841,7 +3869,7 @@ session_start();
 				 "columnDefs": [
           {
             targets: 0,
-            responsivePriority: 6
+            responsivePriority: 1
           },
           {
             targets: 1,
@@ -3854,7 +3882,7 @@ session_start();
           },
           {
             targets: 2,
-            responsivePriority: 4,
+            responsivePriority: 5,
             render: function(data, type){
               if (type !== 'display') return data;
               const safe = escapeHtml(data);
@@ -3863,21 +3891,48 @@ session_start();
           },
           {
             targets: 3,
-            responsivePriority: 3
+            responsivePriority: 4
           },
           {
             targets: 4,
-            responsivePriority: 5
+            responsivePriority: 6
           },
 					 {
             "targets": 5,
-            "responsivePriority": 1,
+            "responsivePriority": 3,
 						"data":"",
 						 render: function ( data, type, row ) {
               return  `<button class="btn btn-link" onclick="event.stopPropagation(); traer_cotizacion(${row.id})"><i class="fa fa-eye" aria-hidden="true"></i></button>`;
 						 }
 					}],
+
+          "drawCallback": function () {
+            const api = this.api();
+            try {
+              api.columns.adjust();
+              if (api.responsive && api.responsive.rebuild) {
+                api.responsive.rebuild();
+              }
+              if (api.responsive && api.responsive.recalc) {
+                api.responsive.recalc();
+              }
+            } catch (e) {}
+          }
 				});
+
+      $(window).off('resize.tablaCotizacion').on('resize.tablaCotizacion', function () {
+        if (dtable) {
+          try {
+            dtable.columns.adjust();
+            if (dtable.responsive && dtable.responsive.rebuild) {
+              dtable.responsive.rebuild();
+            }
+            if (dtable.responsive && dtable.responsive.recalc) {
+              dtable.responsive.recalc();
+            }
+          } catch (e) {}
+        }
+      });
 			}else{
 			   dtable.destroy();
          traer_tabla_cotizacion();

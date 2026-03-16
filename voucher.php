@@ -392,7 +392,7 @@ session_start();
       #tabla_voucher_container{
         width: 100%;
         max-width: 100%;
-        overflow-x: auto;
+        overflow-x: hidden;
         -webkit-overflow-scrolling: touch;
         margin: 15px 0;
       }
@@ -402,6 +402,10 @@ session_start();
       #tabla_voucher{
         width: 100% !important;
         max-width: 100%;
+      }
+      #tabla_voucher th,
+      #tabla_voucher td{
+        white-space: nowrap;
       }
 
       /* Truncate para celdas largas (fallback en pantallas pequeñas) */
@@ -419,6 +423,27 @@ session_start();
       @media (max-width: 420px){
         #tabla_voucher .dt-truncate{ max-width: 110px; }
       }
+
+      /* Fallback: ocultar columnas por ancho si Responsive no entra */
+      @media (max-width: 1200px){
+        #tabla_voucher th:nth-child(6),
+        #tabla_voucher td:nth-child(6){
+          display: none;
+        }
+      }
+      @media (max-width: 992px){
+        #tabla_voucher th:nth-child(5),
+        #tabla_voucher td:nth-child(5){
+          display: none;
+        }
+      }
+      @media (max-width: 768px){
+        #tabla_voucher th:nth-child(3),
+        #tabla_voucher td:nth-child(3){
+          display: none;
+        }
+      }
+
       @media (max-width: 768px) {
         .cotizacion-table {
           font-size: 11px;
@@ -738,17 +763,17 @@ session_start();
                 <div class="container-fluid">
                   <div class="row">
                     <div class="col-sm-12">
-                      <div class="table-responsive" id="tabla_voucher_container">
-                        <table id="tabla_voucher" class="table table-striped dt-responsive" style="width:100%">
+                      <div id="tabla_voucher_container">
+                        <table id="tabla_voucher" class="table table-striped dt-responsive nowrap" style="width:100%">
                           <thead>
                             <tr>
-                              <th>ID</th>
-                              <th>Cliente</th>
-                              <th>Cantidad</th>
-                              <th>Total</th>
-                              <th>Total Abono</th>
-                              <th>Saldo Pendiente</th>
-                              <th></th>
+                              <th class="all">ID</th>
+                              <th class="all">Cliente</th>
+                              <th class="min-tablet-l">Cantidad</th>
+                              <th class="min-tablet-p">Total</th>
+                              <th class="min-desktop">Total Abono</th>
+                              <th class="min-desktop">Saldo Pendiente</th>
+                              <th class="all"></th>
                             </tr>
                           </thead>
                           <tbody id="body_table_voucher">
@@ -3417,6 +3442,9 @@ session_start();
           setTimeout(() => {
             try {
               api.columns.adjust();
+              if (api.responsive && api.responsive.rebuild) {
+                api.responsive.rebuild();
+              }
               if (api.responsive && api.responsive.recalc) {
                 api.responsive.recalc();
               }
@@ -3465,6 +3493,10 @@ session_start();
             }
           },
           {
+            targets: 2,
+            responsivePriority: 6
+          },
+          {
             targets: 3,
             responsivePriority: 3,
             className: 'text-right',
@@ -3509,7 +3541,34 @@ session_start();
               `;
             }
           }
-        ]
+        ],
+
+        "drawCallback": function () {
+          const api = this.api();
+          try {
+            api.columns.adjust();
+            if (api.responsive && api.responsive.rebuild) {
+              api.responsive.rebuild();
+            }
+            if (api.responsive && api.responsive.recalc) {
+              api.responsive.recalc();
+            }
+          } catch (e) {}
+        }
+      });
+
+      $(window).off('resize.tablaVoucher').on('resize.tablaVoucher', function () {
+        if (dtable) {
+          try {
+            dtable.columns.adjust();
+            if (dtable.responsive && dtable.responsive.rebuild) {
+              dtable.responsive.rebuild();
+            }
+            if (dtable.responsive && dtable.responsive.recalc) {
+              dtable.responsive.recalc();
+            }
+          } catch (e) {}
+        }
       });
 
     } else {
