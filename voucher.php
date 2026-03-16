@@ -1090,7 +1090,6 @@ session_start();
     activarVistaHeroCompleta();
 
     show_traer_tabla_voucher();
-    initTomSelect('#voucher_tipo_fecha_export');
     initFlatpickrVoucherExport();
     initFlatpickrVoucherFecha();
     $('#DateRange, #DateRange_tour, #DateRange_alq').daterangepicker({
