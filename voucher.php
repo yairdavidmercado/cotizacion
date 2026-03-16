@@ -134,6 +134,7 @@ session_start();
 
       /* Inputs compactos */
       .cc-panel .form-control,
+      .cc-panel .ts-control,
       .cc-panel .select2-selection{
         border-radius: 12px !important;
         border: 1px solid rgba(15,23,42,.12) !important;
@@ -155,6 +156,20 @@ session_start();
       }
       .select2-container--default .select2-selection--single .select2-selection__arrow{
         height: 40px !important;
+      }
+
+      .ts-wrapper.single .ts-control{
+        min-height: 40px !important;
+        border-radius: 12px !important;
+        border: 1px solid rgba(15,23,42,.12) !important;
+        padding: 7px 10px !important;
+      }
+      .ts-wrapper.single .ts-control .item{
+        line-height: 24px !important;
+      }
+      .ts-dropdown{
+        border-radius: 12px !important;
+        border: 1px solid rgba(15,23,42,.12) !important;
       }
 
       /* Botón principal como mockup */
@@ -764,6 +779,11 @@ session_start();
                   <div class="row">
                     <div class="col-sm-12">
                       <div id="tabla_voucher_container">
+                        <div class="d-flex justify-content-end mb-2">
+                          <button type="button" id="btn_exportar_excel_voucher" class="btn btn-outline-success btn-sm" onclick="abrirModalExportarVoucher()">
+                            <i class="fas fa-file-excel"></i> Exportar Excel
+                          </button>
+                        </div>
                         <table id="tabla_voucher" class="table table-striped dt-responsive nowrap" style="width:100%">
                           <thead>
                             <tr>
@@ -872,7 +892,49 @@ session_start();
   </div>
 </div>
 
+
+<div class="modal fade" id="modal_exportar_voucher" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="modalExportarVoucherLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalExportarVoucherLabel">Exportar por rango de fecha</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="voucher-label" for="voucher_tipo_fecha_export">Tipo fecha</label>
+          <select id="voucher_tipo_fecha_export" class="form-control">
+            <option value="fecha_expedicion">Fecha de expedición</option>
+            <option value="fecha_checkin">Fecha checkin</option>
+            <option value="fecha_checkout">Fecha checkout</option>
+          </select>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-2">
+            <label class="voucher-label" for="voucher_fecha_inicio_export">Fecha inicio</label>
+            <input type="date" id="voucher_fecha_inicio_export" class="form-control" />
+          </div>
+          <div class="col-md-6 mb-2">
+            <label class="voucher-label" for="voucher_fecha_fin_export">Fecha fin</label>
+            <input type="date" id="voucher_fecha_fin_export" class="form-control" />
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-light" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-success" onclick="exportarVoucherExcelPorRango()">Exportar Excel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <?php require 'partials/librerias.php'; ?>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.bootstrap4.min.css">
+<script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
 
 <script>
   var id_hotel = "<?php echo $_SESSION['id_hotel'] ?>";
@@ -888,6 +950,59 @@ session_start();
   var cod_vendedor = "<?php echo $_SESSION['codigo'] ?>";
   window.voucherDetalleActual = null;
   window.voucherMetodoPagoDefault = 1;
+
+  function initTomSelect(selector, options) {
+    if (typeof TomSelect === 'undefined') return;
+
+    $(selector).each(function () {
+      if (this.tomselect) {
+        this.tomselect.destroy();
+      }
+
+      new TomSelect(this, Object.assign({
+        create: false,
+        allowEmptyOption: true,
+        dropdownParent: 'body'
+      }, options || {}));
+    });
+  }
+
+  function abrirModalExportarVoucher() {
+    const hoy = getTodayISODate();
+    $('#voucher_fecha_inicio_export').val(hoy);
+    $('#voucher_fecha_fin_export').val(hoy);
+    $('#modal_exportar_voucher').modal('show');
+  }
+
+  function exportarVoucherExcelPorRango() {
+    const tipoFecha = String($('#voucher_tipo_fecha_export').val() || '').trim();
+    const fechaInicio = String($('#voucher_fecha_inicio_export').val() || '').trim();
+    const fechaFin = String($('#voucher_fecha_fin_export').val() || '').trim();
+
+    if (!tipoFecha) {
+      ccAlert('Selecciona el tipo de fecha.', 'error');
+      return;
+    }
+
+    if (!fechaInicio || !fechaFin) {
+      ccAlert('Debes seleccionar fecha inicio y fecha fin.', 'error');
+      return;
+    }
+
+    if (fechaInicio > fechaFin) {
+      ccAlert('La fecha inicio no puede ser mayor que la fecha fin.', 'error');
+      return;
+    }
+
+    const query = $.param({
+      tipo_fecha: tipoFecha,
+      fecha_inicio: fechaInicio,
+      fecha_fin: fechaFin
+    });
+
+    $('#modal_exportar_voucher').modal('hide');
+    window.open(`php/reports/reporte_excel_voucher.php?${query}`, '_blank');
+  }
 
   function shouldHideLogoGif() {
     var hasTipoCotizacion = $('input[type="checkbox"][name="tipo_cotizacion[]"]:checked').length > 0;
@@ -920,6 +1035,7 @@ session_start();
     activarVistaHeroCompleta();
 
     show_traer_tabla_voucher();
+    initTomSelect('#voucher_tipo_fecha_export');
     $('#DateRange, #DateRange_tour, #DateRange_alq').daterangepicker({
       autoUpdateInput: false,
       locale: {
