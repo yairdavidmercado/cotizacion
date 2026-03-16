@@ -860,7 +860,7 @@ session_start();
         <div class="row">
           <div class="col-md-6 mb-3">
             <div class="voucher-label">Fecha del Voucher</div>
-            <input type="date" id="voucher_fecha" class="form-control" />
+            <input type="text" id="voucher_fecha" class="form-control" placeholder="Selecciona fecha" autocomplete="off" />
           </div>
           <div class="col-md-6 mb-3">
             <div class="voucher-label">Monto del Voucher</div>
@@ -912,15 +912,9 @@ session_start();
           </select>
         </div>
 
-        <div class="row">
-          <div class="col-md-6 mb-2">
-            <label class="voucher-label" for="voucher_fecha_inicio_export">Fecha inicio</label>
-            <input type="date" id="voucher_fecha_inicio_export" class="form-control" />
-          </div>
-          <div class="col-md-6 mb-2">
-            <label class="voucher-label" for="voucher_fecha_fin_export">Fecha fin</label>
-            <input type="date" id="voucher_fecha_fin_export" class="form-control" />
-          </div>
+        <div class="form-group mb-2">
+          <label class="voucher-label" for="voucher_rango_fechas_export">Rango de fechas</label>
+          <input type="text" id="voucher_rango_fechas_export" class="form-control" placeholder="Selecciona rango de fechas" autocomplete="off" />
         </div>
       </div>
       <div class="modal-footer">
@@ -934,7 +928,10 @@ session_start();
 <?php require 'partials/librerias.php'; ?>
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.bootstrap4.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
 
 <script>
   var id_hotel = "<?php echo $_SESSION['id_hotel'] ?>";
@@ -950,6 +947,55 @@ session_start();
   var cod_vendedor = "<?php echo $_SESSION['codigo'] ?>";
   window.voucherDetalleActual = null;
   window.voucherMetodoPagoDefault = 1;
+  window.voucherExportRangePicker = null;
+  window.voucherFechaPicker = null;
+
+  function formatDateISOFromDate(date) {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  }
+
+  function initFlatpickrVoucherExport() {
+    if (typeof flatpickr === 'undefined') return;
+
+    if (window.voucherExportRangePicker) {
+      window.voucherExportRangePicker.destroy();
+      window.voucherExportRangePicker = null;
+    }
+
+    const input = document.getElementById('voucher_rango_fechas_export');
+    if (!input) return;
+
+    window.voucherExportRangePicker = flatpickr(input, {
+      mode: 'range',
+      dateFormat: 'Y-m-d',
+      locale: (flatpickr.l10ns && flatpickr.l10ns.es) ? flatpickr.l10ns.es : 'default',
+      disableMobile: true,
+      allowInput: false
+    });
+  }
+
+  function initFlatpickrVoucherFecha() {
+    if (typeof flatpickr === 'undefined') return;
+
+    if (window.voucherFechaPicker) {
+      window.voucherFechaPicker.destroy();
+      window.voucherFechaPicker = null;
+    }
+
+    const input = document.getElementById('voucher_fecha');
+    if (!input) return;
+
+    window.voucherFechaPicker = flatpickr(input, {
+      mode: 'single',
+      dateFormat: 'Y-m-d',
+      locale: (flatpickr.l10ns && flatpickr.l10ns.es) ? flatpickr.l10ns.es : 'default',
+      disableMobile: true,
+      allowInput: false
+    });
+  }
 
   function initTomSelect(selector, options) {
     if (typeof TomSelect === 'undefined') return;
@@ -968,16 +1014,25 @@ session_start();
   }
 
   function abrirModalExportarVoucher() {
+    if (!window.voucherExportRangePicker) {
+      initFlatpickrVoucherExport();
+    }
+
     const hoy = getTodayISODate();
-    $('#voucher_fecha_inicio_export').val(hoy);
-    $('#voucher_fecha_fin_export').val(hoy);
+    if (window.voucherExportRangePicker) {
+      window.voucherExportRangePicker.setDate([hoy, hoy], true, 'Y-m-d');
+    } else {
+      $('#voucher_rango_fechas_export').val(`${hoy} to ${hoy}`);
+    }
     $('#modal_exportar_voucher').modal('show');
   }
 
   function exportarVoucherExcelPorRango() {
     const tipoFecha = String($('#voucher_tipo_fecha_export').val() || '').trim();
-    const fechaInicio = String($('#voucher_fecha_inicio_export').val() || '').trim();
-    const fechaFin = String($('#voucher_fecha_fin_export').val() || '').trim();
+    const picker = window.voucherExportRangePicker;
+    const selectedDates = picker && Array.isArray(picker.selectedDates) ? picker.selectedDates : [];
+    const fechaInicio = selectedDates.length >= 1 ? formatDateISOFromDate(selectedDates[0]) : '';
+    const fechaFin = selectedDates.length >= 2 ? formatDateISOFromDate(selectedDates[1]) : fechaInicio;
 
     if (!tipoFecha) {
       ccAlert('Selecciona el tipo de fecha.', 'error');
@@ -985,7 +1040,7 @@ session_start();
     }
 
     if (!fechaInicio || !fechaFin) {
-      ccAlert('Debes seleccionar fecha inicio y fecha fin.', 'error');
+      ccAlert('Debes seleccionar el rango de fechas.', 'error');
       return;
     }
 
@@ -1036,6 +1091,8 @@ session_start();
 
     show_traer_tabla_voucher();
     initTomSelect('#voucher_tipo_fecha_export');
+    initFlatpickrVoucherExport();
+    initFlatpickrVoucherFecha();
     $('#DateRange, #DateRange_tour, #DateRange_alq').daterangepicker({
       autoUpdateInput: false,
       locale: {
@@ -1125,7 +1182,12 @@ session_start();
     });
     $('#list-cotizaciones').html(options_list);
     $('#voucher_id_cotizacion').html(options);
-    $('#voucher_fecha').val(getTodayISODate());
+    const fechaHoy = getTodayISODate();
+    if (window.voucherFechaPicker) {
+      window.voucherFechaPicker.setDate(fechaHoy, true, 'Y-m-d');
+    } else {
+      $('#voucher_fecha').val(fechaHoy);
+    }
     $('#voucher_monto').val('');
     $('#voucher_reserva').val('');
     $('#voucher_saldo_actual').text(`$${puntosDecimales(montoToNumber(data.saldoTotal))}`);
