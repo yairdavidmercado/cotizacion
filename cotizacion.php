@@ -223,14 +223,6 @@ session_start();
           width: calc(100% / 0.85);
           height: calc(100% / 0.85);
         }
-
-        .ts-dropdown {
-          /* transform: scale(0.85);
-          transform-origin: top left; */
-          width: calc(100% / 0.85);
-          /* height: calc(100% / 0.85);
-          position: relative !important; */
-        }
       }
       @media (max-width: 1099px){
         .cc-shell-wrap{
@@ -537,7 +529,12 @@ session_start();
       /* BODY */
       .crear_titular_modal .modal-body{
           padding:25px;
+          overflow: visible;
       }
+
+        .crear_titular_modal .ts-dropdown{
+          z-index: 2055 !important;
+        }
 
       /* INPUTS */
       .crear_titular_modal .form-control{
@@ -1186,6 +1183,19 @@ session_start();
                 </div>
 
                 <div class="col-md-12 mb-3">
+                  <label for="cedula">Cédula</label>
+                  <input 
+                    type="text"
+                    autocomplete="off"
+                    class="form-control"
+                    maxlength="11"
+                    onkeypress="return isNumber(event)"
+                    name="cedula"
+                    id="cedula"
+                  >
+                </div>
+
+                <div class="col-md-12 mb-3">
                   <label for="nombre1">Primer nombre</label>
                   <input 
                     type="text"
@@ -1235,19 +1245,6 @@ session_start();
                 </div>
 
                 <div class="col-md-12 mb-3">
-                  <label for="cedula">Cédula</label>
-                  <input 
-                    type="text"
-                    autocomplete="off"
-                    class="form-control"
-                    maxlength="11"
-                    onkeypress="return isNumber(event)"
-                    name="cedula"
-                    id="cedula"
-                  >
-                </div>
-
-                <div class="col-md-12 mb-3">
                   <label for="email">Email</label>
                   <input 
                     type="email"
@@ -1260,31 +1257,58 @@ session_start();
                 </div>
 
                 <div class="col-md-12 mb-3">
-                  <label for="telefono">Teléfono</label>
-                  <input 
-                    type="text"
-                    autocomplete="off"
-                    onkeypress="return isNumber(event)"
-                    maxlength="15"
+                  <label for="telefono_indicativo">Pais</label>
+                  <select
+                    id="telefono_indicativo"
+                    name="telefono_indicativo"
                     class="form-control"
-                    name="telefono"
-                    id="telefono"
+                    onchange="traer_deptos(this.value)"
                     required
                   >
+                    <option value="+57">🇨🇴 +57 Colombia</option>
+                    <option value="+1">🇺🇸 +1 Estados Unidos</option>
+                    <option value="+52">🇲🇽 +52 México</option>
+                    <option value="+54">🇦🇷 +54 Argentina</option>
+                    <option value="+55">🇧🇷 +55 Brasil</option>
+                    <option value="+56">🇨🇱 +56 Chile</option>
+                    <option value="+58">🇻🇪 +58 Venezuela</option>
+                    <option value="+51">🇵🇪 +51 Perú</option>
+                    <option value="+593">🇪🇨 +593 Ecuador</option>
+                    <option value="+591">🇧🇴 +591 Bolivia</option>
+                    <option value="+595">🇵🇾 +595 Paraguay</option>
+                    <option value="+598">🇺🇾 +598 Uruguay</option>
+                    <option value="+507">🇵🇦 +507 Panamá</option>
+                    <option value="+506">🇨🇷 +506 Costa Rica</option>
+                    <option value="+503">🇸🇻 +503 El Salvador</option>
+                    <option value="+502">🇬🇹 +502 Guatemala</option>
+                    <option value="+504">🇭🇳 +504 Honduras</option>
+                    <option value="+505">🇳🇮 +505 Nicaragua</option>
+                    <option value="+53">🇨🇺 +53 Cuba</option>
+                    <option value="+34">🇪🇸 +34 España</option>
+                    <option value="+33">🇫🇷 +33 Francia</option>
+                    <option value="+39">🇮🇹 +39 Italia</option>
+                    <option value="+44">🇬🇧 +44 Reino Unido</option>
+                    <option value="+49">🇩🇪 +49 Alemania</option>
+                  </select>
                 </div>
 
                 <div class="col-md-12 mb-3">
-                  <label for="select_pais">Pais</label>
-                  <select 
-                    style="width:100%"
-                    name="select_pais"
-                    onchange="traer_deptos(this.value)"
-                    required
-                    id="select_pais"
-                    class="form-control form-control-md paises"
-                  >
-                    <option value="">Seleccionar</option>
-                  </select>
+                  <label for="telefono">Celular</label>
+                  <div class="row">
+                    <div class="col-12 pl-1">
+                      <input 
+                        type="text"
+                        autocomplete="off"
+                        onkeypress="return isNumber(event)"
+                        maxlength="15"
+                        class="form-control"
+                        name="telefono"
+                        id="telefono"
+                        placeholder="Celular"
+                        required
+                      >
+                    </div>
+                  </div>
                 </div>
 
                 <div class="col-md-12 mb-3">
@@ -1460,16 +1484,64 @@ session_start();
   function initTomSelect(selector, options) {
     if (typeof TomSelect === 'undefined') return;
 
+    function syncTomSelectDropdown(ts) {
+      if (!ts || !ts.dropdown || !ts.control) return;
+
+      const dropdownParent = ts.settings.dropdownParent;
+      if (!dropdownParent || dropdownParent === 'body') return;
+
+      const parentEl = dropdownParent.jquery ? dropdownParent[0] : dropdownParent;
+      if (!parentEl || !parentEl.getBoundingClientRect) return;
+
+      const controlRect = ts.control.getBoundingClientRect();
+      const parentRect = parentEl.getBoundingClientRect();
+
+      const top = controlRect.bottom - parentRect.top + parentEl.scrollTop;
+      const left = controlRect.left - parentRect.left + parentEl.scrollLeft;
+
+      ts.dropdown.style.position = 'absolute';
+      ts.dropdown.style.top = top + 'px';
+      ts.dropdown.style.left = left + 'px';
+      ts.dropdown.style.width = controlRect.width + 'px';
+      ts.dropdown.style.minWidth = controlRect.width + 'px';
+    }
+
     $(selector).each(function () {
       if (this.tomselect) {
         this.tomselect.destroy();
       }
 
-      new TomSelect(this, Object.assign({
+      const $modalParent = $(this).closest('.modal');
+      const baseOptions = {
         create: false,
         allowEmptyOption: true,
-        dropdownParent: 'body'
-      }, options || {}));
+        dropdownParent: $modalParent.length ? $modalParent[0] : 'body'
+      };
+
+      const ts = new TomSelect(this, Object.assign(baseOptions, options || {}));
+
+      if ($modalParent.length) {
+        const ns = '.tsModalPos-' + (this.id || Math.random().toString(36).slice(2));
+        const $modalBody = $modalParent.find('.modal-body');
+
+        const sync = function () {
+          syncTomSelectDropdown(ts);
+        };
+
+        ts.on('dropdown_open', function () {
+          setTimeout(sync, 0);
+        });
+
+        $(window).off('resize' + ns).on('resize' + ns, sync);
+        $modalParent.off('scroll' + ns).on('scroll' + ns, sync);
+        $modalBody.off('scroll' + ns).on('scroll' + ns, sync);
+
+        ts.on('destroy', function () {
+          $(window).off('resize' + ns);
+          $modalParent.off('scroll' + ns);
+          $modalBody.off('scroll' + ns);
+        });
+      }
     });
   }
 
@@ -1484,6 +1556,36 @@ session_start();
     initTomSelect(selector, options);
   }
 
+  function construirTelefonoConIndicativo() {
+    const indicativo = ($('#telefono_indicativo').val() || '+57').trim();
+    const numero = String($('#telefono').val() || '').replace(/\D+/g, '');
+
+    if (!numero) return '';
+    return `${indicativo} ${numero}`;
+  }
+
+  function restaurarFormularioTitularInicial() {
+    const form = document.getElementById('form_guardar');
+    if (!form) return;
+
+    form.reset();
+    limpiarErrores(form);
+
+    $('#codigo').val('0');
+    $('#tipo').val('TITULAR');
+    $('#telefono').val('');
+
+    if ($('#telefono_indicativo')[0] && $('#telefono_indicativo')[0].tomselect) {
+      $('#telefono_indicativo')[0].tomselect.setValue('+57', true);
+    } else {
+      $('#telefono_indicativo').val('+57').trigger('change');
+    }
+
+    rebuildTomSelectOptions('#select_deptos', '<option value="">Seleccionar</option>');
+
+    $('#nombre1').trigger('focus');
+  }
+
   function shouldHideLogoGif() {
     var hasTipoCotizacion = $('input[type="checkbox"][name="tipo_cotizacion[]"]:checked').length > 0;
     var titularSeleccionado = ($('#id_usuario').val() || '') !== '';
@@ -1496,8 +1598,9 @@ session_start();
   }
 
   $(function() {
+    traer_deptos('+57');
     show_traer_tabla_cotizacion();
-    initTomSelect('#id_usuario, #id_motivo, #id_motivo_tour, #id_motivo_alq, #id_planes, #id_planes_tour, #id_planes_alq, #id_tarifa, #id_tarifa_tour, #id_tarifa_alq, #select_pais, #select_deptos');
+    initTomSelect('#id_usuario, #id_motivo, #id_motivo_tour, #id_motivo_alq, #id_planes, #id_planes_tour, #id_planes_alq, #id_tarifa, #id_tarifa_tour, #id_tarifa_alq, #select_deptos, #telefono_indicativo');
     initFlatpickrDateRange(false, '');
     initFlatpickrDateRange(false, '_tour');
     initFlatpickrDateRange(false, '_alq');
@@ -1505,7 +1608,6 @@ session_start();
     //traer_hotel()
     traer_titulares()
     traer_motivos()
-    traer_paises()
     traer_planes(id_hotel, 1, '')
     traer_planes(id_hotel, 2, '_tour')
     traer_planes(id_hotel, 3, '_alq')
@@ -1514,6 +1616,15 @@ session_start();
     $(document).on('change', 'input[type="checkbox"][name="tipo_cotizacion[]"]', updateLogoGifVisibility);
     $('#id_usuario').on('change', updateLogoGifVisibility);
     updateLogoGifVisibility();
+
+    // Re-render dentro del modal para evitar problemas de visualizacion
+    $('#crear_titular_modal').on('shown.bs.modal', function () {
+      initTomSelect('#select_deptos, #telefono_indicativo');
+    });
+
+    $('#crear_titular_modal').on('hidden.bs.modal', function () {
+      restaurarFormularioTitularInicial();
+    });
 
     $(".loader").css("display", "none")
 
@@ -1785,11 +1896,11 @@ session_start();
         apellido2 :  $("#apellido2").val(),
         pass :  "202cb962ac59075b964b07152d234b70",
         tipo :  $("#tipo").val(),
-        id_pais :  $("#select_pais").val(),
-        id_depto :  $("#select_deptos").val(),
+        id_pais : 0,
+        id_depto : $("#select_deptos").val() ? $("#select_deptos").val() : 0,
         ciudad :  $("#ciudad").val(),
-        direccion :  $("#direccion").val(),
-        telefono :  $("#telefono").val(),
+        direccion : $("#direccion").val(),
+        telefono : construirTelefonoConIndicativo(),
         email :  $("#email").val(),
         avatar : "/../upload.php"
       }
@@ -1806,7 +1917,7 @@ session_start();
         let obj = JSON.parse(respuesta)
         if (obj.success) {
           ccAlert(obj.message, obj.success ? 'success' : 'error');
-          limpiar_formulario_usuarios()
+          restaurarFormularioTitularInicial()
           traer_titulares()
         
         }else{
@@ -1822,47 +1933,15 @@ session_start();
       
   }
 
-  function traer_paises() {
-        let values = { 
-              codigo: 'traer_paises',
-              parametro1: "",
-              parametro2: ""
-        };
-        $.ajax({
-          type : 'POST',
-          data: values,
-          url: 'php/sel_recursos.php',
-          beforeSend: function() {
-              $(".loader").css("display", "inline-block")
-          },
-          success: function(respuesta) {
-            $(".loader").css("display", "none")
-            let obj = JSON.parse(respuesta)
-            let fila = ''
-            $.each(obj["resultado"], function( index, val ) {
-              fila += `<option value='${val.id}'>${val.paisnombre}</option>`
-            });
-
-            rebuildTomSelectOptions('#select_pais', '<option value="">Seleccionar</option>'+fila);
-            
-          },
-          error: function() {
-            $(".loader").css("display", "none")
-            ccAlert("No se ha podido obtener la información", 'error');
-          }
-        });
-
-  }
-
   function traer_deptos(id) {
-
+    
     if ( id.length < 1) {
       rebuildTomSelectOptions('#select_deptos', '<option value="">Seleccionar</option>');
       return false
     }
-    let values = { 
+    let values = {
           codigo: 'traer_deptos',
-          parametro1: id,
+          parametro1: id =='+57' ? 82 : 0,
           parametro2: ""
     };
     $.ajax({
@@ -3947,10 +4026,10 @@ session_start();
     $("#nombre2").val("").change()
     $("#apellido1").val("").change()
     $("#apellido2").val("").change()
-    $("#select_pais").val("").change()
     $("#select_deptos").val("").change()
     $("#ciudad").val("").change()
     $("#direccion").val("").change()
+    $("#telefono_indicativo").val("+57").change()
     $("#telefono").val("").change()
     $("#email").val("").change()
   }
