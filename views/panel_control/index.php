@@ -239,7 +239,7 @@ session_start();
 <script src="../../assets/js/html2pdf.bundle.min.js"></script>
 <script src="https://www.google.com/recaptcha/api.js" async></script>
 <script src="https://unpkg.com/gijgo@1.9.13/js/gijgo.min.js" type="text/javascript"></script>
-<script src="http://momentjs.com/downloads/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
 
 <script>
 var id_hotel = "<?php echo $_SESSION['id_hotel'] ?>";
