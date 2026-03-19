@@ -10,27 +10,27 @@ const CC_SWAL = {
   // Iconos más “finos”: círculo + gradiente sutil + trazo redondeado
   icons: {
     success: (c) => `
-      <div class="cc-icon" style="--cc:${c.main};">
+      <div class="cc-icon" style="--cc:${c.main};--ccbg:${c.bg};--ccglow:${c.glow};">
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <path d="M20 7L10.5 16.5L4 10" />
         </svg>
       </div>`,
     error: (c) => `
-      <div class="cc-icon" style="--cc:${c.main};">
+      <div class="cc-icon" style="--cc:${c.main};--ccbg:${c.bg};--ccglow:${c.glow};">
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <path d="M16 8L8 16" />
           <path d="M8 8L16 16" />
         </svg>
       </div>`,
     warning: (c) => `
-      <div class="cc-icon" style="--cc:${c.main};">
+      <div class="cc-icon" style="--cc:${c.main};--ccbg:${c.bg};--ccglow:${c.glow};">
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <path d="M12 9v5" />
           <path d="M12 17h.01" />
         </svg>
       </div>`,
     info: (c) => `
-      <div class="cc-icon" style="--cc:${c.main};">
+      <div class="cc-icon" style="--cc:${c.main};--ccbg:${c.bg};--ccglow:${c.glow};">
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <path d="M12 10.5V17" />
           <path d="M12 7h.01" />

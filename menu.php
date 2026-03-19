@@ -224,7 +224,7 @@ if ($_SESSION['menu_general']['success']) {
   <div class="container">
 
     <a class="navbar-brand" href="<?php echo cc_menu_url('/welcome.php'); ?>">
-      <img src="assets/img/logos.png" alt="COTICLICK">
+      <img src="<?php echo cc_menu_url('/assets/img/logos.png'); ?>" alt="COTICLICK">
     </a>
 
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
@@ -288,3 +288,164 @@ if ($_SESSION['menu_general']['success']) {
     </div>
   </div>
 </nav>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="<?php echo cc_menu_url('/partials/SweetAlert.js'); ?>"></script>
+
+<script>
+(function() {
+  if (window.__ccFormSweetInstalled) {
+    return;
+  }
+  window.__ccFormSweetInstalled = true;
+
+  var nativeAlert = window.alert ? window.alert.bind(window) : null;
+  var lastManualMessage = { at: 0, message: '' };
+
+  function normalizeType(type) {
+    var safeType = String(type || 'info').toLowerCase();
+    if (safeType === 'danger') {
+      return 'error';
+    }
+    if (safeType !== 'success' && safeType !== 'error' && safeType !== 'warning' && safeType !== 'info') {
+      return 'info';
+    }
+    return safeType;
+  }
+
+  function inferTypeFromMessage(message) {
+    var text = String(message || '').toLowerCase();
+    if (/error|fallo|fall\u00f3|fallida|invalid|invalido|inv\u00e1lido|no se pudo|denegad|rollback/.test(text)) {
+      return 'error';
+    }
+    if (/exito|\u00e9xito|guardad|editad|actualizad|correctamente/.test(text)) {
+      return 'success';
+    }
+    return 'info';
+  }
+
+  function sanitizeClientMessage(message, action, success) {
+    var text = String(message || '').trim();
+    var fallback = success
+      ? (action === 'editar' ? 'Editado exitosamente' : 'Guardado exitosamente')
+      : (action === 'editar' ? 'No se pudo editar la informacion. Intenta nuevamente.' : 'No se pudo guardar la informacion. Intenta nuevamente.');
+
+    if (!text) {
+      return fallback;
+    }
+
+    var technicalPattern = /(commit|transaccion|transacci\u00f3n|rollback|sql|mysqli|pdo|query|insert into|update\s+|delete\s+from|exception|stack|warning:|notice:|fatal error|undefined|line\s+\d+|rows? affected|execute|prepare)/i;
+    if (technicalPattern.test(text)) {
+      return fallback;
+    }
+
+    if (text.length > 180) {
+      return fallback;
+    }
+
+    return text;
+  }
+
+  function showSweetMessage(message, type) {
+    var safeMessage = String(message || '').trim() || 'Operacion realizada.';
+    var safeType = normalizeType(type);
+
+    if (typeof window.ccAlert === 'function') {
+      window.ccAlert(safeMessage, safeType);
+      return;
+    }
+
+    if (window.Swal && typeof window.Swal.fire === 'function') {
+      window.Swal.fire({
+        icon: safeType,
+        text: safeMessage,
+        confirmButtonText: 'Aceptar'
+      });
+      return;
+    }
+
+    if (nativeAlert) {
+      nativeAlert(safeMessage);
+    }
+  }
+
+  window.ccFormMessage = showSweetMessage;
+
+  window.alert = function(message) {
+    var text = String(message || '').trim() || 'Operacion realizada.';
+    lastManualMessage = { at: Date.now(), message: text };
+    showSweetMessage(text, inferTypeFromMessage(text));
+  };
+
+  function getCrudAction(url) {
+    var match = String(url || '').match(/(?:^|\/)(guardar|editar)[^/]*\.php(?:\?|$)/i);
+    return match ? match[1].toLowerCase() : null;
+  }
+
+  function parseJson(text) {
+    if (!text) {
+      return null;
+    }
+    try {
+      return JSON.parse(text);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function getDefaultMessage(action, success) {
+    if (success) {
+      return action === 'editar' ? 'Editado exitosamente' : 'Guardado exitosamente';
+    }
+    return action === 'editar' ? 'Error al editar' : 'Error al guardar';
+  }
+
+  function installCrudHooks() {
+    if (!window.jQuery) {
+      return false;
+    }
+
+    var $ = window.jQuery;
+
+    $(document).ajaxComplete(function(event, xhr, settings) {
+      var action = getCrudAction(settings && settings.url);
+      if (!action) {
+        return;
+      }
+
+      var data = (xhr && xhr.responseJSON) ? xhr.responseJSON : parseJson(xhr && xhr.responseText ? xhr.responseText : '');
+      if (!data || data.success !== true) {
+        return;
+      }
+
+      var message = sanitizeClientMessage(data.message, action, true);
+      if ((Date.now() - lastManualMessage.at) < 700 && lastManualMessage.message === message) {
+        return;
+      }
+
+      showSweetMessage(message, 'success');
+    });
+
+    $(document).ajaxError(function(event, xhr, settings) {
+      var action = getCrudAction(settings && settings.url);
+      if (!action) {
+        return;
+      }
+      showSweetMessage(sanitizeClientMessage('', action, false), 'error');
+    });
+
+    return true;
+  }
+
+  if (!installCrudHooks()) {
+    var tries = 0;
+    var maxTries = 80;
+    var intervalId = setInterval(function() {
+      tries += 1;
+      if (installCrudHooks() || tries >= maxTries) {
+        clearInterval(intervalId);
+      }
+    }, 200);
+  }
+})();
+</script>
