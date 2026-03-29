@@ -1467,7 +1467,7 @@ session_start();
         const end = selectedDates[1];
         const diffDays = Math.floor((end - start) / (1000 * 60 * 60 * 24));
 
-        if (diffDays < 1) {
+        if (diffDays < 1 && ('_alq' !== suffix)) {
           ccAlert('Para el modo "Noches" debe seleccionar al menos 1 día de diferencia entre la fecha de entrada y salida', 'error');
           instance.clear();
           clearDateRangeFields(suffix);
