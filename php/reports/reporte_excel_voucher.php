@@ -130,7 +130,6 @@ if ($id_perfil !== 'SUPERADMIN') {
 }
 
 mysqli_stmt_execute($stmt);
-$resultado = mysqli_stmt_get_result($stmt);
 
 $fileName = 'Reporte_Voucher_' . date('Y-m-d') . '.xls';
 $fields = array('ID MASTER', 'ID COTIZACION', 'CLIENTE', 'RESERVA', 'TIPO COTIZACION', 'FECHA EXPEDICION', 'FECHA CHECKIN', 'FECHA CHECKOUT', 'TOTAL', 'TOTAL ABONO', 'SALDO PENDIENTE');
@@ -139,25 +138,42 @@ $excelData = implode("\t", array_values($fields)) . "\n";
 $headEmpresa = array('', '', '', '', mb_convert_encoding($nombre_hotel, 'UTF-16LE', 'UTF-8'), '', '', '', '', '', '');
 $nombreEmpresa = implode("\t", array_values($headEmpresa)) . "\n";
 
-if ($resultado && mysqli_num_rows($resultado) > 0) {
-    while ($row = mysqli_fetch_assoc($resultado)) {
+mysqli_stmt_bind_result(
+    $stmt,
+    $id_master_row,
+    $cliente_row,
+    $id_cotizacion_row,
+    $fecha_expedicion_row,
+    $fecha_checkin_row,
+    $fecha_checkout_row,
+    $tipo_cotizacion_row,
+    $reserva_row,
+    $total_cotizacion_row,
+    $total_abono_row,
+    $saldo_pendiente_row
+);
+
+$tieneRegistros = false;
+while (mysqli_stmt_fetch($stmt)) {
+        $tieneRegistros = true;
         $lineData = array(
-            $row['id_master'],
-            $row['id_cotizacion'],
-            mb_convert_encoding($row['cliente'], 'UTF-16LE', 'UTF-8'),
-            $row['reserva'],
-            $row['tipo_cotizacion'],
-            $row['fecha_expedicion'],
-            $row['fecha_checkin'],
-            $row['fecha_checkout'],
-            $row['total_cotizacion'],
-            $row['total_abono'],
-            $row['saldo_pendiente']
+            $id_master_row,
+            $id_cotizacion_row,
+            mb_convert_encoding((string)$cliente_row, 'UTF-16LE', 'UTF-8'),
+            $reserva_row,
+            $tipo_cotizacion_row,
+            $fecha_expedicion_row,
+            $fecha_checkin_row,
+            $fecha_checkout_row,
+            $total_cotizacion_row,
+            $total_abono_row,
+            $saldo_pendiente_row
         );
         array_walk($lineData, 'filterData');
         $excelData .= implode("\t", array_values($lineData)) . "\n";
-    }
-} else {
+}
+
+if (!$tieneRegistros) {
     $excelData .= 'No records found...' . "\n";
 }
 
