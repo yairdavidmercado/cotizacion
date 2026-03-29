@@ -621,6 +621,14 @@ if ($conn) {
 								cm.id_autor_at,
 								cm.created_at,
 								cm.update_at,
+								(SELECT GROUP_CONCAT(DISTINCT CASE 
+									WHEN c.tipo_cotizacion = 1 THEN 'Alojamiento'
+									WHEN c.tipo_cotizacion = 2 THEN 'Tours'
+									WHEN c.tipo_cotizacion = 3 THEN 'Alquiler'
+									ELSE NULL
+								END ORDER BY c.tipo_cotizacion ASC SEPARATOR ', ')
+								FROM cotizacion c
+								WHERE c.id_principal = cm.id AND c.activo = 1) AS tipos_cotizacion,
 								(SELECT CONCAT_WS(' ', nombre1, nombre2, apellido1, apellido2) 
 									FROM usuarios 
 									WHERE usuarios.id = cm.id_titular 
@@ -648,6 +656,7 @@ if ($conn) {
 							$datos['nombre_autor'] = $row["nombre_autor"];
 									$datos['created_at'] = $row["created_at"];
 									$datos['update_at'] = $row["update_at"];
+									$datos['tipos_cotizacion'] = $row["tipos_cotizacion"];
 									
 									array_push($data, $datos);
 								}

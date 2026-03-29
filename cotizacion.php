@@ -372,11 +372,33 @@ session_start();
         white-space: nowrap;
         vertical-align: bottom;
       }
+      #tabla_cotizacion .dt-truncate-toggle{
+        display: inline-block;
+        max-width: 220px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        vertical-align: bottom;
+        cursor: pointer;
+        border: 0;
+        background: transparent;
+        padding: 0;
+        color: inherit;
+        text-align: left;
+      }
+      #tabla_cotizacion .dt-truncate-toggle.is-expanded{
+        max-width: none;
+        overflow: visible;
+        text-overflow: clip;
+        white-space: normal;
+      }
       @media (max-width: 768px){
         #tabla_cotizacion .dt-truncate{ max-width: 140px; }
+        #tabla_cotizacion .dt-truncate-toggle{ max-width: 140px; }
       }
       @media (max-width: 420px){
         #tabla_cotizacion .dt-truncate{ max-width: 110px; }
+        #tabla_cotizacion .dt-truncate-toggle{ max-width: 110px; }
       }
 
       /* Fallback: ocultar columnas por ancho si Responsive no entra */
@@ -1098,7 +1120,7 @@ session_start();
                                 <th class="all">Cliente</th>
                                 <th class="min-tablet-l">Autor</th>
                                 <th class="min-tablet-p">Fecha creación</th>
-                                <th class="min-desktop">Fecha actualización</th>
+                                <th class="min-desktop">Tipo</th>
                                 <th class="all"></th>
                               </tr>
                           </thead>
@@ -3986,6 +4008,50 @@ session_start();
           .replace(/'/g, '&#39;');
       }
 
+      function normalizarTiposCotizacion(value) {
+        const mapTipos = {
+          '1': 'Alojamiento',
+          '2': 'Tours',
+          '3': 'Alquiler'
+        };
+
+        if (value === null || value === undefined) return '';
+
+        const tokens = String(value)
+          .split(',')
+          .map(v => String(v).trim())
+          .filter(Boolean);
+
+        const normalizados = [];
+        tokens.forEach((token) => {
+          const lower = token.toLowerCase();
+          let etiqueta = mapTipos[token] || token;
+
+          if (lower === 'tour') etiqueta = 'Tours';
+          if (lower === 'tours') etiqueta = 'Tours';
+          if (lower === 'alojamiento') etiqueta = 'Alojamiento';
+          if (lower === 'alquiler') etiqueta = 'Alquiler';
+
+          if (!normalizados.includes(etiqueta)) {
+            normalizados.push(etiqueta);
+          }
+        });
+
+        return normalizados.join(', ');
+      }
+
+      $(document)
+        .off('click.dtTipoToggle', '#tabla_cotizacion .dt-truncate-toggle')
+        .on('click.dtTipoToggle', '#tabla_cotizacion .dt-truncate-toggle', function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          const $el = $(this);
+          const expandido = $el.hasClass('is-expanded');
+          $el.toggleClass('is-expanded', !expandido);
+          $el.attr('aria-expanded', !expandido ? 'true' : 'false');
+          $el.attr('title', !expandido ? 'Click para contraer' : 'Click para expandir');
+        });
+
       if ( ! $.fn.DataTable.isDataTable('#tabla_cotizacion')) {
 			  dtable = $("#tabla_cotizacion").DataTable({
           "autoWidth": false,
@@ -4031,7 +4097,7 @@ session_start();
             { "data": "nombre_titular"},
             { "data": "nombre_autor"},
             { "data": "created_at"},
-            { "data": "update_at"},
+            { "data": "tipos_cotizacion"},
             { "data": ""}
           ],
 				 "columnDefs": [
@@ -4063,7 +4129,20 @@ session_start();
           },
           {
             targets: 4,
-            responsivePriority: 6
+            responsivePriority: 6,
+            render: function(data, type){
+              const tiposTexto = normalizarTiposCotizacion(data);
+              if (type !== 'display') return tiposTexto;
+
+              const safe = escapeHtml(tiposTexto || 'Sin tipo');
+              const needsTruncate = (tiposTexto || '').length > 28;
+
+              if (!needsTruncate) {
+                return `<span title="${safe}">${safe}</span>`;
+              }
+
+              return `<button type="button" class="dt-truncate-toggle" aria-expanded="false" title="Click para expandir">${safe}</button>`;
+            }
           },
 					 {
             "targets": 5,
