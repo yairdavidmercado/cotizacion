@@ -116,10 +116,10 @@ session_start();
           <a class="nav-link" onclick="show_traer_tabla_planes()" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Buscar</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link " id="productos-tab" data-toggle="tab" href="#productos" role="tab" aria-controls="productos" aria-selected="true">Crear productos</a>
+          <a class="nav-link " id="productos-tab" data-toggle="tab" href="#productos" role="tab" aria-controls="productos" aria-selected="true">Crear servicios</a>
         </li>
         <!-- <li class="nav-item">
-          <a class="nav-link" id="list_productos-tab" data-toggle="tab" href="#list_productos" role="tab" aria-controls="list_productos" aria-selected="false">Buscar productos</a>
+          <a class="nav-link" id="list_productos-tab" data-toggle="tab" href="#list_productos" role="tab" aria-controls="list_productos" aria-selected="false">Buscar servicios</a>
         </li> -->
       </ul>
       <div class="tab-content" id="myTabContent">
@@ -170,7 +170,7 @@ session_start();
                               <input type="checkbox" onchange="select_check(this)" name="all">
                               </th>
                               <th >
-                                PRODUCTOS
+                                SERVICIOS
                               </th>
                               <th >
                                 TIPO
@@ -197,7 +197,7 @@ session_start();
                   <tr>
                       <th>Nombre</th>
                       <th>Descripción</th>
-                      <th>Cantidad de productos</th>
+                      <th>Cantidad de servicios</th>
                       <th>Creación</th>
                       <th></th>
                       <th></th>
@@ -211,12 +211,12 @@ session_start();
         </div>
         <div class="tab-pane fade show" id="productos" role="tabpanel" aria-labelledby="productos-tab">
           <div class="card mt-3">
-            <h5 class="card-header">Productos</h5>
+            <h5 class="card-header">Servicios</h5>
             <div class="card-body">
               <form role="form" onsubmit="event.preventDefault(); return GuardarProductos();" id="form_guardar" class="needs-validation">
                 <div class="row">
                   <div class="col-md-6 mb-3" >
-                    <label for="lastName">Nombre de producto</label>
+                    <label for="lastName">Nombre de servicio</label>
                     <input type="text" autocomplete="off" class="form-control " name="nombre_producto" id="nombre_producto" placeholder="" required>                    
                   </div>
                   <div class="col-md-6 mb-3">
@@ -336,7 +336,7 @@ session_start();
                         <input type="checkbox" onchange="select_check_edit(this)" name="all_edit">
                         </th>
                         <th >
-                          PRODUCTOS
+                          SERVICIOS
                         </th>
                         <th >
                           TIPO
@@ -363,7 +363,7 @@ session_start();
         <div id="btn_pdf">
 
         </div>
-        <h5 class="modal-title">Editar productos</h5>
+        <h5 class="modal-title">Editar servicios</h5>
         <button type="button" class="close" id="close_modal_productos_edit" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">×</span>
         </button>
@@ -372,7 +372,7 @@ session_start();
         <form role="form" onsubmit="event.preventDefault(); return EditarProductos();" id="form_guardar" class="needs-validation">
           <div class="row">
             <div class="col-md-6 mb-3" >
-              <label for="lastName">Nombre de producto</label>
+              <label for="lastName">Nombre de servicio</label>
               <input type="hidden" id="id_productos_edit">
               <input type="text" autocomplete="off" class="form-control " name="nombre_producto_edit" id="nombre_producto_edit" placeholder="" required>                    
             </div>
