@@ -2998,7 +2998,7 @@ session_start();
           acomodoStack.push({ul: acomodoLines.map(stripLeadingBullet), style: 'bulletList', margin: [0, 0, 0, 8]});
         }
         if (comentarios.length > 0) {
-          acomodoStack.push({text: 'Comentarios:', style: 'subSectionLabel', margin: [0, 4, 0, 6]});
+          acomodoStack.push({text: 'Servicios incluidos:', style: 'subSectionLabel', margin: [0, 4, 0, 6]});
           acomodoStack.push({ul: comentarios, style: 'bulletList', margin: [0, 0, 0, 0]});
         }
 
@@ -3198,7 +3198,7 @@ session_start();
           stack: [
             data.descripcion_plan ? {text: data.descripcion_plan, style: 'bodyText', margin: [0, 0, 0, 8]} : {},
             textToLines(data.acomodo).length ? {ul: textToLines(data.acomodo).map(stripLeadingBullet), style: 'bulletList', margin: [0, 0, 0, 8]} : {},
-            (textToLines(data.consumo).length || textToLines(data.servicios).length) ? {text: 'Comentarios:', style: 'subSectionLabel', margin: [0, 4, 0, 6]} : {},
+            (textToLines(data.consumo).length || textToLines(data.servicios).length) ? {text: 'Servicios incluidos:', style: 'subSectionLabel', margin: [0, 4, 0, 6]} : {},
             (textToLines(data.consumo).length || textToLines(data.servicios).length) ? {
               ul: [...textToLines(data.consumo), ...textToLines(data.servicios)].map(l => stripLeadingBullet(l)),
               style: 'bulletList',
