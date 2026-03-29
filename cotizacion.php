@@ -2186,6 +2186,50 @@ session_start();
           let info_titular_comun = null;
           let fecha_expedicion_comun = null;
           let id_primera = (obj["id_principal"] && obj["id_principal"] !== '0') ? obj["id_principal"] : id;
+
+          const calcularDuracionServicio = (tipoCotizacion, fechaEntrada, fechaSalida, nocheRaw) => {
+            const tipoEsAlquiler = String(tipoCotizacion) === '3';
+            const nocheInt = parseInt(nocheRaw, 10);
+
+            const parseFechaUtc = (valor) => {
+              const limpio = String(valor || '').trim().split(' ')[0];
+              if (!limpio) return null;
+
+              let y, m, d;
+              if (/^\d{4}-\d{2}-\d{2}$/.test(limpio)) {
+                [y, m, d] = limpio.split('-').map(Number);
+              } else if (/^\d{2}-\d{2}-\d{4}$/.test(limpio)) {
+                [d, m, y] = limpio.split('-').map(Number);
+              } else {
+                const fecha = new Date(limpio);
+                if (isNaN(fecha.getTime())) return null;
+                return Date.UTC(fecha.getFullYear(), fecha.getMonth(), fecha.getDate());
+              }
+
+              return Date.UTC(y, m - 1, d);
+            };
+
+            const entradaUtc = parseFechaUtc(fechaEntrada);
+            const salidaUtc = parseFechaUtc(fechaSalida);
+            const diasRango = (entradaUtc !== null && salidaUtc !== null)
+              ? Math.round((salidaUtc - entradaUtc) / 86400000)
+              : 0;
+
+            if (tipoEsAlquiler) {
+              const dias = diasRango > 0 ? diasRango : ((!isNaN(nocheInt) && nocheInt > 0) ? nocheInt : 1);
+              return {
+                cantidad: dias,
+                label: `${dias} ${dias === 1 ? 'día' : 'días'}`
+              };
+            }
+
+            const noches = (!isNaN(nocheInt) && nocheInt > 0) ? nocheInt : 1;
+            const fallback = (nocheRaw == "N/A" || isNaN(nocheInt) || nocheInt <= 0);
+            return {
+              cantidad: noches,
+              label: fallback ? '1 día' : `${noches} ${noches === 1 ? 'noche' : 'noches'}`
+            };
+          };
           
           $.each(obj["resultado"], function(index, cotizacion) {
             console.log('Procesando cotización ' + (index + 1) + ':', cotizacion);
@@ -2251,10 +2295,14 @@ session_start();
             let totaladult_t_c = n_adult_t_c * tarifa_info.tarifa_adult_t_c;
             
             let subtotal = totalchild + totaladult_s + totaladult_d + totaladult_t_c;
-            let noche = cotizacion.noche;
-            const nocheInt = parseInt(noche);
-            let n_noches = (noche == "N/A" || isNaN(nocheInt) || nocheInt <= 0) ? 1 : nocheInt;
-            let noche_tour = (noche == "N/A" || isNaN(nocheInt) || nocheInt <= 0) ? '1 día' : noche + ' noches';
+            const duracionServicio = calcularDuracionServicio(
+              cotizacion.tipo_cotizacion,
+              cotizacion.fecha_entrada,
+              cotizacion.fecha_salida,
+              cotizacion.noche
+            );
+            let n_noches = duracionServicio.cantidad;
+            let noche_tour = duracionServicio.label;
             let total = subtotal * n_noches;
             
             // Construir objeto de cotización para PDF
@@ -2395,9 +2443,9 @@ session_start();
             const subtotal = totalchild + totaladult_s + totaladult_d + totaladult_t_c;
 
             const nocheRaw = cot.noche;
-            const nocheInt = parseInt(nocheRaw);
-            const n_noches = (nocheRaw == "N/A" || isNaN(nocheInt) || nocheInt <= 0) ? 1 : nocheInt;
-            const nochesLabel = (nocheRaw == "N/A" || isNaN(nocheInt) || nocheInt <= 0) ? '1 día' : `${nocheRaw} ${nocheInt === 1 ? 'noche' : 'noches'}`;
+            const duracionServicio = calcularDuracionServicio(tipoCot, fecha_entrada, fecha_salida, nocheRaw);
+            const n_noches = duracionServicio.cantidad;
+            const nochesLabel = duracionServicio.label;
             const total = subtotal * n_noches;
 
             const tbodyDetalles = buildDetallesTarifaTbody(tipo_servicio, n_child, n_adult_s, n_adult_d, n_adult_t_c, tarifa_child, tarifa_adult_s, tarifa_adult_d, tarifa_adult_t_c);
@@ -2480,6 +2528,10 @@ session_start();
                   <div class="total-row">
                     <span>Subtotal:</span>
                     <span>$${puntosDecimales(subtotal)}</span>
+                  </div>
+                  <div class="total-row">
+                    <span>Noches/Días:</span>
+                    <span>${nochesLabel}</span>
                   </div>
                   <div class="total-row grand-total">
                     <span>TOTAL:</span>
