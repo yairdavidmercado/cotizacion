@@ -1556,6 +1556,40 @@ session_start();
     initTomSelect(selector, options);
   }
 
+  function setSelectValue(selector, value, silent) {
+    const targetValue = (typeof value === 'undefined') ? '' : value;
+    const isSilent = !!silent;
+
+    $(selector).each(function () {
+      if (this.tomselect) {
+        const hasEmptyOption = typeof this.tomselect.options[''] !== 'undefined';
+
+        if (targetValue === '' || targetValue === null) {
+          // Selecciona explicitamente la opcion vacia para mostrar "Seleccionar"
+          // y evitar que el dropdown conserve visualmente la ultima opcion activa.
+          this.tomselect.clear(true);
+          if (hasEmptyOption) {
+            this.tomselect.setValue('', true);
+          }
+          this.tomselect.setTextboxValue('');
+          this.tomselect.clearActiveOption();
+          this.tomselect.refreshItems();
+          if (!isSilent) {
+            this.tomselect.trigger('change');
+          }
+        } else {
+          this.tomselect.setValue(targetValue, isSilent);
+        }
+        return;
+      }
+
+      $(this).val(targetValue);
+      if (!isSilent) {
+        $(this).trigger('change');
+      }
+    });
+  }
+
   function construirTelefonoConIndicativo() {
     const indicativo = ($('#telefono_indicativo').val() || '+57').trim();
     const numero = String($('#telefono').val() || '').replace(/\D+/g, '');
@@ -3798,10 +3832,11 @@ session_start();
       $("#adult_s").val("0").prop('disabled',true)
       $("#adult_d").val("0").prop('disabled',true)
       $("#adult_t_c").val("0").prop('disabled',true)
-      $("#id_usuario").val("").change()
-      $("#id_tarifa").val("").change().prop('disabled',true)
-      $("#id_planes").val("").change()
-      $("#id_motivo").val("").change()
+      setSelectValue("#id_usuario", "")
+      setSelectValue("#id_tarifa", "")
+      $("#id_tarifa").prop('disabled',true)
+      setSelectValue("#id_planes", "")
+      setSelectValue("#id_motivo", "")
       $("#cantidad_noches").text("")
       $("#id_acomodacion").val("")
       $("#DateRange").val("").prop('disabled',true)
@@ -3824,7 +3859,8 @@ session_start();
       $("#adult_s" + suffix).val("0").prop('disabled',true)
       $("#adult_d" + suffix).val("0").prop('disabled',true)
       $("#adult_t_c" + suffix).val("0").prop('disabled',true)
-      $("#id_tarifa" + suffix).val("").change().prop('disabled',true)
+      setSelectValue("#id_tarifa" + suffix, "")
+      $("#id_tarifa" + suffix).prop('disabled',true)
       $("#cantidad_noches" + suffix).text("")
       $("#DateRange" + suffix).val("").prop('disabled',true)
       $("#startDate" + suffix).val("").prop('disabled',true)
@@ -3852,7 +3888,7 @@ session_start();
     limpiarErrores(document.body);
 
     $('input[type="checkbox"][name="tipo_cotizacion[]"]').prop('checked', false);
-    $("#id_usuario").val("").trigger('change');
+    setSelectValue("#id_usuario", "");
     $("#content_info_titular").hide();
 
     limpiar_formulario();
@@ -3860,9 +3896,10 @@ session_start();
     ['_tour', '_alq'].forEach(function(suffix) {
       validar_plan(suffix);
 
-      $("#id_planes" + suffix).val("").trigger('change');
-      $("#id_motivo" + suffix).val("").trigger('change');
-      $("#id_tarifa" + suffix).val("").trigger('change').prop('disabled', true);
+      setSelectValue("#id_planes" + suffix, "");
+      setSelectValue("#id_motivo" + suffix, "");
+      setSelectValue("#id_tarifa" + suffix, "");
+      $("#id_tarifa" + suffix).prop('disabled', true);
       $("#id_acomodacion" + suffix).val("");
 
       $("#detalle_tarifa" + suffix).html("");
