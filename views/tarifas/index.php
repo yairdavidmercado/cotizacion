@@ -396,7 +396,7 @@ function mostrarOpciones(id, params, edit) {
   if (id == '0') {
     $(`#iniciartarifas${edicion}`).html(`<div class="col-md-3 mb-3 inputsecundario">
                     <label for="lastName">Niños (3-11 Años)</label>
-                    <input type="text" autocomplete="off" value='${campo1}' class="form-control" onkeypress="return isNumber(event)" name="child" id="child" placeholder="" required>                   
+                    <input type="text" autocomplete="off" value='${campo1}' class="form-control" onkeypress="return isNumber(event)" name="child${edicion}" id="child${edicion}" placeholder="" required>                   
                   </div>
                   <div class="col-md-3 mb-3 inputsecundario">
                     <label for="lastName">Adultos </label>
