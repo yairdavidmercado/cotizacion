@@ -23,17 +23,7 @@
     }
 
     try{
-echo "UPDATE tarifas SET   nombre = '$nombre', 
-                                                            child = '$child',
-                                                            adult_s = '$adult_s',
-                                                            adult_d = '$adult_d',
-                                                            adult_t_c = '$adult_t_c',
-                                                            id_plan = '$id_plan',
-                                                            id_hotel = '$id_hotel',
-                                                            descripcion = '$descripcion',
-                                                            noches = '$noches',
-                                                            id_autor = $id_autor 
-                                                            WHERE id = $id;";
+
         $result = mysqli_query($con, "UPDATE tarifas SET   nombre = '$nombre', 
                                                             child = '$child',
                                                             adult_s = '$adult_s',
