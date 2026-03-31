@@ -2191,8 +2191,8 @@ session_start();
                     <span class="info-value">${nombre_plan}</span>
                   </div>
                   <div class="info-item">
-                    <span class="info-label">Personas</span>
-                    <span class="info-value">${total_pasajero} personas</span>
+                    <span class="info-label">${tipo_servicio == '2' ? 'Vehiculos' : 'Personas'}</span>
+                    <span class="info-value">${total_pasajero}</span>
                   </div>
                 </div>
               </div>
