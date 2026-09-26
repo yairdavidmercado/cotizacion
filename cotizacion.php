@@ -1958,7 +1958,7 @@ session_start();
         direccion : $("#direccion").val(),
         telefono : construirTelefonoConIndicativo(),
         email :  $("#email").val(),
-        avatar : "/../upload.php"
+        avatar : ""
       }
       $.ajax({
       type : 'POST',
