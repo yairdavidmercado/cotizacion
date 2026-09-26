@@ -479,7 +479,7 @@ function GuardarUsuario() {
       direccion :  $("#direccion").val(),
       telefono :  $("#telefono").val(),
       email :  $("#email").val(),
-      avatar : "/../upload.php"
+      avatar : ""
     }
     $.ajax({
     type : 'POST',
@@ -1039,7 +1039,7 @@ if ( ! $.fn.DataTable.isDataTable('#tabla_usuarios_company')) {
         direccion :  $("#direccion_edit").val(),
         telefono :  $("#telefono_edit").val(),
         email :  $("#email_edit").val(),
-        avatar : "/../upload.php"
+        avatar : ""
       }
       $.ajax({
       type : 'POST',
