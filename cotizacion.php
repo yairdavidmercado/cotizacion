@@ -30,7 +30,7 @@ session_start();
 <meta name="theme-color" content="#563d7c">
 
     <style>
-      /* ===== COTICLICK MOCKUP LAYOUT ===== */
+      /* ===== COTICLICK MOCKUP LAYOUT  ===== */
       .cc-page{
         background-image: url('assets/img/bg-coticlick.png');
         background-size: cover;
